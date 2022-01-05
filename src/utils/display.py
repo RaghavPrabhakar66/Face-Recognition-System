@@ -2,27 +2,35 @@ import time
 
 import cv2
 
+from src.detection.HaarCascadeDetector.HaarCascadeDetector import (
+    HaarCascadeDetector,
+)
+
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 FONT_SCALE = 0.5
 FONT_COLOR = (255, 0, 0)
 LINETYPE = 2
 
+detector = HaarCascadeDetector()
+
 
 def display_video(filepath, resize_shape=None, scale=1.0):
     if filepath is None:
         cap = cv2.VideoCapture(0)
+
     cap = cv2.VideoCapture(filepath)
-    prev_frame_time = curr_frame_time = 0
+    prev_frame_time = curr_frame_time = curr_frame_id = 0
 
     while cap.isOpened():
         ret, frame = cap.read()
+
+        if not ret:
+            break
+
         height, width, _ = frame.shape
         curr_frame_time = time.time()
         fps = int(1 / (curr_frame_time - prev_frame_time))
         prev_frame_time = curr_frame_time
-
-        if not ret:
-            break
 
         if resize_shape is not None:
             width, height = resize_shape
@@ -30,6 +38,15 @@ def display_video(filepath, resize_shape=None, scale=1.0):
             width, height = int(width * scale), int(height * scale)
 
         frame = cv2.resize(frame, (width, height))
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.equalizeHist(gray)
+
+        if curr_frame_id % 5 == 0:
+            face_bbox = detector.detect(gray)
+
+        if face_bbox is not None:
+            for (x, y, w, h) in face_bbox:
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         cv2.putText(
             frame,
@@ -41,6 +58,8 @@ def display_video(filepath, resize_shape=None, scale=1.0):
             LINETYPE,
         )
         cv2.imshow("frame", frame)
+
+        curr_frame_id += 1
 
         if cv2.waitKey(25) & 0xFF == ord("q"):
             break
