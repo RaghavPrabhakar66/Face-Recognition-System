@@ -1,6 +1,7 @@
 import time
 
 import cv2
+import numpy as np
 
 from src.detection.detector import Detectors
 
@@ -46,15 +47,26 @@ def display_video(
             results = detector.detect(frame)
 
         grid = []
-        for bbox in results:
+        angle = 0
+        face = frame
+        padding = 100
+        for bbox, landmarks in results:
+            # Cropping
             x, y, w, h = bbox
-            if extract_face:
-                face = cv2.resize(
-                    frame[y - 50 : y + h + 50, x - 50 : x + w + 50], (256, 256)
-                )
-                grid.append(face)
-            else:
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            center = (w // 2 + padding, h // 2 + padding)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            face = frame[
+                y - padding : y + h + padding, x - padding : x + w + padding
+            ]
+            face = cv2.resize(face, (256, 256))
+
+            # Allignment - Rotation only no stretching
+            l, r = landmarks["LEFT_EYE"], landmarks["RIGHT_EYE"]
+            angle = (np.arctan((r[1] - l[1]) / (r[0] - l[0])) * 180) / np.pi
+            rot = cv2.getRotationMatrix2D(center, (angle), 1.0)
+            face = cv2.warpAffine(face, rot, (w, h))
+
+            grid.append(face)
         faces = cv2.hconcat(grid)
 
         cv2.putText(
