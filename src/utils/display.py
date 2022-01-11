@@ -71,7 +71,7 @@ def display_video(
                 frame, (int(width * scale), int(height * scale))
             )
 
-        if curr_frame_id % 5 == 0:
+        if curr_frame_id % 2 == 0:
             bboxes, landmarks = detector.detect(frame)
 
         grid = []
@@ -104,9 +104,10 @@ def display_video(
                 )
 
         frame = cv2.hconcat(grid) if grid else frame
+        curr_frame_id += 1
         cv2.putText(
             frame,
-            f"FPS: {str(fps)}",
+            f"FPS: {str(a//curr_frame_id)}",
             (width - 90, 30),
             FONT,
             FONT_SCALE,
@@ -115,8 +116,6 @@ def display_video(
         )
 
         cv2.imshow("faces", frame)
-
-        curr_frame_id += 1
 
         if cv2.waitKey(25) & 0xFF == ord("q"):
             break
