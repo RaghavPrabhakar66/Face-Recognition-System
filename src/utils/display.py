@@ -36,8 +36,9 @@ def display_video(filepath, resize_shape=None, scale=1.0):
             width, height = int(width * scale), int(height * scale)
 
         frame = cv2.resize(frame, (width, height))
+        results = detector.detect(frame)
 
-        if curr_frame_id % 1 == 0:
+        if curr_frame_id % 5 == 0:
             results = detector.detect(frame)
 
         for bbox in results:

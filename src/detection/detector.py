@@ -10,12 +10,15 @@ import os
 import cv2
 import mediapipe as mp
 
+# from mtcnn import MTCNN
+
 
 class Detectors:
     def __init__(self):
         self.models = {
             "Haar Cascade": HaarCascadeDetector(),
             "Mediapipe": MediapipeFaceDetector(),
+            # "MTCNN": MTCNNDetector()
         }
 
     def loadModel(self, model: str):
@@ -93,3 +96,17 @@ class MediapipeFaceDetector:
             )
 
         return bboxes
+
+
+# class MTCNNDetector:
+#     def __init__(self):
+#         self.detector = MTCNN()
+
+#     def detect(self, image):
+#         results = self.detector.detect_faces(
+#             cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+#         )
+
+#         if len(results) == 0: return []
+
+#         return [result["box"] for result in results]
