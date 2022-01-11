@@ -2,16 +2,14 @@ import time
 
 import cv2
 
-from src.detection.HaarCascadeDetector.HaarCascadeDetector import (
-    HaarCascadeDetector,
-)
+from src.detection.detector import Detectors
 
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 FONT_SCALE = 0.5
 FONT_COLOR = (255, 0, 0)
 LINETYPE = 2
 
-detector = HaarCascadeDetector()
+detector = Detectors().loadModel("Mediapipe")
 
 
 def display_video(filepath, resize_shape=None, scale=1.0):
@@ -38,15 +36,13 @@ def display_video(filepath, resize_shape=None, scale=1.0):
             width, height = int(width * scale), int(height * scale)
 
         frame = cv2.resize(frame, (width, height))
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        gray = cv2.equalizeHist(gray)
 
-        if curr_frame_id % 5 == 0:
-            face_bbox = detector.detect(gray)
+        if curr_frame_id % 1 == 0:
+            results = detector.detect(frame)
 
-        if face_bbox is not None:
-            for (x, y, w, h) in face_bbox:
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        for bbox in results:
+            x, y, w, h = bbox
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         cv2.putText(
             frame,
