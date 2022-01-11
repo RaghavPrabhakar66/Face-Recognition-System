@@ -11,12 +11,40 @@ FONT_COLOR = (255, 0, 0)
 LINETYPE = 2
 
 
+def align(face, l, r, width, height, padding):
+    center = (width // 2 + padding, height // 2 + padding)
+    angle = (np.arctan((r[1] - l[1]) / (r[0] - l[0])) * 180) / np.pi
+    rot = cv2.getRotationMatrix2D(center, (angle), 1.0)
+    face = cv2.warpAffine(face, rot, (width, height))
+
+    return face
+
+
+def extract(image, bbox, padding, size=(256, 256)):
+    x, y, w, h = bbox
+    start_y, end_y = y - padding, y + h + padding
+    start_x, end_x = x - padding, x + w + padding
+    if y - padding < 0:
+        start_y = 0
+    elif y + h + padding > image.shape[0]:
+        end_y = image.shape[0]
+    elif x - padding < 0:
+        start_x = 0
+    elif x + w + padding > image.shape[1]:
+        end_x = image.shape[1]
+
+    face = cv2.resize(image[start_y:end_y, start_x:end_x], size)
+
+    return face
+
+
 def display_video(
     filepath=None,
     resize_shape=None,
     scale=None,
     model="Mediapipe",
     extract_face=False,
+    align_face=False,
 ):
     detector = Detectors().loadModel(model)
     cap = (
@@ -44,31 +72,38 @@ def display_video(
             )
 
         if curr_frame_id % 5 == 0:
-            results = detector.detect(frame)
+            bboxes, landmarks = detector.detect(frame)
 
         grid = []
-        angle = 0
-        face = frame
-        padding = 100
-        for bbox, landmarks in results:
+        padding = 10
+        for idx, bbox in enumerate(bboxes):
             # Cropping
-            x, y, w, h = bbox
-            center = (w // 2 + padding, h // 2 + padding)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            face = frame[
-                y - padding : y + h + padding, x - padding : x + w + padding
-            ]
-            face = cv2.resize(face, (256, 256))
+            if extract_face:
+                face = extract(frame, bbox, padding)
 
-            # Allignment - Rotation only no stretching
-            l, r = landmarks["LEFT_EYE"], landmarks["RIGHT_EYE"]
-            angle = (np.arctan((r[1] - l[1]) / (r[0] - l[0])) * 180) / np.pi
-            rot = cv2.getRotationMatrix2D(center, (angle), 1.0)
-            face = cv2.warpAffine(face, rot, (w, h))
+                if align_face:
+                    # Allignment - Rotation only no stretching
+                    face = align(
+                        face,
+                        landmarks[idx]["LEFT_EYE"],
+                        landmarks[idx]["RIGHT_EYE"],
+                        bbox[2],
+                        bbox[3],
+                        padding,
+                        angle=0,
+                    )
 
-            grid.append(face)
-        faces = cv2.hconcat(grid)
+                grid.append(face)
+            else:
+                cv2.rectangle(
+                    frame,
+                    (bbox[0], bbox[1]),
+                    (bbox[0] + bbox[2], bbox[1] + bbox[3]),
+                    (0, 255, 0),
+                    2,
+                )
 
+        frame = cv2.hconcat(grid) if grid else frame
         cv2.putText(
             frame,
             f"FPS: {str(fps)}",
@@ -79,10 +114,8 @@ def display_video(
             LINETYPE,
         )
 
-        if faces is not None:
-            cv2.imshow("faces", faces)
-        else:
-            cv2.imshow("frame", frame)
+        cv2.imshow("faces", frame)
+
         curr_frame_id += 1
 
         if cv2.waitKey(25) & 0xFF == ord("q"):
