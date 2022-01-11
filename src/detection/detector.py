@@ -13,6 +13,10 @@ import mediapipe as mp
 # from mtcnn import MTCNN
 
 
+get_key_point = mp.solutions.face_detection.get_key_point
+keys = mp.solutions.face_detection.FaceKeyPoint
+
+
 class Detectors:
     def __init__(self):
         self.models = {
@@ -72,6 +76,7 @@ class MediapipeFaceDetector:
             return []
 
         bboxes = []
+        landmarks = []
         height, width, _ = image.shape
         for detection in results.detections:
             bboxes.append(
@@ -94,8 +99,38 @@ class MediapipeFaceDetector:
                     ),
                 ]
             )
-
-        return bboxes
+            landmarks.append(
+                {
+                    "LEFT_EYE": 
+                    [
+                        round(
+                            get_key_point(detection, keys.LEFT_EYE).x * width
+                        ),
+                        round(
+                            get_key_point(detection, keys.LEFT_EYE).y * height
+                        )
+                    ],
+                     "RIGHT_EYE": 
+                    [
+                        round(
+                            get_key_point(detection, keys.RIGHT_EYE).x * width
+                        ),
+                        round(
+                            get_key_point(detection, keys.RIGHT_EYE).y * height
+                        )
+                    ],
+                     "NOSE_TIP": 
+                    [
+                        round(
+                            get_key_point(detection, keys.NOSE_TIP).x * width
+                        ),
+                        round(
+                            get_key_point(detection, keys.NOSE_TIP).y * height
+                        )
+                    ],
+                }
+            )
+        return zip(bboxes, landmarks)
 
 
 # class MTCNNDetector:
