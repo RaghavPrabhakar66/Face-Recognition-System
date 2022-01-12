@@ -4,6 +4,7 @@ import mediapipe as mp
 
 class A:
     def __init__(self):
+        print("Initializing mediapipe face detector")
         self.face_detection = mp.solutions.face_detection.FaceDetection(
             model_selection=1, min_detection_confidence=0.5
         )

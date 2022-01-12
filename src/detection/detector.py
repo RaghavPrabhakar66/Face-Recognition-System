@@ -10,19 +10,20 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
-
 import MediapipeFaceDetector
 from HaarCascadeDetector import HaarCascadeDetector
+from HogDetector import HogDetector
 from MTCNNDetector import MTCNNDetector
 
+models = {
+    "Haar Cascade": HaarCascadeDetector,
+    "Mediapipe": MediapipeFaceDetector.A,
+    "HOG": HogDetector,
+    "MMOD": HogDetector,
+    "MTCNN": MTCNNDetector,
+}
 
-class Detectors:
-    def __init__(self):
-        self.models = {
-            "Haar Cascade": HaarCascadeDetector(),
-            "Mediapipe": MediapipeFaceDetector.A(),
-            "MTCNN": MTCNNDetector(),
-        }
 
-    def loadModel(self, model: str):
-        return self.models[model]
+def detector_wrapper(model: str):
+    a = models[model]
+    return a()

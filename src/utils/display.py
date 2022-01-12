@@ -5,7 +5,7 @@ import cv2
 import dlib
 import numpy as np
 
-from src.detection.detector import Detectors
+from src.detection.detector import detector_wrapper
 
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 FONT_SCALE = 0.5
@@ -52,7 +52,7 @@ def display_video(
     extract_face=False,
     align_face=False,
 ):
-    detector = Detectors().loadModel(model)
+    detector = detector_wrapper(model)
     cap = (
         cv2.VideoCapture(0) if filepath is None else cv2.VideoCapture(filepath)
     )
@@ -113,7 +113,7 @@ def display_video(
             print("Removing tracker " + str(fid) + " from list of trackers")
             faceTrackers.pop(fid, None)
 
-        if frameCounter % 10 == 0:
+        if frameCounter % 5 == 0:
             bboxes, landmarks = detector.detect(frame)
 
             for (_x, _y, _w, _h) in bboxes:
