@@ -1,2 +1,49 @@
-opencv-python
-mediapipe
+absl-py==1.0.0
+ansible==5.0.1
+ansible-core==2.12.1
+attrs==21.4.0
+backports.entry-points-selectable==1.1.1
+cached-property @ file:///home/conda/feedstock_root/build_artifacts/cached_property_1615209429212/work
+certifi==2021.10.8
+configparser==5.2.0
+cycler==0.11.0
+distlib==0.3.3
+dlib==19.22.1
+filelock==3.4.0
+filterpy==1.4.5
+fonttools==4.28.5
+future==0.18.2
+greenlet==1.1.2
+h5py @ file:///home/conda/feedstock_root/build_artifacts/h5py_1637963928098/work
+iso8601==1.0.2
+Jinja2==3.0.3
+keras @ file:///home/conda/feedstock_root/build_artifacts/keras_1637872120405/work/keras-2.7.0-py2.py3-none-any.whl
+kiwisolver==1.3.2
+matplotlib==3.5.1
+mediapipe==0.8.9.1
+motpy==0.0.10
+msgpack==1.0.3
+mtcnn @ file:///home/conda/feedstock_root/build_artifacts/mtcnn_1629221401070/work
+numpy @ file:///home/conda/feedstock_root/build_artifacts/numpy_1622014603188/work
+opencv-contrib-python==4.5.5.62
+opencv-python==4.5.5.62
+packaging==21.3
+pbr==5.8.0
+Pillow==9.0.0
+platformdirs==2.4.0
+protobuf==3.19.3
+protonup==0.1.4
+pynvim==0.4.3
+pyparsing==3.0.6
+python-config==0.1.2
+python-dateutil==2.8.2
+python-uinput==0.11.2
+PyYAML @ file:///home/conda/feedstock_root/build_artifacts/pyyaml_1636139833192/work
+resolvelib==0.5.4
+scipy @ file:///home/conda/feedstock_root/build_artifacts/scipy_1637806669496/work
+serial==0.0.97
+six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
+stevedore==3.5.0
+virtualenv==20.10.0
+virtualenv-clone==0.5.7
+virtualenvwrapper==4.8.4
