@@ -2,7 +2,7 @@ import argparse
 import os
 from pprint import pprint
 
-from src.utils.display import display_video
+from src.utils.display import display_video_motpy
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     videos = os.listdir("dataset/test/detection/videos")
     pprint(args)
-    display_video(
+    display_video_motpy(
         filepath="dataset/test/detection/videos/" + videos[4],
         model=args.detector,
         extract_face=args.extract_face,

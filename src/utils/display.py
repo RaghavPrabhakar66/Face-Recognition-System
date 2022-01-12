@@ -1,9 +1,11 @@
 import threading
 import time
+from typing import Optional
 
 import cv2
 import dlib
 import numpy as np
+from motpy import Detection, MultiObjectTracker
 
 from src.detection.detector import detector_wrapper
 
@@ -23,7 +25,10 @@ def align(face, l, r, width, height, padding):
 
 
 def extract(image, bbox, padding, size=(256, 256)):
-    x, y, w, h = bbox
+    x, y, _, _ = bbox
+    w = bbox[2] - bbox[0]
+    h = bbox[3] - bbox[1]
+    x, y, w, h = round(x), round(y), round(w), round(h)
     start_y, end_y = y - padding, y + h + padding
     start_x, end_x = x - padding, x + w + padding
     if y - padding < 0:
@@ -34,14 +39,150 @@ def extract(image, bbox, padding, size=(256, 256)):
         start_x = 0
     elif x + w + padding > image.shape[1]:
         end_x = image.shape[1]
-
-    face = cv2.resize(image[start_y:end_y, start_x:end_x], size)
+    try:
+        face = cv2.resize(image[start_y:end_y, start_x:end_x], size)
+    except:
+        face = cv2.resize(image, size)
 
     return face
 
 
 def doRecognizePerson(faceNames, fid):
     faceNames[fid] = "Person " + str(fid)
+
+
+class Detection:
+    def __init__(
+        self,
+        box: np.ndarray,
+        score: Optional[float] = None,
+        class_id: Optional[int] = None,
+        feature: Optional[np.ndarray] = None,
+    ):
+        self.box = box
+        self.score = score
+        self.class_id = class_id
+        self.feature = feature
+
+    # def __repr__(self):
+    #     return f'Detection(box={self.box}, score={self.score:.5f}, class_id={self.class_id}, feature={self.feature})'
+
+
+def display_video_motpy(
+    filepath=None,
+    resize_shape=None,
+    scale=None,
+    model="Mediapipe",
+    extract_face=False,
+    align_face=False,
+):
+    detector = detector_wrapper(model)
+
+    model_spec = {
+        "order_pos": 1,
+        "dim_pos": 2,
+        "order_size": 0,
+        "dim_size": 2,
+        "q_var_pos": 5000.0,
+        "r_var_pos": 0.1,
+    }
+
+    dt = 1 / 15  # assume 15 fps
+    tracker = MultiObjectTracker(dt=dt, model_spec=model_spec)
+
+    cap = (
+        cv2.VideoCapture(0) if filepath is None else cv2.VideoCapture(filepath)
+    )
+    prev_frame_time = 0
+    fps = 0
+    frameCounter = 0
+
+    # Create two opencv named windows
+    cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
+    cv2.namedWindow("result-image", cv2.WINDOW_AUTOSIZE)
+
+    # Position the windows next to eachother
+    cv2.moveWindow("base-image", 100, 100)
+    cv2.moveWindow("result-image", 900, 100)
+
+    # Start the window thread for the two windows we are using
+    cv2.startWindowThread()
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+
+        if not ret:
+            break
+
+        height, width, _ = frame.shape
+        curr_frame_time = time.time()
+        fps += round(1 / (curr_frame_time - prev_frame_time))
+        prev_frame_time = curr_frame_time
+
+        if resize_shape is not None:
+            frame = cv2.resize(frame, resize_shape)
+        elif scale is not None:
+            frame = cv2.resize(
+                frame, (int(width * scale), int(height * scale))
+            )
+        frameCounter += 1
+        detections = []
+        if frameCounter % 1 == 0:
+            bboxes, landmarks = detector.detect(frame)
+
+            for bbox in bboxes:
+                detections.append(
+                    Detection(
+                        box=np.array(
+                            [
+                                bbox[0],
+                                bbox[1],
+                                bbox[0] + bbox[2],
+                                bbox[1] + bbox[3],
+                            ]
+                        ),
+                        score=None,
+                        class_id=None,
+                        feature=None,
+                    )
+                )
+        tracker.step(detections)
+        tracks = tracker.active_tracks(min_steps_alive=3)
+
+        faces = []
+        for track in tracks:
+            faces.append(extract(frame, track.box, padding=10))
+            cv2.rectangle(
+                frame,
+                (int(track.box[0]), int(track.box[1])),
+                (int(track.box[2]), int(track.box[3])),
+                color=[ord(c) * ord(c) % 256 for c in track.id[:3]],
+                thickness=2,
+            )
+            # pos = (track.box[0], track.box[3]) if text_at_bottom else (track.box[0], track.box[1])
+            # text = track_to_string(track) if text_verbose == 2 else track.id[:8]
+            # draw_text(frame, text, pos=pos)
+
+        resultImage = cv2.hconcat(faces) if faces else frame
+
+        cv2.putText(
+            frame,
+            f"FPS: {str(fps//frameCounter)}",
+            (width - 90, 30),
+            FONT,
+            FONT_SCALE,
+            FONT_COLOR,
+            LINETYPE,
+        )
+
+        cv2.imshow("base-image", frame)
+        cv2.imshow("result-image", resultImage)
+
+        if cv2.waitKey(25) & 0xFF == ord("q"):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
 
 
 def display_video(
