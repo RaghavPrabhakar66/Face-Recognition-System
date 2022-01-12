@@ -42,20 +42,20 @@ def display_video(filepath=None, resize_shape=None, scale=None, model='Mediapipe
         grid = []
         angle = 0
         face = frame
-        padding = 100
+        padding = 60
         for bbox, landmarks  in results:
             # Cropping
             x, y, w, h = bbox
             center = (w//2 + padding, h//2 + padding)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.rectangle(frame, (x, y - (padding // 2)), (x + w, y + h), (0, 255, 0), 2)
             face = frame[y - padding: y + h + padding, x - padding: x + w + padding]
             face = cv2.resize(face, (256, 256))
 
             # Allignment - Rotation only no stretching
-            l, r = landmarks['LEFT_EYE'], landmarks['RIGHT_EYE']
-            angle = (np.arctan((r[1] - l[1])/(r[0] - l[0])) * 180) / np.pi
-            rot = cv2.getRotationMatrix2D(center, (angle), 1.0)
-            face = cv2.warpAffine(face, rot, (w, h))
+            # l, r = landmarks['LEFT_EYE'], landmarks['RIGHT_EYE']
+            # angle = (np.arctan((r[1] - l[1])/(r[0] - l[0])) * 180) / np.pi
+            # rot = cv2.getRotationMatrix2D(center, (angle), 1.0)
+            # face = cv2.warpAffine(face, rot, (w, h))
 
             grid.append(face)
         faces = cv2.hconcat(grid)
