@@ -75,6 +75,7 @@ def display_video(
             bboxes, landmarks = detector.detect(frame)
 
         grid = []
+
         padding = 10
         for idx, bbox in enumerate(bboxes):
             # Cropping
@@ -104,6 +105,7 @@ def display_video(
                 )
 
         frame = cv2.hconcat(grid) if grid else frame
+
         cv2.putText(
             frame,
             f"FPS: {str(fps)}",
