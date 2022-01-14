@@ -155,6 +155,7 @@ def display_video_motpy(
     model="Mediapipe",
     extract_face=False,
     align_face=False,
+    track_face=False,
     padding=20,
 ):
     detector = detector_wrapper(model)
@@ -169,7 +170,8 @@ def display_video_motpy(
     }
 
     dt = 1 / 15  # assume 15 fps
-    tracker = MultiObjectTracker(dt=dt, model_spec=model_spec)
+    if track_face:
+        tracker = MultiObjectTracker(dt=dt, model_spec=model_spec)
 
     # Video and webcam capture modes
     cap = (
@@ -197,22 +199,30 @@ def display_video_motpy(
 
         if not ret:
             break
-
+        
+        # Calculate frame rate
         height, width, _ = frame.shape
         curr_frame_time = time.time()
         fps += round(1 / (curr_frame_time - prev_frame_time))
         prev_frame_time = curr_frame_time
 
+        # Reshape frame
         if resize_shape is not None:
             frame = cv2.resize(frame, resize_shape)
         elif scale is not None:
             frame = cv2.resize(
                 frame, (int(width * scale), int(height * scale))
             )
+        
+
         temp = cv2.resize(temp, (width, height))
         frameCounter += 1
+        step = 1
+        
+        if not track_face:
+            step = 1
         detections = []
-        if frameCounter % 1 == 0:
+        if frameCounter % step == 0:
             bboxes, _ = detector.detect(frame)
 
             for bbox in bboxes:
@@ -231,26 +241,41 @@ def display_video_motpy(
                         feature=None,
                     )
                 )
-        tracker.step(detections)
-        tracks = tracker.active_tracks(min_steps_alive=3)
+        if track_face:
+            tracker.step(detections)
+            tracks = tracker.active_tracks(min_steps_alive=3)
 
         faces = []
-        for track in tracks:
-            # Extract individual faces
-            if extract_face:
-                faces.append(extract(frame, track.box, padding=padding))
-            print(track)
+        if track_face:
+            for track in tracks:
+                # Extract individual faces
+                if extract_face:
+                    faces.append(extract(frame, track.box, padding=padding))
+                print(track)
 
-            frame = draw_bounding_box(
-                frame,
-                track.box,
-                [ord(c) * ord(c) % 256 for c in track.id[:3]],
-                2,
-                temp,
-            )
-            # pos = (track.box[0], track.box[3]) if text_at_bottom else (track.box[0], track.box[1])
-            # text = track_to_string(track) if text_verbose == 2 else track.id[:8]
-            # draw_text(frame, text, pos=pos)
+                frame = draw_bounding_box(
+                    frame,
+                    track.box,
+                    [ord(c) * ord(c) % 256 for c in track.id[:3]],
+                    2,
+                    temp,
+                )
+                # pos = (track.box[0], track.box[3]) if text_at_bottom else (track.box[0], track.box[1])
+                # text = track_to_string(track) if text_verbose == 2 else track.id[:8]
+                # draw_text(frame, text, pos=pos)
+        else:
+            for det in detections:
+                # Extract individual faces
+                if extract_face:
+                    faces.append(extract(frame, det.box, padding=padding))
+
+                frame = draw_bounding_box(
+                    frame,
+                    det.box,
+                    (0, 255, 0),
+                    2,
+                    temp,
+                )
 
         resultImage = cv2.hconcat(faces) if faces else frame
 

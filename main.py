@@ -26,14 +26,22 @@ if __name__ == "__main__":
         default=False,
         help="align extracted faces from video",
     )
+    parser.add_argument(
+        "-t",
+        "--track-face",
+        action="store_true",
+        default=False,
+        help="align extracted faces from video",
+    )
     args = parser.parse_args()
     videos = os.listdir("dataset/test/detection/videos")
     pprint(args)
     display_video_motpy(
-        filepath=None,
+        filepath="dataset/test/detection/videos/" + videos[2],
         model=args.detector,
         extract_face=args.extract_face,
         align_face=args.align_face,
+        track_face=args.track_face,
     )
 
 '''"dataset/test/detection/videos/" + videos[4]'''
