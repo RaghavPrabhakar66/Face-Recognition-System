@@ -54,6 +54,86 @@ def doRecognizePerson(faceNames, fid):
     faceNames[fid] = "Person " + str(fid)
 
 
+def draw_bounding_box(image, bbox, color=(0, 255, 0), thickness=2, img=None):
+    top_left_x, top_left_y, right_bottom_x, right_bottom_y = bbox
+    top_left_x, top_left_y, right_bottom_x, right_bottom_y = (
+        int(top_left_x),
+        int(top_left_y),
+        int(right_bottom_x),
+        int(right_bottom_y),
+    )
+    w = round(right_bottom_x - top_left_x)
+    h = round(right_bottom_y - top_left_y)
+    image = cv2.line(
+        image,
+        (top_left_x, top_left_y),
+        (top_left_x + w // 4, top_left_y),
+        color,
+        thickness,
+    )
+
+    image = cv2.line(
+        image,
+        (top_left_x, top_left_y),
+        (top_left_x, top_left_y + h // 4),
+        color,
+        thickness,
+    )
+
+    image = cv2.line(
+        image,
+        (top_left_x + w, top_left_y),
+        (top_left_x + w - w // 4, top_left_y),
+        color,
+        thickness,
+    )
+
+    image = cv2.line(
+        image,
+        (top_left_x + w, top_left_y),
+        (top_left_x + w, top_left_y + h // 4),
+        color,
+        thickness,
+    )
+
+    image = cv2.line(
+        image,
+        (top_left_x, top_left_y + h),
+        (top_left_x + w // 4, top_left_y + h),
+        color,
+        thickness,
+    )
+
+    image = cv2.line(
+        image,
+        (top_left_x, top_left_y + h),
+        (top_left_x, top_left_y + h - h // 4),
+        color,
+        thickness,
+    )
+
+    image = cv2.line(
+        image,
+        (top_left_x + w, top_left_y + h),
+        (top_left_x + w - w // 4, top_left_y + h),
+        color,
+        thickness,
+    )
+
+    image = cv2.line(
+        image,
+        (top_left_x + w, top_left_y + h),
+        (top_left_x + w, top_left_y + h - h // 4),
+        color,
+        thickness,
+    )
+    img = cv2.circle(
+        img, (top_left_x + w // 2, top_left_y + h // 2), 1, color, 3
+    )
+
+    return image
+
+
 class Detection:
     def __init__(
         self,
@@ -67,9 +147,6 @@ class Detection:
         self.class_id = class_id
         self.feature = feature
 
-    # def __repr__(self):
-    #     return f'Detection(box={self.box}, score={self.score:.5f}, class_id={self.class_id}, feature={self.feature})'
-
 
 def display_video_motpy(
     filepath=None,
@@ -78,6 +155,7 @@ def display_video_motpy(
     model="Mediapipe",
     extract_face=False,
     align_face=False,
+    padding=20,
 ):
     detector = detector_wrapper(model)
 
@@ -101,9 +179,7 @@ def display_video_motpy(
     prev_frame_time = 0
     fps = 0
     frameCounter = 0
-    
-    padding = 20
-    
+        
     # Create and position two opencv named windows
     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
     cv2.moveWindow("base-image", 100, 100)
@@ -114,7 +190,8 @@ def display_video_motpy(
     # Start the window thread for the two windows we are using
     if extract_face:
         cv2.startWindowThread()
-
+        
+    temp = np.zeros((1000, 1000, 3))
     while cap.isOpened():
         ret, frame = cap.read()
 
@@ -132,6 +209,7 @@ def display_video_motpy(
             frame = cv2.resize(
                 frame, (int(width * scale), int(height * scale))
             )
+        temp = cv2.resize(temp, (width, height))
         frameCounter += 1
         detections = []
         if frameCounter % 1 == 0:
@@ -161,13 +239,14 @@ def display_video_motpy(
             # Extract individual faces
             if extract_face:
                 faces.append(extract(frame, track.box, padding=padding))
+            print(track)
 
-            cv2.rectangle(
+            frame = draw_bounding_box(
                 frame,
-                (int(track.box[0]), int(track.box[1])),
-                (int(track.box[2]), int(track.box[3])),
-                color=[ord(c) * ord(c) % 256 for c in track.id[:3]],
-                thickness=2,
+                track.box,
+                [ord(c) * ord(c) % 256 for c in track.id[:3]],
+                2,
+                temp,
             )
             # pos = (track.box[0], track.box[3]) if text_at_bottom else (track.box[0], track.box[1])
             # text = track_to_string(track) if text_verbose == 2 else track.id[:8]
@@ -190,7 +269,7 @@ def display_video_motpy(
         cv2.imshow("base-image", frame)
         if extract_face:
             cv2.imshow("result-image", resultImage)
-
+        
         if cv2.waitKey(25) & 0xFF == ord("q"):
             break
 
