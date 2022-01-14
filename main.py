@@ -30,8 +30,10 @@ if __name__ == "__main__":
     videos = os.listdir("dataset/test/detection/videos")
     pprint(args)
     display_video_motpy(
-        filepath="dataset/test/detection/videos/" + videos[4],
+        filepath=None,
         model=args.detector,
         extract_face=args.extract_face,
         align_face=args.align_face,
     )
+
+'''"dataset/test/detection/videos/" + videos[4]'''
