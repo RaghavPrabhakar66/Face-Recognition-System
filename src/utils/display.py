@@ -8,20 +8,11 @@ import numpy as np
 from motpy import Detection, MultiObjectTracker
 
 from src.detection.detector import detector_wrapper
-
+from src.alignment.aligment import align
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 FONT_SCALE = 0.5
 FONT_COLOR = (255, 0, 0)
 LINETYPE = 2
-
-
-def align(face, l, r, width, height, padding):
-    center = (width // 2 + padding, height // 2 + padding)
-    angle = (np.arctan((r[1] - l[1]) / (r[0] - l[0])) * 180) / np.pi
-    rot = cv2.getRotationMatrix2D(center, (angle), 1.0)
-    face = cv2.warpAffine(face, rot, (width, height))
-
-    return face
 
 
 def extract(image, bbox, padding, size=(256, 256)):
@@ -47,7 +38,7 @@ def extract(image, bbox, padding, size=(256, 256)):
     except:
         face = cv2.resize(image, (size[0], ratio * size[0]))
 
-    return face
+    return face, (size[0], ratio * size[0])
 
 
 def doRecognizePerson(faceNames, fid):
@@ -223,7 +214,7 @@ def display_video_motpy(
             step = 1
         detections = []
         if frameCounter % step == 0:
-            bboxes, _ = detector.detect(frame)
+            bboxes, landmarks = detector.detect(frame)
 
             for bbox in bboxes:
                 detections.append(
@@ -247,12 +238,13 @@ def display_video_motpy(
 
         faces = []
         if track_face:
-            for track in tracks:
+            for i, track in enumerate(tracks):
                 # Extract individual faces
                 if extract_face:
-                    faces.append(extract(frame, track.box, padding=padding))
-                print(track)
-
+                    face, (w, h)= extract(frame, track.box, padding=padding)
+                    if align_face:
+                        face = align(face, landmarks[i], w, h)
+                    faces.append(face)
                 frame = draw_bounding_box(
                     frame,
                     track.box,
@@ -264,11 +256,13 @@ def display_video_motpy(
                 # text = track_to_string(track) if text_verbose == 2 else track.id[:8]
                 # draw_text(frame, text, pos=pos)
         else:
-            for det in detections:
+            for i, det in enumerate(detections):
                 # Extract individual faces
                 if extract_face:
-                    faces.append(extract(frame, det.box, padding=padding))
-
+                    face, (w, h)= extract(frame, det.box, padding=padding)
+                    if align_face:
+                        face = align(face, landmarks[i], w, h)
+                    faces.append(face)
                 frame = draw_bounding_box(
                     frame,
                     det.box,
