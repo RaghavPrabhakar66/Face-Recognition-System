@@ -29,16 +29,18 @@ def extract(image, bbox, padding, size=(256, 256)):
     w = bbox[2] - bbox[0]
     h = bbox[3] - bbox[1]
     x, y, w, h = round(x), round(y), round(w), round(h)
+
     start_y, end_y = y - padding, y + h + padding
     start_x, end_x = x - padding, x + w + padding
-    if y - padding < 0:
+    if start_y < 0:
         start_y = 0
-    elif y + h + padding > image.shape[0]:
+    if end_y > image.shape[0]:
         end_y = image.shape[0]
-    elif x - padding < 0:
+    if start_x < 0:
         start_x = 0
-    elif x + w + padding > image.shape[1]:
+    if end_x > image.shape[1]:
         end_x = image.shape[1]
+
     try:
         face = cv2.resize(image[start_y:end_y, start_x:end_x], size)
     except:
@@ -96,7 +98,9 @@ def display_video_motpy(
     prev_frame_time = 0
     fps = 0
     frameCounter = 0
-
+    
+    padding = 20
+    
     # Create two opencv named windows
     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
     cv2.namedWindow("result-image", cv2.WINDOW_AUTOSIZE)
@@ -128,7 +132,7 @@ def display_video_motpy(
         frameCounter += 1
         detections = []
         if frameCounter % 1 == 0:
-            bboxes, landmarks = detector.detect(frame)
+            bboxes, _ = detector.detect(frame)
 
             for bbox in bboxes:
                 detections.append(
@@ -151,7 +155,7 @@ def display_video_motpy(
 
         faces = []
         for track in tracks:
-            faces.append(extract(frame, track.box, padding=10))
+            faces.append(extract(frame, track.box, padding=padding))
             cv2.rectangle(
                 frame,
                 (int(track.box[0]), int(track.box[1])),
@@ -198,6 +202,8 @@ def display_video(
         cv2.VideoCapture(0) if filepath is None else cv2.VideoCapture(filepath)
     )
     prev_frame_time = curr_frame_time = a = 0
+    
+    padding = 20
 
     # Create two opencv named windows
     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
@@ -341,7 +347,7 @@ def display_video(
             t_h = int(tracked_position.height())
 
             if fid in faceNames.keys():
-                face = extract(frame, [t_x, t_y, t_w, t_h], padding=10)
+                face = extract(frame, [t_x, t_y, t_w, t_h], padding=padding)
                 faces.append(face)
                 cv2.putText(
                     frame,
