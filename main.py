@@ -16,7 +16,7 @@ if __name__ == "__main__":
         "-e",
         "--extract-face",
         action="store_true",
-        default=True,
+        default=False,
         help="extract faces from video",
     )
     parser.add_argument(
