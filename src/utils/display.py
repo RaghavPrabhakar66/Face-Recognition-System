@@ -1,6 +1,7 @@
 import threading
 import time
 from typing import Optional
+import imutils
 
 import cv2
 import dlib
@@ -42,9 +43,9 @@ def extract(image, bbox, padding, size=(256, 256)):
         end_x = image.shape[1]
 
     try:
-        face = cv2.resize(image[start_y:end_y, start_x:end_x], size)
+        face = imutils.resize(image[start_y:end_y, start_x:end_x], width=size[0])
     except:
-        face = cv2.resize(image, size)
+        face = imutils.resize(image, width=size[0])
 
     return face
 
@@ -75,7 +76,7 @@ def display_video_motpy(
     resize_shape=None,
     scale=None,
     model="Mediapipe",
-    extract_face=False,
+    extract_face=True,
     align_face=False,
 ):
     detector = detector_wrapper(model)

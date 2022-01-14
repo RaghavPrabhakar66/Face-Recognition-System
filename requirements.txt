@@ -1,5 +1,4 @@
 opencv-python
 mediapipe
 motpy
-torch
-torchvision
+imutils
