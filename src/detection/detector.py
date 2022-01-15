@@ -17,13 +17,16 @@ import MediapipeFaceDetector
 from HaarCascadeDetector import HaarCascadeDetector
 from HogDetector import HogDetector
 from MTCNNDetector import MTCNNDetector
+# from RetinafaceDetector import RetinafaceDetector
+
 
 models = {
-    "Haar Cascade": HaarCascadeDetector,
+    "HaarCascade": HaarCascadeDetector,
     "Mediapipe": MediapipeFaceDetector.A,
     "HOG": HogDetector,
     "MMOD": HogDetector,
     "MTCNN": MTCNNDetector,
+    # 'RetinaNet': RetinafaceDetector,
 }
 
 
@@ -43,4 +46,4 @@ class Detection:
 
 def detector_wrapper(model: str):
     a = models[model]
-    return a()
+    return a(*args)

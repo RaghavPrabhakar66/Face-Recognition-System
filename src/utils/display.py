@@ -21,20 +21,23 @@ def extract(image, bbox, padding, size=(256, 256)):
     w = bbox[2] - bbox[0]
     h = bbox[3] - bbox[1]
     x, y, w, h = round(x), round(y), round(w), round(h)
+
     start_y, end_y = y - padding, y + h + padding
     start_x, end_x = x - padding, x + w + padding
-    if y - padding < 0:
+    if start_y < 0:
         start_y = 0
-    elif y + h + padding > image.shape[0]:
+    if end_y > image.shape[0]:
         end_y = image.shape[0]
-    elif x - padding < 0:
+    if start_x < 0:
         start_x = 0
-    elif x + w + padding > image.shape[1]:
+    if end_x > image.shape[1]:
         end_x = image.shape[1]
+
+    ratio = image.shape[1] // image.shape[0]
     try:
-        face = cv2.resize(image[start_y:end_y, start_x:end_x], size)
+        face = cv2.resize(image[start_y:end_y, start_x:end_x], (size[0], ratio * size[0]))
     except:
-        face = cv2.resize(np.ones((500, 500, 3)), size)
+        face = cv2.resize(image, (size[0], ratio * size[0]))
 
     return face
 
@@ -50,6 +53,8 @@ def display_video_motpy(
     model="Mediapipe",
     extract_face=False,
     align_face=False,
+    track_face=False,
+    padding=20,
 ):
     detector = detector_wrapper(model)
 
@@ -63,48 +68,60 @@ def display_video_motpy(
     }
 
     dt = 1 / 15  # assume 15 fps
-    tracker = MultiObjectTracker(dt=dt, model_spec=model_spec)
+    if track_face:
+        tracker = MultiObjectTracker(dt=dt, model_spec=model_spec)
 
+    # Video and webcam capture modes
     cap = (
         cv2.VideoCapture(0) if filepath is None else cv2.VideoCapture(filepath)
     )
+
     prev_frame_time = 0
     fps = 0
     frameCounter = 0
-
-    # Create two opencv named windows
+        
+    # Create and position two opencv named windows
     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
-    cv2.namedWindow("result-image", cv2.WINDOW_AUTOSIZE)
-
-    # Position the windows next to eachother
     cv2.moveWindow("base-image", 100, 100)
-    cv2.moveWindow("result-image", 900, 100)
+    if extract_face:
+        cv2.namedWindow("result-image", cv2.WINDOW_AUTOSIZE)
+        cv2.moveWindow("result-image", 900, 100)        
 
     # Start the window thread for the two windows we are using
-    cv2.startWindowThread()
+    if extract_face:
+        cv2.startWindowThread()
+        
     temp = np.zeros((1000, 1000, 3))
     while cap.isOpened():
         ret, frame = cap.read()
 
         if not ret:
             break
-
+        
+        # Calculate frame rate
         height, width, _ = frame.shape
         curr_frame_time = time.time()
         fps += round(1 / (curr_frame_time - prev_frame_time))
         prev_frame_time = curr_frame_time
 
+        # Reshape frame
         if resize_shape is not None:
             frame = cv2.resize(frame, resize_shape)
         elif scale is not None:
             frame = cv2.resize(
                 frame, (int(width * scale), int(height * scale))
             )
+        
+
         temp = cv2.resize(temp, (width, height))
         frameCounter += 1
+        step = 1
+        
+        if not track_face:
+            step = 1
         detections = []
-        if frameCounter % 1 == 0:
-            bboxes, landmarks = detector.detect(frame)
+        if frameCounter % step == 0:
+            bboxes, _ = detector.detect(frame)
 
             for bbox in bboxes:
                 detections.append(
@@ -122,25 +139,46 @@ def display_video_motpy(
                         feature=None,
                     )
                 )
-        tracker.step(detections)
-        tracks = tracker.active_tracks(min_steps_alive=10)
+
+        if track_face:
+            tracker.step(detections)
+            tracks = tracker.active_tracks(min_steps_alive=3)
 
         faces = []
-        for track in tracks:
-            print(track)
-            faces.append(extract(frame, track.box, padding=10))
-            frame = draw_bounding_box(
-                frame,
-                track.box,
-                [ord(c) * ord(c) % 256 for c in track.id[:3]],
-                2,
-            )
-            # pos = (track.box[0], track.box[3]) if text_at_bottom else (track.box[0], track.box[1])
-            # text = track_to_string(track) if text_verbose == 2 else track.id[:8]
-            # draw_text(frame, text, pos=pos)
+        if track_face:
+            for track in tracks:
+                # Extract individual faces
+                if extract_face:
+                    faces.append(extract(frame, track.box, padding=padding))
+                print(track)
+
+                frame = draw_bounding_box(
+                    frame,
+                    track.box,
+                    [ord(c) * ord(c) % 256 for c in track.id[:3]],
+                    2,
+                    temp,
+                )
+                # pos = (track.box[0], track.box[3]) if text_at_bottom else (track.box[0], track.box[1])
+                # text = track_to_string(track) if text_verbose == 2 else track.id[:8]
+                # draw_text(frame, text, pos=pos)
+        else:
+            for det in detections:
+                # Extract individual faces
+                if extract_face:
+                    faces.append(extract(frame, det.box, padding=padding))
+
+                frame = draw_bounding_box(
+                    frame,
+                    det.box,
+                    (0, 255, 0),
+                    2,
+                    temp,
+                )
 
         resultImage = cv2.hconcat(faces) if faces else frame
 
+        # Display frame rate
         cv2.putText(
             frame,
             f"FPS: {str(fps//frameCounter)}",
@@ -150,10 +188,10 @@ def display_video_motpy(
             FONT_COLOR,
             LINETYPE,
         )
-
+        
+        # Display video and extracted faces
         cv2.imshow("base-image", frame)
         cv2.imshow("result-image", resultImage)
-
         if cv2.waitKey(25) & 0xFF == ord("q"):
             break
 
@@ -174,6 +212,8 @@ def display_video(
         cv2.VideoCapture(0) if filepath is None else cv2.VideoCapture(filepath)
     )
     prev_frame_time = curr_frame_time = a = 0
+    
+    padding = 20
 
     # Create two opencv named windows
     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
@@ -317,7 +357,7 @@ def display_video(
             t_h = int(tracked_position.height())
 
             if fid in faceNames.keys():
-                face = extract(frame, [t_x, t_y, t_w, t_h], padding=10)
+                face = extract(frame, [t_x, t_y, t_w, t_h], padding=padding)
                 faces.append(face)
                 cv2.putText(
                     frame,
