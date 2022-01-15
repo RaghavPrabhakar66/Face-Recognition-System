@@ -7,6 +7,9 @@ for img in imgs:
 
 import os
 import sys
+from typing import Optional
+
+import numpy as np
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
@@ -22,6 +25,20 @@ models = {
     "MMOD": HogDetector,
     "MTCNN": MTCNNDetector,
 }
+
+
+class Detection:
+    def __init__(
+        self,
+        box: np.ndarray,
+        score: Optional[float] = None,
+        class_id: Optional[int] = None,
+        feature: Optional[np.ndarray] = None,
+    ):
+        self.box = box
+        self.score = score
+        self.class_id = class_id
+        self.feature = feature
 
 
 def detector_wrapper(model: str):
