@@ -11,13 +11,6 @@ def download_vggdataset():
     os.makedirs(os.path.join(VGGFACE_ROOT_DIR, "images"), exist_ok=True)
     os.makedirs(os.path.join(VGGFACE_ROOT_DIR, "labels"), exist_ok=True)
     people_names = os.listdir(os.path.join(VGGFACE_ROOT_DIR, "files"))
-    # for person_name in tqdm(people_names, total=len(people_names)):
-    #     os.makedirs(os.path.join(VGGFACE_ROOT_DIR, "images", person_name), exist_ok=True)
-    #     with open(os.path.join(VGGFACE_ROOT_DIR, "files", person_name), "r") as f:
-    #         for line in f:
-    #             # print(line)
-    #             # img_id, link,  = line.strip().split(' ')
-    #             # #os.system(f"wgclset -P {os.path.join(VGGFACE_ROOT_DIR, 'images', person_name)} {line}")
 
     cols = [
         "img_id",
@@ -53,4 +46,4 @@ def download_vggdataset():
 
 
 if __name__ == "__main__":
-    download_vggdataset()
+    pass
