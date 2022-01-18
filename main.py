@@ -36,6 +36,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     videos = os.listdir("dataset/test/detection/videos")
     pprint(args)
+    if args.align_face is True and args.extract_face is False:
+        print("You need to extract faces first. Alignment disabled for now.")
+
     display_video_motpy(
         filepath="dataset/test/detection/videos/" + videos[2],
         model=args.detector,
