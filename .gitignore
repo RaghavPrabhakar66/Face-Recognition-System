@@ -1,7 +1,5 @@
 # Byte-compiled / optimized / DLL files
-dataset/VGGFace
-database/*
-lfwa/
+dataset/test/detection/WiderFace/*
 __pycache__/
 *.py[cod]
 *$py.class
