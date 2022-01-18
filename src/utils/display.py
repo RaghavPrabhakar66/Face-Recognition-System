@@ -15,7 +15,6 @@ from src.utils.draw import (
     draw_bounding_box,
 )
 
-
 def extract(image, bbox, padding, size=(256, 256)):
     x, y, _, _ = bbox
     w = bbox[2] - bbox[0]
@@ -39,7 +38,7 @@ def extract(image, bbox, padding, size=(256, 256)):
     except:
         face = cv2.resize(image, (size[0], ratio * size[0]))
 
-    return face
+    return face, (size[0], ratio * size[0])
 
 
 def doRecognizePerson(faceNames, fid):
@@ -121,7 +120,7 @@ def display_video_motpy(
             step = 1
         detections = []
         if frameCounter % step == 0:
-            bboxes, _ = detector.detect(frame)
+            bboxes, landmarks = detector.detect(frame)
 
             for bbox in bboxes:
                 detections.append(
@@ -146,12 +145,13 @@ def display_video_motpy(
 
         faces = []
         if track_face:
-            for track in tracks:
+            for i, track in enumerate(tracks):
                 # Extract individual faces
                 if extract_face:
-                    faces.append(extract(frame, track.box, padding=padding))
-                print(track)
-
+                    face, (w, h)= extract(frame, track.box, padding=padding)
+                    if align_face:
+                        face = align(frame, landmarks[i], w, h)
+                    faces.append(face)
                 frame = draw_bounding_box(
                     frame,
                     track.box,
@@ -163,11 +163,13 @@ def display_video_motpy(
                 # text = track_to_string(track) if text_verbose == 2 else track.id[:8]
                 # draw_text(frame, text, pos=pos)
         else:
-            for det in detections:
+            for i, det in enumerate(detections):
                 # Extract individual faces
                 if extract_face:
-                    faces.append(extract(frame, det.box, padding=padding))
-
+                    face, (w, h)= extract(frame, det.box, padding=padding)
+                    if align_face:
+                        face = align(frame, landmarks[i], w, h)
+                    faces.append(face)
                 frame = draw_bounding_box(
                     frame,
                     det.box,

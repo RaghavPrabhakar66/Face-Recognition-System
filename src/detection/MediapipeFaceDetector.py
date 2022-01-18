@@ -43,8 +43,19 @@ class A:
                     ),
                 ]
             )
+            # (right eye, left eye, nose tip, mouth center, right ear tragion, and left ear tragion)
             landmarks.append(
                 {
+                    "RIGHT_EYE": [
+                        round(
+                            detection.location_data.relative_keypoints[0].x
+                            * width
+                        ),
+                        round(
+                            detection.location_data.relative_keypoints[0].x
+                            * height
+                        ),
+                    ],
                     "LEFT_EYE": [
                         round(
                             detection.location_data.relative_keypoints[1].x
@@ -55,13 +66,43 @@ class A:
                             * height
                         ),
                     ],
-                    "RIGHT_EYE": [
+                    "NOSE_TIP": [
                         round(
-                            detection.location_data.relative_keypoints[0].x
+                            detection.location_data.relative_keypoints[2].x
                             * width
                         ),
                         round(
-                            detection.location_data.relative_keypoints[0].x
+                            detection.location_data.relative_keypoints[2].y
+                            * height
+                        ),
+                    ],
+                    "MOUTH_CENTER": [
+                        round(
+                            detection.location_data.relative_keypoints[3].x
+                            * width
+                        ),
+                        round(
+                            detection.location_data.relative_keypoints[3].y
+                            * height
+                        ),
+                    ],
+                    "RIGHT_EAR": [
+                        round(
+                            detection.location_data.relative_keypoints[4].x
+                            * width
+                        ),
+                        round(
+                            detection.location_data.relative_keypoints[4].y
+                            * height
+                        ),
+                    ],
+                    "LEFT_EAR": [
+                        round(
+                            detection.location_data.relative_keypoints[5].x
+                            * width
+                        ),
+                        round(
+                            detection.location_data.relative_keypoints[5].y
                             * height
                         ),
                     ],
