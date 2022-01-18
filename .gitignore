@@ -1,5 +1,5 @@
-# Byte-compiled / optimized / DLL files
 dataset/VGGFace
+dataset/test/detection/images/*
 database/*
 lfwa/
 __pycache__/
