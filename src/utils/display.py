@@ -243,7 +243,7 @@ def display_video_motpy(
                 if extract_face:
                     face, (w, h)= extract(frame, track.box, padding=padding)
                     if align_face:
-                        face = align(face, landmarks[i], w, h)
+                        face = align(frame, landmarks[i], w, h)
                     faces.append(face)
                 frame = draw_bounding_box(
                     frame,
@@ -261,7 +261,7 @@ def display_video_motpy(
                 if extract_face:
                     face, (w, h)= extract(frame, det.box, padding=padding)
                     if align_face:
-                        face = align(face, landmarks[i], w, h)
+                        face = align(frame, landmarks[i], w, h)
                     faces.append(face)
                 frame = draw_bounding_box(
                     frame,
