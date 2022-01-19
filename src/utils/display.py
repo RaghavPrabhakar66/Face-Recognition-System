@@ -53,7 +53,7 @@ def display_video_motpy(
     extract_face=False,
     align_face=False,
     track_face=False,
-    padding=20,
+    padding=0,
 ):
     detector = detector_wrapper(model)
 
@@ -65,6 +65,7 @@ def display_video_motpy(
         "q_var_pos": 5000.0,
         "r_var_pos": 0.1,
     }
+    img_path = 'dataset/data'
 
     dt = 1 / 15  # assume 15 fps
     if track_face:
@@ -110,7 +111,6 @@ def display_video_motpy(
             frame = cv2.resize(
                 frame, (int(width * scale), int(height * scale))
             )
-        
 
         temp = cv2.resize(temp, (width, height))
         frameCounter += 1
@@ -149,6 +149,7 @@ def display_video_motpy(
                 # Extract individual faces
                 if extract_face:
                     face, (w, h)= extract(frame, track.box, padding=padding)
+                    cv2.imwrite(img_path + '/' + str(track.id) + '.png', face)
                     if align_face:
                         face = align(frame, landmarks[i], w, h)
                     faces.append(face)
@@ -157,7 +158,6 @@ def display_video_motpy(
                     track.box,
                     [ord(c) * ord(c) % 256 for c in track.id[:3]],
                     2,
-                    temp,
                 )
                 # pos = (track.box[0], track.box[3]) if text_at_bottom else (track.box[0], track.box[1])
                 # text = track_to_string(track) if text_verbose == 2 else track.id[:8]
@@ -175,7 +175,6 @@ def display_video_motpy(
                     det.box,
                     (0, 255, 0),
                     2,
-                    temp,
                 )
 
         resultImage = cv2.hconcat(faces) if faces else frame

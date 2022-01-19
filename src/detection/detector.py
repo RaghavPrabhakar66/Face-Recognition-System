@@ -46,4 +46,4 @@ class Detection:
 
 def detector_wrapper(model: str):
     a = models[model]
-    return a(*args)
+    return a()
