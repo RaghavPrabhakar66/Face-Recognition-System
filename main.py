@@ -46,5 +46,3 @@ if __name__ == "__main__":
         align_face=args.align_face,
         track_face=args.track_face,
     )
-
-'''"dataset/test/detection/videos/" + videos[4]'''

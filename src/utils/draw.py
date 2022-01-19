@@ -6,7 +6,7 @@ FONT_COLOR = (255, 0, 0)
 LINETYPE = 2
 
 
-def draw_bounding_box(image, bbox, color=(0, 255, 0), thickness=2):
+def draw_bounding_box(image, bbox, color=(0, 255, 0), thickness=2, idx=""):
     top_left_x, top_left_y, right_bottom_x, right_bottom_y = bbox
     top_left_x, top_left_y, right_bottom_x, right_bottom_y = (
         int(top_left_x),
@@ -78,6 +78,16 @@ def draw_bounding_box(image, bbox, color=(0, 255, 0), thickness=2):
         (top_left_x + w, top_left_y + h - h // 4),
         color,
         thickness,
+    )
+
+    cv2.putText(
+        image,
+        idx[:5],
+        (top_left_x, top_left_y - 5),
+        FONT,
+        FONT_SCALE,
+        color,
+        LINETYPE,
     )
 
     return image

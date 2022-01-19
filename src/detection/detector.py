@@ -17,6 +17,7 @@ import MediapipeFaceDetector
 from HaarCascadeDetector import HaarCascadeDetector
 from HogDetector import HogDetector
 from MTCNNDetector import MTCNNDetector
+
 # from RetinafaceDetector import RetinafaceDetector
 
 
@@ -46,4 +47,4 @@ class Detection:
 
 def detector_wrapper(model: str):
     a = models[model]
-    return a(*args)
+    return a()
