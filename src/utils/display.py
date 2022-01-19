@@ -6,7 +6,7 @@ import dlib
 import numpy as np
 from motpy import Detection, MultiObjectTracker
 
-from src.alignment import align
+from src.alignment.aligment import align
 from src.detection.detector import Detection, detector_wrapper
 from src.utils.draw import (
     FONT,

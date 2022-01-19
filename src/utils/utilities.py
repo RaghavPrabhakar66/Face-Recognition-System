@@ -26,4 +26,4 @@ def facial_extraction(image, bbox, padding, size=(256, 256)):
     except:
         face = cv2.resize(image, (size[0], ratio * size[0]))
 
-    return face
+    return face, (size[0], ratio * size[0])
