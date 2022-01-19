@@ -6,6 +6,7 @@ import dlib
 import numpy as np
 from motpy import Detection, MultiObjectTracker
 
+from src.alignment import align
 from src.detection.detector import Detection, detector_wrapper
 from src.utils.draw import (
     FONT,
@@ -37,6 +38,7 @@ def display_video_motpy(
         "q_var_pos": 5000.0,
         "r_var_pos": 0.1,
     }
+    img_path = "dataset/data"
 
     dt = 1 / 15  # assume 15 fps
     if track_face:
@@ -88,7 +90,7 @@ def display_video_motpy(
 
         detections = []
         if frameCounter % step == 0:
-            bboxes, _ = detector.detect(frame)
+            bboxes, landmarks = detector.detect(frame)
 
             for bbox in bboxes:
                 detections.append(
@@ -108,13 +110,19 @@ def display_video_motpy(
         if track_face:
             tracker.step(detections)
             tracks = tracker.active_tracks(min_steps_alive=3)
-            for track in tracks:
+
+        faces = []
+        if track_face:
+            for i, track in enumerate(tracks):
                 # Extract individual faces
                 if extract_face:
-                    faces.append(
-                        facial_extraction(frame, track.box, padding=padding)
+                    face, (w, h) = facial_extraction(
+                        frame, track.box, padding=padding
                     )
-
+                    cv2.imwrite(img_path + "/" + str(track.id) + ".png", face)
+                    if align_face:
+                        face = align(frame, landmarks[i], w, h)
+                    faces.append(face)
                 frame = draw_bounding_box(
                     frame,
                     track.box,
@@ -123,11 +131,15 @@ def display_video_motpy(
                     track.id,
                 )
         else:
-            for det in detections:
+            for i, det in enumerate(detections):
                 # Extract individual faces
                 if extract_face:
-                    faces.append(extract_face(frame, det.box, padding=padding))
-
+                    face, (w, h) = facial_extraction()(
+                        frame, det.box, padding=padding
+                    )
+                    if align_face:
+                        face = align(frame, landmarks[i], w, h)
+                    faces.append(face)
                 frame = draw_bounding_box(
                     frame,
                     det.box,
@@ -292,7 +304,7 @@ def display_video(
                     # Start a new thread that is going to be used to
                     # recoginze the face
                     t = threading.Thread(
-                        target=doRecognizePerson,
+                        target=None,
                         args=(faceNames, currentFaceID),
                     )
                     t.start()
