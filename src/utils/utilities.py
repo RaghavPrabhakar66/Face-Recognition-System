@@ -1,5 +1,6 @@
-import cv2
+import os
 from datetime import datetime
+import cv2
 
 def facial_extraction(image, bbox, padding, size=(256, 256)):
     x, y, _, _ = bbox
@@ -37,3 +38,12 @@ def record(name):
             time = now.strftime('%I:%M:%S:%p')
             date = now.strftime('%d-%B-%Y')
             f.writelines(f'n{name},{time},{date}')
+
+def load_database(path):
+    names = os.listdir(path)
+    database = []
+    
+    for name in names:
+        img = cv2.imread(f'{path}/{name}')
+        database.append((os.path.splitext(name)[0], img))
+    return database
