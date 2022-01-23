@@ -4,7 +4,6 @@ import dlib
 class HogDetector:
     def __init__(self):
         self.detector = dlib.get_frontal_face_detector()
-        # self.predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
     def detect(self, frame):
         bboxes = []

@@ -17,6 +17,7 @@ import MediapipeFaceDetector
 from HaarCascadeDetector import HaarCascadeDetector
 from HogDetector import HogDetector
 from MTCNNDetector import MTCNNDetector
+
 # from RetinafaceDetector import RetinafaceDetector
 
 
