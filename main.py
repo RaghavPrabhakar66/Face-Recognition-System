@@ -40,15 +40,24 @@ if __name__ == "__main__":
         default=False,
         help="recognize faces in the video",
     )
+    parser.add_argument(
+        "-c",
+        "--webcam",
+        action="store_true",
+        default=False,
+        help="recognize faces in the video",
+    )
 
     args = parser.parse_args()
     videos = os.listdir("data/test-videos/")
     pprint(args)
     if args.align_face is True and args.extract_face is False:
         print("You need to extract faces first. Alignment disabled for now.")
+    
+    videopath = None if args.webcam else "data/test-videos/" + videos[4]
 
     display_video_motpy(
-        filepath="data/test-videos/" + videos[4],
+        filepath=videopath,
         model=args.detector,
         extract_face=args.extract_face,
         align_face=args.align_face,

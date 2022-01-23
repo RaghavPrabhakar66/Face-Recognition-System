@@ -80,14 +80,14 @@ def draw_bounding_box(image, bbox, color=(0, 255, 0), thickness=2, idx=""):
         thickness,
     )
 
-    cv2.putText(
-        image,
-        idx[:5],
-        (top_left_x, top_left_y - 5),
-        FONT,
-        FONT_SCALE,
-        color,
-        LINETYPE,
-    )
+    # cv2.putText(
+    #     image,
+    #     idx[:5],
+    #     (top_left_x, top_left_y - 5),
+    #     FONT,
+    #     FONT_SCALE,
+    #     color,
+    #     LINETYPE,
+    # )
 
     return image

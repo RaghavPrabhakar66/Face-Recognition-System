@@ -1,4 +1,4 @@
-from recognizer import Recognizer
+from src.recognition.recognizer import Recognizer
 
 models = {
     'face_recognition': Recognizer,
