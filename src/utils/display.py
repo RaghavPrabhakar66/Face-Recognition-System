@@ -1,5 +1,7 @@
+from sqlite3 import DatabaseError
 import threading
 import time
+import os
 
 import cv2
 import dlib
@@ -7,6 +9,7 @@ import numpy as np
 from motpy import Detection, MultiObjectTracker
 
 from src.alignment.aligment import align
+from src.recognition.recognition import recognizer_wrapper
 from src.detection.detector import Detection, detector_wrapper
 from src.utils.draw import (
     FONT,
@@ -26,9 +29,9 @@ def display_video_motpy(
     extract_face=False,
     align_face=False,
     track_face=False,
+    recognize_face=False,
     padding=0,
 ):
-    detector = detector_wrapper(model)
 
     model_spec = {
         "order_pos": 1,
@@ -38,22 +41,42 @@ def display_video_motpy(
         "q_var_pos": 5000.0,
         "r_var_pos": 0.1,
     }
-    img_path = "dataset/data"
+    
+    # Paths
+    path = {
+        'records': 'data/records',
+        'database': 'data/database',
+    }
 
-    dt = 1 / 15  # assume 15 fps
+    # Frame rate
+    dt = 1 / 15
+    prev_frame_time = 0
+    fps = 0
+    frameCounter = 0
+    step = 1
+
+    # Load database
+    names = os.listdir(path['database'])
+    database = []
+    
+    for name in names:
+        img = cv2.imread(f'{path["database"]}/{name}')
+        database.append(os.path.splitext(name)[0], img)
+
+    # Models
+    if recognize_face:
+        recognizer = recognizer_wrapper('face_recognition', database)
+    detector = detector_wrapper(model)
     if track_face:
         tracker = MultiObjectTracker(dt=dt, model_spec=model_spec)
+
 
     # Video and webcam capture modes
     cap = (
         cv2.VideoCapture(0) if filepath is None else cv2.VideoCapture(filepath)
     )
 
-    prev_frame_time = 0
-    fps = 0
-    frameCounter = 0
-    step = 1
-
+        
     # Create and position two opencv named windows
     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
     cv2.moveWindow("base-image", 100, 100)
@@ -112,17 +135,23 @@ def display_video_motpy(
             tracks = tracker.active_tracks(min_steps_alive=3)
 
         faces = []
+
+        # Extract, align, recognize individual faces
+        # And draw bounding boxes
         if track_face:
             for i, track in enumerate(tracks):
-                # Extract individual faces
+                face, (w, h)= facial_extraction(frame, track.box, padding=padding)
+
                 if extract_face:
-                    face, (w, h) = facial_extraction(
-                        frame, track.box, padding=padding
-                    )
-                    cv2.imwrite(img_path + "/" + str(track.id) + ".png", face)
-                    if align_face:
-                        face = align(frame, landmarks[i], w, h)
+                    cv2.imwrite(path['records'] + '/' + str(i) + '.png', face)
+                    # if align_face:
+                    #     face = align(frame, landmarks[i], w, h)
                     faces.append(face)
+
+                if recognize_face:
+                    name, _ = recognizer.recognize(face)
+                    cv2.putText(frame, name, (track.box[0] + 6,track.box[1] - 5), FONT, FONT_SCALE, FONT_COLOR, LINETYPE)
+
                 frame = draw_bounding_box(
                     frame,
                     track.box,
@@ -132,14 +161,18 @@ def display_video_motpy(
                 )
         else:
             for i, det in enumerate(detections):
-                # Extract individual faces
+                face, (w, h)= facial_extraction(frame, det.box, padding=padding)
+
                 if extract_face:
-                    face, (w, h) = facial_extraction()(
-                        frame, det.box, padding=padding
-                    )
-                    if align_face:
-                        face = align(frame, landmarks[i], w, h)
+                    cv2.imwrite(path['records'] + '/' + str(i) + '.png', face)
+                    # if align_face:
+                    #     face = align(frame, landmarks[i], w, h)
                     faces.append(face)
+                
+                if recognize_face:
+                    name, _ = recognizer.recognize(face)
+                    cv2.putText(frame, name, (det.box[0] + 6, det.box[1] - 5), FONT, FONT_SCALE, FONT_COLOR, LINETYPE)
+
                 frame = draw_bounding_box(
                     frame,
                     det.box,

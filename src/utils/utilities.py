@@ -1,5 +1,5 @@
 import cv2
-
+from datetime import datetime
 
 def facial_extraction(image, bbox, padding, size=(256, 256)):
     x, y, _, _ = bbox
@@ -27,3 +27,13 @@ def facial_extraction(image, bbox, padding, size=(256, 256)):
         face = cv2.resize(image, (size[0], ratio * size[0]))
 
     return face, (size[0], ratio * size[0])
+
+def record(name):
+    with open('data/records/detection_records.csv.csv','r+') as f:
+        lines = f.readlines()
+        records = [line.split(',')[0] for line in lines]
+        if name not in records:
+            now = datetime.now()
+            time = now.strftime('%I:%M:%S:%p')
+            date = now.strftime('%d-%B-%Y')
+            f.writelines(f'n{name},{time},{date}')
