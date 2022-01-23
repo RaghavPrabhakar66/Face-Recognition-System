@@ -1,11 +1,11 @@
 import os
 
 import pandas as pd
+from datetime import datetime
 
 VGGFACE_ROOT_DIR = os.path.abspath(
     os.path.join(__file__, "../../../dataset/VGGFace")
 )
-
 
 def download_vggdataset():
     os.makedirs(os.path.join(VGGFACE_ROOT_DIR, "images"), exist_ok=True)
@@ -43,6 +43,16 @@ def download_vggdataset():
             os.path.join(VGGFACE_ROOT_DIR, "labels", person_name), index=False
         )
         break
+
+def record(name):
+    with open('data/records/detection_records.csv.csv','r+') as f:
+        lines = f.readlines()
+        records = [line.split(',')[0] for line in lines]
+        if name not in records:
+            now = datetime.now()
+            time = now.strftime('%I:%M:%S:%p')
+            date = now.strftime('%d-%B-%Y')
+            f.writelines(f'n{name},{time},{date}')
 
 
 if __name__ == "__main__":
