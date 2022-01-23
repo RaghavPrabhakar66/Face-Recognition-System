@@ -43,7 +43,7 @@ def display_video_motpy(
     
     # Paths
     path = {
-        'records': 'data/records',
+        'records': 'data/records/images',
         'database': 'data/database',
     }
 
@@ -144,6 +144,7 @@ def display_video_motpy(
                     name, _ = recognizer.recognize(face)
                     if name:
                         cv2.putText(frame, name, (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FONT_SCALE, FONT_COLOR, LINETYPE)
+                        record(name)
 
                 frame = draw_bounding_box(
                     frame,
