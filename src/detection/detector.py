@@ -38,11 +38,16 @@ class Detection:
         score: Optional[float] = None,
         class_id: Optional[int] = None,
         feature: Optional[np.ndarray] = None,
+        id: str = None,
     ):
         self.box = box
         self.score = score
         self.class_id = class_id
         self.feature = feature
+        self.id = id
+
+    def set_id(self, idx):
+        self.id = idx
 
 
 def detector_wrapper(model: str):
