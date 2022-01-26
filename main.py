@@ -41,11 +41,17 @@ if __name__ == "__main__":
         help="recognize faces in the video",
     )
     parser.add_argument(
-        "-c",
+        "-w",
         "--webcam",
         action="store_true",
         default=False,
-        help="recognize faces in the video",
+        help="use webcam",
+    )
+    parser.add_argument(
+        "-i",
+        "--ip",
+        default="http://192.168.29.14:8080/shot.jpg",
+        help="ip for webcam",
     )
 
     args = parser.parse_args()
@@ -53,17 +59,21 @@ if __name__ == "__main__":
     pprint(args)
     if args.align_face is True and args.extract_face is False:
         print("You need to extract faces first. Alignment disabled for now.")
-    
-    videopath = None if args.webcam else "data/test-videos/" + videos[4]
+
+    if args.webcam:
+        videopath = None
+    elif args.ip is not None:
+        videopath = "ipwebcam"
+    else:
+        videopath = "data/test-videos/" + videos[4]
 
     display_video_motpy(
         filepath=videopath,
         model=args.detector,
+        scale=0.5,
         extract_face=args.extract_face,
         align_face=args.align_face,
         track_face=args.track_face,
         recognize_face=args.recognize_face,
         padding=0,
     )
-
-'''"data/test-videos/" + videos[4]'''

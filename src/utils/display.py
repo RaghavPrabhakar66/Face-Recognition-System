@@ -1,4 +1,5 @@
 import time
+import urllib.request
 
 import cv2
 import numpy as np
@@ -17,7 +18,7 @@ from src.utils.utilities import facial_extraction, load_database
 
 
 def display_video_motpy(
-    filepath=None,
+    video_src=None,
     resize_shape=None,
     scale=None,
     model="Mediapipe",
@@ -64,7 +65,9 @@ def display_video_motpy(
 
     # Video and webcam capture modes
     cap = (
-        cv2.VideoCapture(0) if filepath is None else cv2.VideoCapture(filepath)
+        cv2.VideoCapture(0)
+        if video_src is None and video_src != "ipwebcam"
+        else cv2.VideoCapture(video_src)
     )
 
     # Create and position two opencv named windows
@@ -79,11 +82,19 @@ def display_video_motpy(
     if extract_face:
         cv2.startWindowThread()
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-
-        if not ret:
-            break
+    while True:
+        if video_src == "ipwebcam":
+            frame = urllib.request.urlopen(
+                "http://192.168.29.14:8080/shot.jpg"
+            )
+            imgNp = np.array(bytearray(frame.read()), dtype=np.uint8)
+            frame = cv2.imdecode(imgNp, -1)
+        else:
+            if not cap.isOpened():
+                break
+            ret, frame = cap.read()
+            if not ret:
+                break
 
         # Calculate frame rate
         height, width, _ = frame.shape
@@ -102,7 +113,7 @@ def display_video_motpy(
         frameCounter += 1
 
         detections = []
-        if frameCounter % step == 2:
+        if frameCounter % step == 0:
             bboxes, _ = detector.detect(frame)
 
             for bbox in bboxes:
@@ -120,6 +131,7 @@ def display_video_motpy(
                 )
 
         faces = []
+        print(detections)
         if track_face:
             tracker.step(detections)
             tracks = tracker.active_tracks(min_steps_alive=3)
