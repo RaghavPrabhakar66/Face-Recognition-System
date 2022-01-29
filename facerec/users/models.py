@@ -2,6 +2,11 @@ from django.db import models
 import uuid
 
 # Create your models here.
+
+def photo_upload_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return 'photos/{0}/{1}'.format(instance.student.name, filename)
 class Profile(models.Model):
 
     HOSTEL = (
@@ -25,8 +30,20 @@ class Profile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200)
+    phone = models.IntegerField(default=0)
     rollno = models.IntegerField(default=0)
     hostel = models.CharField(max_length=200, choices=HOSTEL)
+
+    def __str__(self):
+        return self.name
+
+    
+class StudentPhoto(models.Model):
+    student = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to=photo_upload_path)
+
+    def __str__(self):
+        return self.student.name
 
 
 class Attendance(models.Model):
@@ -36,5 +53,5 @@ class Attendance(models.Model):
     status = models.CharField(max_length=200, default='Absent')
 
     def __str__(self):
-        return self.student.name
+        return f"{self.student.name} : {self.date} : {self.time}"
 

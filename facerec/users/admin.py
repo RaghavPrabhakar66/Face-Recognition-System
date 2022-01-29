@@ -5,12 +5,17 @@ from django.contrib import admin
 
 from . import models
 
+class StudentPhotoInline(admin.TabularInline):
+    model = models.StudentPhoto
+    extra = 3
+
 
 class ProfileAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'name', 'email', 'rollno', 'hostel')
     list_filter = ('id', 'name', 'email', 'rollno', 'hostel')
     search_fields = ('name',)
+    inlines = [StudentPhotoInline,]
 
 
 class AttendanceAdmin(admin.ModelAdmin):
