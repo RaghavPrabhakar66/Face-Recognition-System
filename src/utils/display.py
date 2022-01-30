@@ -1,6 +1,7 @@
 import threading
 import time
 import os
+from datetime import datetime
 
 import cv2
 import dlib
@@ -43,7 +44,7 @@ def display_video_motpy(
     
     # Paths
     path = {
-        'records': 'data/records/images',
+        'records': 'data/records',
         'database': 'data/database',
     }
 
@@ -133,9 +134,9 @@ def display_video_motpy(
         if track_face:
             for i, track in enumerate(tracks):
                 face, (w, h)= facial_extraction(frame, track.box, padding=padding)
+                
 
                 if extract_face:
-                    cv2.imwrite(path['records'] + '/' + str(i) + '.png', face)
                     # if align_face:
                     #     face = align(frame, landmarks[i], w, h)
                     faces.append(face)
@@ -143,8 +144,15 @@ def display_video_motpy(
                 if recognize_face:
                     name, _ = recognizer.recognize(face)
                     if name:
+                        filepath = path['records'] + '/' + str(datetime.now().strftime('%d-%B-%Y'))
+                        os.makedirs(filepath, exist_ok=True)
+                        cv2.imwrite(filepath + '/' + name + '.png', face)
                         cv2.putText(frame, name, (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FONT_SCALE, FONT_COLOR, LINETYPE)
                         record(name)
+                    else:
+                        filepath = path['records'] + '/' + str(datetime.now().strftime('%d-%B-%Y'))
+                        os.makedirs(filepath, exist_ok=True)
+                        cv2.imwrite(filepath + '/unknown-' + track.id + '.png', face)
 
                 frame = draw_bounding_box(
                     frame,
@@ -156,9 +164,11 @@ def display_video_motpy(
         else:
             for i, det in enumerate(detections):
                 face, (w, h)= facial_extraction(frame, det.box, padding=padding)
+                filepath = path['records'] + '/' + str(datetime.now().strftime('%d-%B-%Y'))
+                os.makedirs(filepath, exist_ok=True)
+                cv2.imwrite(filepath + '/' + str(i) + '.png', face)
 
                 if extract_face:
-                    cv2.imwrite(path['records'] + '/' + str(i) + '.png', face)
                     # if align_face:
                     #     face = align(frame, landmarks[i], w, h)
                     faces.append(face)
