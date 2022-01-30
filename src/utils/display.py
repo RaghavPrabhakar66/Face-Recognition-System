@@ -1,7 +1,7 @@
 import threading
 import time
 import os
-
+from datetime import datetime
 import cv2
 import dlib
 import numpy as np
@@ -43,7 +43,7 @@ def display_video_motpy(
     
     # Paths
     path = {
-        'records': 'data/records/images',
+        'records': 'data/records/' + str(datetime.now().strftime('%d-%B-%Y')),
         'database': 'data/database',
     }
 
@@ -135,16 +135,21 @@ def display_video_motpy(
                 face, (w, h)= facial_extraction(frame, track.box, padding=padding)
 
                 if extract_face:
-                    cv2.imwrite(path['records'] + '/' + str(i) + '.png', face)
                     # if align_face:
                     #     face = align(frame, landmarks[i], w, h)
                     faces.append(face)
 
                 if recognize_face:
+                    img_path = 'data/records/' + str(datetime.now().strftime('%d-%B-%Y'))
                     name, _ = recognizer.recognize(face)
                     if name:
+                        os.makedirs(path['records'], exist_ok=True)
+                        cv2.imwrite(path['records'] + '/' + name + '.png', face)
                         cv2.putText(frame, name, (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FONT_SCALE, FONT_COLOR, LINETYPE)
                         record(name)
+                    else:
+                        os.makedirs(path['records'], exist_ok=True)
+                        cv2.imwrite(path['records'] + '/unknown-' + track.id + '.png', face)
 
                 frame = draw_bounding_box(
                     frame,

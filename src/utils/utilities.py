@@ -30,10 +30,16 @@ def facial_extraction(image, bbox, padding, size=(256, 256)):
     return face, (size[0], ratio * size[0])
 
 def record(name):
-    with open('data/records/detection_records.csv','r+') as f:
+    filepath = 'data/records/' + str(datetime.now().strftime('%d-%B-%Y'))
+    try:    
+        f = open(filepath + '/records.csv', 'x')
+        f.close()
+    except:
+        pass
+    os.makedirs(filepath, exist_ok=True)
+    with open(filepath + '/records.csv', 'r+') as f:
         lines = f.readlines()
         records = [line.split(',')[0] for line in lines]
-        print(records)
         if name not in records:
             now = datetime.now()
             time = now.strftime('%I:%M:%S:%p')

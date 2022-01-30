@@ -21,12 +21,3 @@ class Recognizer():
             return self.database[index]
         else:
             return None, None
-
-# class X-recognizer():
-#     def __init__(self, database): # (imgName, img)
-#         self.database = embed(database)
-    
-#     def recognize(self, img):
-#         name = compare(img, self.database)
-
-#         return name   
