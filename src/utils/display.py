@@ -1,16 +1,13 @@
-import threading
 import time
 import os
 from datetime import datetime
 
 import cv2
-import dlib
 import numpy as np
 from motpy import Detection, MultiObjectTracker
 
-from src.alignment.aligment import align
-from src.recognition.recognition import recognizer_wrapper
 from src.detection.detector import Detection, detector_wrapper
+from src.recognition.recognition import recognizer_wrapper
 from src.utils.draw import (
     FONT,
     FONT_COLOR,
@@ -41,7 +38,7 @@ def display_video_motpy(
         "q_var_pos": 5000.0,
         "r_var_pos": 0.1,
     }
-    
+
     # Paths
     path = {
         'records': 'data/records',
@@ -56,12 +53,14 @@ def display_video_motpy(
     step = 2
 
     # Load database
-    database = load_database(path['database'])
+    database = load_database(path["database"])
+
+    tracks = None
 
     # Models
     detector = detector_wrapper(model)
     if recognize_face:
-        recognizer = recognizer_wrapper('face_recognition', database)
+        recognizer = recognizer_wrapper("face_recognition", database)
     if track_face:
         tracker = MultiObjectTracker(dt=dt, model_spec=model_spec)
 
@@ -105,7 +104,7 @@ def display_video_motpy(
         frameCounter += 1
 
         detections = []
-        if frameCounter % step == 0:
+        if frameCounter % step == 2:
             bboxes, _ = detector.detect(frame)
 
             for bbox in bboxes:
@@ -127,63 +126,46 @@ def display_video_motpy(
             tracker.step(detections)
             tracks = tracker.active_tracks(min_steps_alive=3)
 
-        faces = []
+        temp = tracks if tracks is not None else detections
 
-        # Extract, align, recognize individual faces
-        # And draw bounding boxes
-        if track_face:
-            for i, track in enumerate(tracks):
-                face, (w, h)= facial_extraction(frame, track.box, padding=padding)
-                
-
-                if extract_face:
-                    # if align_face:
-                    #     face = align(frame, landmarks[i], w, h)
-                    faces.append(face)
+        for i, track in enumerate(temp):
+            track.set_id(str(i) if track.id is None else track.id)
+            if extract_face:
+                face, (w, h) = facial_extraction(
+                    frame, track.box, padding=padding
+                )
+                cv2.imwrite(path["records"] + "/" + str(i) + ".png", face)
+                # if align_face:
+                #     face = align(frame, landmarks[i], w, h)
+                faces.append(face)
 
                 if recognize_face:
+                    filepath = path['records'] + '/' + str(datetime.now().strftime('%d-%B-%Y'))
                     name, _ = recognizer.recognize(face)
                     if name:
-                        filepath = path['records'] + '/' + str(datetime.now().strftime('%d-%B-%Y'))
                         os.makedirs(filepath, exist_ok=True)
                         cv2.imwrite(filepath + '/' + name + '.png', face)
-                        cv2.putText(frame, name, (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FONT_SCALE, FONT_COLOR, LINETYPE)
+                        cv2.putText(
+                            frame,
+                            name,
+                            (int(track.box[0] + 6), int(track.box[1] - 5)),
+                            FONT,
+                            FONT_SCALE,
+                            FONT_COLOR,
+                            LINETYPE,
+                        )
                         record(name)
                     else:
-                        filepath = path['records'] + '/' + str(datetime.now().strftime('%d-%B-%Y'))
                         os.makedirs(filepath, exist_ok=True)
                         cv2.imwrite(filepath + '/unknown-' + track.id + '.png', face)
 
-                frame = draw_bounding_box(
-                    frame,
-                    track.box,
-                    [ord(c) * ord(c) % 256 for c in track.id[:3]],
-                    2,
-                    track.id,
-                )
-        else:
-            for i, det in enumerate(detections):
-                face, (w, h)= facial_extraction(frame, det.box, padding=padding)
-                filepath = path['records'] + '/' + str(datetime.now().strftime('%d-%B-%Y'))
-                os.makedirs(filepath, exist_ok=True)
-                cv2.imwrite(filepath + '/' + str(i) + '.png', face)
-
-                if extract_face:
-                    # if align_face:
-                    #     face = align(frame, landmarks[i], w, h)
-                    faces.append(face)
-                
-                if recognize_face:
-                    name, _ = recognizer.recognize(face)
-                    if name:
-                        cv2.putText(frame, name, (det.box[0] + 6, det.box[1] - 5), FONT, FONT_SCALE, FONT_COLOR, LINETYPE)
-
-                frame = draw_bounding_box(
-                    frame,
-                    det.box,
-                    (0, 255, 0),
-                    2,
-                )
+            frame = draw_bounding_box(
+                frame,
+                track.box,
+                [ord(c) * ord(c) % 256 for c in track.id[:3]],
+                2,
+                track.id,
+            )
 
         resultImage = cv2.hconcat(faces) if faces else frame
 
@@ -228,7 +210,7 @@ def display_video_motpy(
 #     # Create two opencv named windows
 #     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
 #     cv2.moveWindow("base-image", 100, 100)
-    
+
 #     if extract_face:
 #         cv2.namedWindow("result-image", cv2.WINDOW_AUTOSIZE)
 #         cv2.moveWindow("result-image", 900, 100)
