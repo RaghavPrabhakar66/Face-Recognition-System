@@ -2,7 +2,7 @@ import argparse
 import os
 from pprint import pprint
 
-from src.utils.display import display_video_motpy
+from src.utils.display import stream
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     
     videopath = None if args.webcam else "data/test-videos/" + videos[4]
 
-    display_video_motpy(
+    stream(
         filepath=videopath,
         model=args.detector,
         extract_face=args.extract_face,
