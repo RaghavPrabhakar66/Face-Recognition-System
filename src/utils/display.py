@@ -20,7 +20,7 @@ from src.utils.draw import (
 from src.utils.utilities import facial_extraction, load_database, record
 
 
-def display_video_motpy(
+def stream(
     filepath=None,
     resize_shape=None,
     scale=None,
@@ -46,6 +46,8 @@ def display_video_motpy(
         'records': 'data/records/' + str(datetime.now().strftime('%d-%B-%Y')),
         'database': 'data/database',
     }
+
+    known_tracks = {}
 
     # Frame rate
     dt = 1 / 15
@@ -132,29 +134,35 @@ def display_video_motpy(
         # And draw bounding boxes
         if track_face:
             for i, track in enumerate(tracks):
-                face, (w, h)= facial_extraction(frame, track.box, padding=padding)
-
+                track_color = [ord(c) * ord(c) % 256 for c in track.id[:3]]
+                face, (w, h)= facial_extraction(frame, track.box, padding=padding)        
                 if extract_face:
                     # if align_face:
                     #     face = align(frame, landmarks[i], w, h)
                     faces.append(face)
 
-                if recognize_face:
-                    img_path = 'data/records/' + str(datetime.now().strftime('%d-%B-%Y'))
+                if recognize_face and known_tracks.get(track.id, None) is None:
+                    # img_path = 'data/records/' + str(datetime.now().strftime('%d-%B-%Y'))
                     name, _ = recognizer.recognize(face)
+                    print(known_tracks)
+                    known_tracks[track.id] = name
                     if name:
                         os.makedirs(path['records'], exist_ok=True)
-                        cv2.imwrite(path['records'] + '/' + name + '.png', face)
-                        cv2.putText(frame, name, (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FONT_SCALE, FONT_COLOR, LINETYPE)
+                        cv2.imwrite(path['records'] + '/' + str(known_tracks[track.id]) + '.png', face)
+                        cv2.putText(frame, known_tracks[track.id], (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FONT_SCALE, track_color, LINETYPE)
                         record(name)
                     else:
+                        # known_tracks[track.id] = 'unknown-' + str(track.id)
                         os.makedirs(path['records'], exist_ok=True)
-                        cv2.imwrite(path['records'] + '/unknown-' + track.id + '.png', face)
-
+                        cv2.imwrite(path['records'] + '/unknown-' + str(track.id) + '.png', face)
+                elif recognize_face and known_tracks.get(track.id, None) is not None:
+                    cv2.imwrite(path['records'] + '/' + str(name) + '.png', face)
+                    cv2.putText(frame, known_tracks[track.id], (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FONT_SCALE, track_color, LINETYPE)
+                
                 frame = draw_bounding_box(
                     frame,
                     track.box,
-                    [ord(c) * ord(c) % 256 for c in track.id[:3]],
+                    track_color,
                     2,
                     track.id,
                 )
