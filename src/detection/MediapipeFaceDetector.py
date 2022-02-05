@@ -20,7 +20,7 @@ class A:
             return [], []
 
         bboxes = []
-        landmarks = []
+        # landmarks = []
         height, width, _ = image.shape
         for detection in results.detections:
             bboxes.append(
@@ -44,69 +44,69 @@ class A:
                 ]
             )
             # (right eye, left eye, nose tip, mouth center, right ear tragion, and left ear tragion)
-            landmarks.append(
-                {
-                    "RIGHT_EYE": [
-                        round(
-                            detection.location_data.relative_keypoints[0].x
-                            * width
-                        ),
-                        round(
-                            detection.location_data.relative_keypoints[0].x
-                            * height
-                        ),
-                    ],
-                    "LEFT_EYE": [
-                        round(
-                            detection.location_data.relative_keypoints[1].x
-                            * width
-                        ),
-                        round(
-                            detection.location_data.relative_keypoints[1].y
-                            * height
-                        ),
-                    ],
-                    "NOSE_TIP": [
-                        round(
-                            detection.location_data.relative_keypoints[2].x
-                            * width
-                        ),
-                        round(
-                            detection.location_data.relative_keypoints[2].y
-                            * height
-                        ),
-                    ],
-                    "MOUTH_CENTER": [
-                        round(
-                            detection.location_data.relative_keypoints[3].x
-                            * width
-                        ),
-                        round(
-                            detection.location_data.relative_keypoints[3].y
-                            * height
-                        ),
-                    ],
-                    "RIGHT_EAR": [
-                        round(
-                            detection.location_data.relative_keypoints[4].x
-                            * width
-                        ),
-                        round(
-                            detection.location_data.relative_keypoints[4].y
-                            * height
-                        ),
-                    ],
-                    "LEFT_EAR": [
-                        round(
-                            detection.location_data.relative_keypoints[5].x
-                            * width
-                        ),
-                        round(
-                            detection.location_data.relative_keypoints[5].y
-                            * height
-                        ),
-                    ],
-                }
-            )
+            # landmarks.append(
+            #     {
+            #         "RIGHT_EYE": [
+            #             round(
+            #                 detection.location_data.relative_keypoints[0].x
+            #                 * width
+            #             ),
+            #             round(
+            #                 detection.location_data.relative_keypoints[0].x
+            #                 * height
+            #             ),
+            #         ],
+            #         "LEFT_EYE": [
+            #             round(
+            #                 detection.location_data.relative_keypoints[1].x
+            #                 * width
+            #             ),
+            #             round(
+            #                 detection.location_data.relative_keypoints[1].y
+            #                 * height
+            #             ),
+            #         ],
+            #         "NOSE_TIP": [
+            #             round(
+            #                 detection.location_data.relative_keypoints[2].x
+            #                 * width
+            #             ),
+            #             round(
+            #                 detection.location_data.relative_keypoints[2].y
+            #                 * height
+            #             ),
+            #         ],
+            #         "MOUTH_CENTER": [
+            #             round(
+            #                 detection.location_data.relative_keypoints[3].x
+            #                 * width
+            #             ),
+            #             round(
+            #                 detection.location_data.relative_keypoints[3].y
+            #                 * height
+            #             ),
+            #         ],
+            #         "RIGHT_EAR": [
+            #             round(
+            #                 detection.location_data.relative_keypoints[4].x
+            #                 * width
+            #             ),
+            #             round(
+            #                 detection.location_data.relative_keypoints[4].y
+            #                 * height
+            #             ),
+            #         ],
+            #         "LEFT_EAR": [
+            #             round(
+            #                 detection.location_data.relative_keypoints[5].x
+            #                 * width
+            #             ),
+            #             round(
+            #                 detection.location_data.relative_keypoints[5].y
+            #                 * height
+            #             ),
+            #         ],
+            #     }
+            # )
 
-        return bboxes, landmarks
+        return bboxes

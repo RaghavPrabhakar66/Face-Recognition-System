@@ -17,6 +17,7 @@ import MediapipeFaceDetector
 from HaarCascadeDetector import HaarCascadeDetector
 from HogDetector import HogDetector
 from MTCNNDetector import MTCNNDetector
+from RetinafaceDetector import RetinafaceDetector
 
 # from RetinafaceDetector import RetinafaceDetector
 
@@ -27,7 +28,7 @@ models = {
     "HOG": HogDetector,
     "MMOD": HogDetector,
     "MTCNN": MTCNNDetector,
-    # 'RetinaNet': RetinafaceDetector,
+    'RetinaFace': RetinafaceDetector,
 }
 
 
