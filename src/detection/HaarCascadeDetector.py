@@ -33,12 +33,12 @@ class HaarCascadeDetector:
             flags=cv2.CASCADE_SCALE_IMAGE,
         )
 
-        eyes_bbox = []
-        for (x, y, w, h) in face_bbox:
-            eyes = self.detectors["eyes"].detectMultiScale(
-                gray[y : y + h, x : x + w]
-            )
-            if len(eyes) == 2:
-                eyes_bbox.append({"LEFT_EYE": eyes[0], "RIGHT_EYE": eyes[1]})
+        # eyes_bbox = []
+        # for (x, y, w, h) in face_bbox:
+        #     eyes = self.detectors["eyes"].detectMultiScale(
+        #         gray[y : y + h, x : x + w]
+        #     )
+        #     if len(eyes) == 2:
+        #         eyes_bbox.append({"LEFT_EYE": eyes[0], "RIGHT_EYE": eyes[1]})
 
-        return face_bbox, eyes_bbox
+        return face_bbox

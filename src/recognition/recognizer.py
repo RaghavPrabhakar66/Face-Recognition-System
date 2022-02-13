@@ -6,8 +6,15 @@ class Recognizer():
         self.embed = face_recognition.face_encodings
         self.compare = face_recognition.compare_faces
         self.dist = face_recognition.face_distance
-        self.database_embeddings = [self.embed(image)[0] for (_, image) in database]
         self.database = database
+        self.database_embeddings = []
+        for name, image in self.database:
+            emb = self.embed(image)
+            if len(emb) != 0:
+                self.database_embeddings.append(emb[0])
+                print(name, 'loaded')
+            else:
+                print(name, 'not loaded')
 
     def recognize(self, face):
         face_embeddings = self.embed(face)

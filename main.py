@@ -9,7 +9,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-d",
         "--detector",
-        default="Mediapipe",
+        default="RetinaFace",
         help="model used for face detection",
     )
     parser.add_argument(
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     if args.align_face is True and args.extract_face is False:
         print("You need to extract faces first. Alignment disabled for now.")
     
-    videopath = None if args.webcam else "data/test-videos/" + videos[4]
+    videopath = None if args.webcam else "data/test-videos/" + videos[8]
 
     stream(
         filepath=videopath,
@@ -66,4 +66,3 @@ if __name__ == "__main__":
         padding=0,
     )
 
-'''"data/test-videos/" + videos[4]'''
