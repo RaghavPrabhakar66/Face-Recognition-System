@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from users.views import ProfileList, AttendanceList, StudentPhotoList
+from users.views import StudentList, AttendanceList, StudentPhotoList
 
 admin.site.site_header = "Hostel Facial Recognition"
 admin.site.site_title = "Capstone Project"
@@ -23,7 +23,7 @@ admin.site.site_title = "Capstone Project"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/profiles', ProfileList.as_view(), name='profile'),
+    path('api/students', StudentList.as_view(), name='profile'),
     path('api/attendances', AttendanceList.as_view(), name='attendance'),
     path('api/images', StudentPhotoList.as_view(), name='images'),
 ]

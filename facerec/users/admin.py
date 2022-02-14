@@ -10,10 +10,10 @@ class StudentPhotoInline(admin.TabularInline):
     extra = 3
 
 
-class ProfileAdmin(admin.ModelAdmin):
+class StudentAdmin(admin.ModelAdmin):
 
-    list_display = ('id', 'name', 'email', 'rollno', 'hostel')
-    list_filter = ('id', 'name', 'email', 'rollno', 'hostel')
+    list_display = ('id', 'first_name', 'last_name', 'email', 'rollno', 'hostel')
+    list_filter = ('id', 'first_name', 'last_name', 'email', 'rollno', 'hostel')
     search_fields = ('name',)
     inlines = [StudentPhotoInline,]
 
@@ -36,5 +36,5 @@ def _register(model, admin_class):
     admin.site.register(model, admin_class)
 
 
-_register(models.Profile, ProfileAdmin)
+_register(models.Student, StudentAdmin)
 _register(models.Attendance, AttendanceAdmin)

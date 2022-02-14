@@ -7,7 +7,8 @@ def photo_upload_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return 'photos/{0}/{1}'.format(instance.student.name, filename)
-class Profile(models.Model):
+    
+class Student(models.Model):
 
     HOSTEL = (
         ('Hostel A', 'Hostel A'),
@@ -28,7 +29,8 @@ class Profile(models.Model):
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=200)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200)
     phone = models.IntegerField(default=0)
     rollno = models.IntegerField(default=0)
@@ -39,7 +41,7 @@ class Profile(models.Model):
 
     
 class StudentPhoto(models.Model):
-    student = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to=photo_upload_path)
 
     def __str__(self):
@@ -47,7 +49,7 @@ class StudentPhoto(models.Model):
 
 
 class Attendance(models.Model):
-    student = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
     status = models.CharField(max_length=200, default='Absent')

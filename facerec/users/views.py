@@ -5,9 +5,9 @@ from . import models
 from . import serializers
 from rest_framework import generics
 
-class ProfileList(generics.ListAPIView):
-    queryset = models.Profile.objects.all()
-    serializer_class = serializers.ProfileSerializer
+class StudentList(generics.ListAPIView):
+    queryset = models.Student.objects.all()
+    serializer_class = serializers.StudentSerializer
 
 
 class AttendanceList(generics.ListAPIView):
