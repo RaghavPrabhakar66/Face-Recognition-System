@@ -1,5 +1,7 @@
+import email
 from django.db import models
 import uuid
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
@@ -57,3 +59,11 @@ class Attendance(models.Model):
     def __str__(self):
         return f"{self.student.name} : {self.date} : {self.time}"
 
+class User(AbstractUser):
+    email = models.EmailField(unique=True)
+    hostel = models.CharField(max_length=200, choices=Student.HOSTEL)
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'hostel']
+    USERNAME_FIELD = 'email'
+
+    def get_username(self):
+        return self.email

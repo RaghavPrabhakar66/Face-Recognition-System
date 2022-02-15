@@ -1,5 +1,6 @@
 from . import models
 from rest_framework import serializers
+from djoser.serializers import UserCreateSerializer, UserSerializer
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,3 +19,8 @@ class StudentPhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.StudentPhoto
         fields = ('id', 'student', 'photo')
+
+class UserCreateSerializer(UserCreateSerializer):
+    class Meta(UserCreateSerializer.Meta):
+        model = models.User
+        fields = ('id', 'email', 'password', 'hostel', 'first_name', 'last_name')

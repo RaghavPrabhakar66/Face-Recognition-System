@@ -14,8 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from users.views import StudentList, AttendanceList, StudentPhotoList
+from django.urls import path, include
+from users.views import StudentList, AttendanceList, StudentPhotoList, restrcited
 
 admin.site.site_header = "Hostel Facial Recognition"
 admin.site.site_title = "Capstone Project"
@@ -26,4 +26,5 @@ urlpatterns = [
     path('api/students', StudentList.as_view(), name='profile'),
     path('api/attendances', AttendanceList.as_view(), name='attendance'),
     path('api/images', StudentPhotoList.as_view(), name='images'),
+    path('auth/', include('users.urls')),
 ]
