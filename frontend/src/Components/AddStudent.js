@@ -82,7 +82,7 @@ const AddStudent = () => {
                                         key={person.id}
                                         value={person}
                                         disabled={person.unavailable}
-                                        className="hover:bg-slate-200 rounded-lg transition-all duration-100 p-1"
+                                        className="hover:bg-slate-200 rounded-lg transition-all duration-100 p-1 "
                                     >
                                         {person.name}
                                     </Listbox.Option>
