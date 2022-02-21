@@ -10,6 +10,7 @@ import {
 	Route,
 	Navigate,
 } from "react-router-dom";
+import Test from "./Components/test";
 
 function App() {
 	return (
@@ -25,6 +26,7 @@ function App() {
 					<Route path="/signup" element={<SignUp />} />
 					<Route path="/dashboard" element={<Dashboard />} />
 					<Route path="/add-student" element={<AddStudent />} />
+					<Route path="/test" element={<Test />} />
 				</Routes>
 			</Router>
 		</div>
