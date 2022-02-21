@@ -13,17 +13,16 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    student = serializers.HyperlinkedIdentityField(view_name='student')
+    student_id = serializers.IntegerField(source='student.id')
     class Meta:
         model = models.Attendance
-        fields = ('id', 'student', 'date', 'time', 'status')
+        fields = ('id', 'student_id', 'date', 'time', 'status')
 
-    # def create(self, validated_data):
-    #     # print(validated_data)
-    #     student_data = validated_data.pop('student')
-    #     student = models.Student.objects.get(id=student_data['id'])
-    #     attendance = models.Attendance.objects.create(student=student, **validated_data)
-    #     return attendance
+    def create(self, validated_data):
+        student_data = validated_data.pop('student')
+        student = models.Student.objects.get(id=student_data['id'])
+        attendance = models.Attendance.objects.create(student=student, **validated_data)
+        return attendance
 
 class StudentPhotoSerializer(serializers.ModelSerializer):
     student = StudentSerializer(read_only=True)
