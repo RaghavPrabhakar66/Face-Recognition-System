@@ -15,4 +15,4 @@ class HogDetector:
             )
             # shape = self.predictor(frame, d)
             # landmarks.append([(p.x, p.y) for p in shape.parts()])
-        return bboxes, []
+        return bboxes
