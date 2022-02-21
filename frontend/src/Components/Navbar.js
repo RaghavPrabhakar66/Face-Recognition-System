@@ -22,7 +22,7 @@ const Navbar = () => {
 					</Menu.Button>
 
 					<Menu.Items className="flex flex-col space-y-2 mt-4 bg-slate-200 rounded-lg p-2 divide-y w-44">
-						<Link to="/dashboard">
+						<Link to="/site/dashboard">
 							<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
 								{({ active }) => (
 
@@ -36,7 +36,7 @@ const Navbar = () => {
 								)}
 							</Menu.Item>
 						</Link>
-						<Link to="/add-student">
+						<Link to="/site/add-student">
 							<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
 								{({ active }) => (
 									<div
@@ -48,7 +48,7 @@ const Navbar = () => {
 								)}
 							</Menu.Item>
 						</Link>
-						<Link to="/login">
+						<Link to="/site/login">
 							<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
 								{({ active }) => (
 

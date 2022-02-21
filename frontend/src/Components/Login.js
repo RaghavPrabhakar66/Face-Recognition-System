@@ -27,9 +27,9 @@ const Login = () => {
 				</div>
 				<div className="flex justify-between">
 					<button class="btn w-1/3 bg-blue-400 hover:bg-blue-500 border-none">
-						<Link to="/dashboard">Log in</Link>
+						<Link to="/site/dashboard">Log in</Link>
 					</button>
-					<Link to="/signup">
+					<Link to="/site/signup">
 						<div className="mt-3">Register now</div>
 					</Link>
 				</div>
