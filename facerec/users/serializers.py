@@ -31,7 +31,7 @@ class StudentPhotoSerializer(serializers.ModelSerializer):
         model = models.StudentPhoto
         fields = ('id', 'student', 'photo')
 
-class UserCreateSerializer(UserCreateSerializer):
-    class Meta(UserCreateSerializer.Meta):
-        model = models.User
-        fields = ('id', 'email', 'password', 'hostel', 'first_name', 'last_name')
+# class UserCreateSerializer(UserCreateSerializer):
+#     class Meta(UserCreateSerializer.Meta):
+#         model = models.User
+#         fields = ('id', 'email', 'password', 'hostel', 'first_name', 'last_name')
