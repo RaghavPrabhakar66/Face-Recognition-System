@@ -1,3 +1,6 @@
+#node modules for react frontend
+node_modules/
+
 # Byte-compiled / optimized / DLL files
 dataset/test/detection/WiderFace/*
 data/

@@ -1,3 +1,5 @@
+import datetime
+from django.utils import timezone
 import email
 from django.db import models
 import uuid
@@ -30,7 +32,6 @@ class Student(models.Model):
         ('Hostel O', 'Hostel O'),
     )
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200)
@@ -39,7 +40,7 @@ class Student(models.Model):
     hostel = models.CharField(max_length=200, choices=HOSTEL)
 
     def __str__(self):
-        return self.name
+        return self.first_name + ' ' + self.last_name
 
     
 class StudentPhoto(models.Model):
@@ -51,10 +52,10 @@ class StudentPhoto(models.Model):
 
 
 class Attendance(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    date = models.DateField()
-    time = models.TimeField()
-    status = models.CharField(max_length=200, default='Absent')
+    student = models.ForeignKey(Student, related_name='student', on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+    time = models.TimeField(auto_now_add=True)
+    status = models.CharField(max_length=200, default='Present')
 
     def __str__(self):
         return f"{self.student.name} : {self.date} : {self.time}"

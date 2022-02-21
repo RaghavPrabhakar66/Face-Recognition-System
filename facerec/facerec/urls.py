@@ -23,7 +23,7 @@ admin.site.site_title = "Capstone Project"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/students', StudentList.as_view(), name='profile'),
+    path('api/students', StudentList.as_view(), name='student'),
     path('api/attendances', AttendanceList.as_view(), name='attendance'),
     path('api/images', StudentPhotoList.as_view(), name='images'),
     path('auth/', include('users.urls')),
