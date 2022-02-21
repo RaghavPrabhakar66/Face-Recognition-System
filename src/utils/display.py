@@ -142,7 +142,7 @@ def stream(
         # And draw bounding boxes
         # if track_face:
         for track in tracks:
-            track_color = [ord(c) * ord(c) % 256 for c in track.id[:3]]
+            track_color = [ord(c) * ord(c) % 256 for c in track.id[:3]] if track.id is not None else [255, 255, 255]
             face, (w, h)= facial_extraction(frame, track.box, padding=padding)
             if extract_face:
                 # if align_face:
