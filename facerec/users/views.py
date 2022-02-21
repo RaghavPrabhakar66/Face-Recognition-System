@@ -9,17 +9,17 @@ from . import models
 from . import serializers
 from rest_framework import generics
 
-class StudentList(generics.ListAPIView):
+class StudentList(generics.ListCreateAPIView):
     queryset = models.Student.objects.all()
     serializer_class = serializers.StudentSerializer
 
 
-class AttendanceList(generics.ListAPIView):
+class AttendanceList(generics.ListCreateAPIView):
     queryset = models.Attendance.objects.all()
     serializer_class = serializers.AttendanceSerializer
 
 
-class StudentPhotoList(generics.ListAPIView):
+class StudentPhotoList(generics.ListCreateAPIView):
     queryset = models.StudentPhoto.objects.all()
     serializer_class = serializers.StudentPhotoSerializer
 

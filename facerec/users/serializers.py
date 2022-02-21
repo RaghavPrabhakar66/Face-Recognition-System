@@ -5,14 +5,25 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Student
-        fields = ('id', 'name', 'email', 'phone', 'rollno', 'hostel')
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone', 'rollno', 'hostel')
+
+    # def validate(self, attrs):
+    #     print(attrs)
+    #     return super().validate(attrs)
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    student = StudentSerializer(read_only=True)
+    student = serializers.HyperlinkedIdentityField(view_name='student')
     class Meta:
         model = models.Attendance
         fields = ('id', 'student', 'date', 'time', 'status')
+
+    # def create(self, validated_data):
+    #     # print(validated_data)
+    #     student_data = validated_data.pop('student')
+    #     student = models.Student.objects.get(id=student_data['id'])
+    #     attendance = models.Attendance.objects.create(student=student, **validated_data)
+    #     return attendance
 
 class StudentPhotoSerializer(serializers.ModelSerializer):
     student = StudentSerializer(read_only=True)
