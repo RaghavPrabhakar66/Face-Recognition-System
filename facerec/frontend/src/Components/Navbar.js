@@ -1,5 +1,5 @@
 import { MenuIcon, HomeIcon, UserAddIcon, LogoutIcon } from "@heroicons/react/solid";
-import { Menu, Transition } from '@headlessui/react'
+import { Menu } from '@headlessui/react'
 import { Link } from "react-router-dom";
 
 

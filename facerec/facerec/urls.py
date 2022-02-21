@@ -27,4 +27,5 @@ urlpatterns = [
     path('api/attendances', AttendanceList.as_view(), name='attendance'),
     path('api/images', StudentPhotoList.as_view(), name='images'),
     path('auth/', include('users.urls')),
+    path('site/', include('frontend.urls')),
 ]
