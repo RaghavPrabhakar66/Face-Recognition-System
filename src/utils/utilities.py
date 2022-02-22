@@ -74,7 +74,3 @@ def load_database(path):
         img = cv2.imread(f'{path}/{name}')
         database.append((os.path.splitext(name)[0], img))
     return database
-
-add_attendance("Shivang")
-add_attendance("Kabir")
-add_attendance("Sanchit")

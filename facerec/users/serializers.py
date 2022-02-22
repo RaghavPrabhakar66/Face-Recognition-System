@@ -14,9 +14,10 @@ class StudentSerializer(serializers.ModelSerializer):
 
 class AttendanceSerializer(serializers.ModelSerializer):
     student_id = serializers.IntegerField(source='student.id')
+    student = StudentSerializer(read_only=True)
     class Meta:
         model = models.Attendance
-        fields = ('id', 'student_id', 'date', 'time', 'status')
+        fields = ('id', 'student_id', 'student', 'date', 'time', 'status')
 
     def create(self, validated_data):
         student_data = validated_data.pop('student')
