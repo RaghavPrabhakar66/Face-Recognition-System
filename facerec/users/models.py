@@ -48,7 +48,7 @@ class StudentPhoto(models.Model):
     photo = models.ImageField(upload_to=photo_upload_path)
 
     def __str__(self):
-        return self.student.name
+        return self.student.first_name
 
 
 class Attendance(models.Model):
@@ -58,7 +58,7 @@ class Attendance(models.Model):
     status = models.CharField(max_length=200, default='Present')
 
     def __str__(self):
-        return f"{self.student.name} : {self.date} : {self.time}"
+        return f"{self.student.first_name} : {self.date} : {self.time}"
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
