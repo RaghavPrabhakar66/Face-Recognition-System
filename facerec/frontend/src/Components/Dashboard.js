@@ -11,24 +11,22 @@ const Dashboard = () => {
 	const [listOfStudents, setListOfStudents] = useState([])
 
 	axios
-	.get("http://127.0.0.1:8080/api/attendances")
-	.then((res) => {
-		setListOfStudents(res.data)
-		console.log(typeof(res.data));
-		console.log(res.data);
-	})
-	.catch((err) => console.error(err));
+		.get("http://127.0.0.1:8080/api/attendances")
+		.then((res) => {
+			setListOfStudents(res.data)
+		})
+		.catch((err) => console.error(err));
 
 	const listItem = listOfStudents.reverse().map((listOfStudents) => (
 		<div className="flex justify-between">
-			{`Student ${listOfStudents.id}`}
+			{`Student ${listOfStudents.student.first_name} ${listOfStudents.student.last_name}`}
 			<button>
 				<ArrowCircleRightIcon className="h-6 w-6" />
 			</button>
 		</div>
 	))
 
-	
+
 
 	return (
 		<div className="flex flex-col h-screen">
