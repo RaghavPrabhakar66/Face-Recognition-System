@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from users.views import StudentList, AttendanceList, StudentPhotoList, restrcited
+from users.views import StudentList, AttendanceList, StudentPhotoList
 
 admin.site.site_header = "Hostel Facial Recognition"
 admin.site.site_title = "Capstone Project"

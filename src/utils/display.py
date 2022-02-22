@@ -17,7 +17,7 @@ from src.utils.draw import (
     LINETYPE,
     draw_bounding_box,
 )
-from src.utils.utilities import facial_extraction, load_database, record
+from src.utils.utilities import facial_extraction, load_database, record, login
 
 
 def stream(
@@ -56,6 +56,9 @@ def stream(
     frameCounter = 0
     step = 4
 
+    # Login Backend
+    creds = login(['a@a.com', 'admin'])
+
     # Load database
     database = load_database(path['database'])
 
@@ -88,9 +91,9 @@ def stream(
 
     while cap.isOpened():
         ret, frame = cap.read()
-
         if not ret:
             break
+
         frame = cv2.flip(frame, 1)
         display_frame = frame.copy()
 
@@ -108,27 +111,25 @@ def stream(
             LTYPE = max(LINETYPE, int(scale * LINETYPE))
             FSCALE = max(FONT_SCALE, int(scale * FONT_SCALE))
 
-
         frameCounter += 1
 
         detections = []
         if frameCounter % step == 0:
-            # lol = datetime.now()
             bboxes = detector.detect(frame)
-            # print((datetime.now() - lol))
             for bbox in bboxes:
-                detections.append(
-                    Detection(
-                        box=np.array(
-                            [
-                                bbox[0],
-                                bbox[1],
-                                bbox[0] + bbox[2],
-                                bbox[1] + bbox[3],
-                            ]
+                if len(bbox) == 4:
+                    detections.append(
+                        Detection(
+                            box=np.array(
+                                [
+                                    bbox[0],
+                                    bbox[1],
+                                    bbox[0] + bbox[2],
+                                    bbox[1] + bbox[3],
+                                ]
+                            )
                         )
                     )
-                )
 
         faces = []
         if track_face:
@@ -159,7 +160,7 @@ def stream(
                         cv2.imwrite(path['records'] + '/' + str(known_tracks[track.id]) + '.jpg', face)
                         # cv2.rectangle(display_frame, (int(track.box[0]), int(track.box[1])), (int(track.box[0] + w), int(track.box[1] - 10)), track_color, -1)
                         cv2.putText(display_frame, known_tracks[track.id], (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
-                        record(name)
+                        record(name, creds)
                     else:
                         # known_tracks[track.id] = 'unknown-' + str(track.id)
                         os.makedirs(path['records'], exist_ok=True)
