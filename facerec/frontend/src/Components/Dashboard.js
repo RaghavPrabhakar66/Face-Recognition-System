@@ -1,23 +1,33 @@
 import Navbar from "./Navbar";
 import { UserAddIcon, ArrowCircleRightIcon } from "@heroicons/react/solid";
 import { Link } from "react-router-dom";
+import axios from 'axios';
+
+
+
 
 const Dashboard = () => {
+	const listOfStudents = [1, 2, 3, 4, 5]
+	const listItem = listOfStudents.reverse().map((listOfStudents) => (
+		<div className="flex justify-between">
+			{`Student ${listOfStudents}`}
+			<button>
+				<ArrowCircleRightIcon className="h-6 w-6" />
+			</button>
+		</div>
+	))
+
+	axios
+		.get("http://127.0.0.1:8080/api/attendances")
+		.then((res) => console.log(res))
+		.catch((err) => console.error(err));
+
 	return (
 		<div className="flex flex-col h-screen">
 			<Navbar />
 			<div className="bg-slate-200 w-1/2 place-self-center rounded-lg p-2 space-y-5 ">
-				<div className="flex justify-between">
-					Student 1
-					<button>
-						<ArrowCircleRightIcon className="h-6 w-6" />
-					</button>
-				</div>
-				<div className="flex justify-between">
-					Student 2
-					<button>
-						<ArrowCircleRightIcon className="h-6 w-6" />
-					</button>
+				<div className="flex flex-col space-y-5">
+					{listItem}
 				</div>
 			</div>
 			<footer className="absolute bottom-5 right-5 z-10">
