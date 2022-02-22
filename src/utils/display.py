@@ -57,7 +57,7 @@ def stream(
 
     # Login Backend
     creds = login(['a@a.com', 'admin'])
-
+    print("Logged into backend")
     # Load database
     database = load_database(path['database'])
 

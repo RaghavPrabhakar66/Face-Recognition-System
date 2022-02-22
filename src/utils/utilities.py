@@ -1,13 +1,13 @@
 import os
 from datetime import datetime
-# import cv2
+import cv2
 import requests
 
 def get_user_id(name, creds):
     student_url = 'http://localhost:8080/api/students'
     student_details = requests.get(student_url, data={'first_name': name}, auth=(creds[0], creds[1]))
     # get id from json data
-    #print(student_details.json())
+    # print(student_details.json())
     for i in student_details.json():
         if i['first_name'] == name:
             print(i)
@@ -79,13 +79,8 @@ def load_database(path):
         database.append((os.path.splitext(name)[0], img))
     return database
 
-creds = login(["a@a.com", "admin"])
-# add_attendance("Shivang", creds)
-# add_attendance("Kabir", creds)
-# add_attendance("Shivang", creds)
-# add_attendance("Sanchit", creds)
-# add_attendance("Sanchit", creds)
-# add_attendance("Kabir", creds)
-add_attendance("Kabir", creds)
-add_attendance("Sanchit", creds)
-add_attendance("Shivang", creds)
+# if __name__ == '__main__':
+#     creds = login(["a@a.com", "admin"])
+#     add_attendance("Kabir", creds)
+#     add_attendance("Sanchit", creds)
+#     add_attendance("Shivang", creds)
