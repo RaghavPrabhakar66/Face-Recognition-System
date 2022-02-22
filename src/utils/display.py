@@ -3,7 +3,6 @@ import time
 import os
 from datetime import datetime
 import cv2
-import dlib
 import numpy as np
 from motpy import Detection, MultiObjectTracker
 
