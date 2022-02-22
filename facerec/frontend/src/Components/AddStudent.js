@@ -19,6 +19,13 @@ const people = [
 
 const AddStudent = () => {
     const [selectedPerson, setSelectedPerson] = useState(people[0]);
+    const [rollNumber, setRollNumber] = useState(null);
+    const [first_name, setFirstName] = useState("");
+    const [last_name, setLastName] = useState("");
+    const [phone, setPhone] = useState(null);
+    const [email, setEmail] = useState("");
+    const [hostel, setHostel] = useState("");
+
 
     return (
         <div className="flex flex-col h-screen">
