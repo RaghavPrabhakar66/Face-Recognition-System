@@ -3,6 +3,7 @@ import { UserAddIcon, ArrowCircleRightIcon } from "@heroicons/react/solid";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import { useState } from "react";
+import { Popover } from '@headlessui/react'
 
 
 
@@ -19,10 +20,17 @@ const Dashboard = () => {
 
 	const listItem = listOfStudents.reverse().map((listOfStudents) => (
 		<div className="flex justify-between">
-			{`Student ${listOfStudents.student.first_name} ${listOfStudents.student.last_name}`}
-			<button>
-				<ArrowCircleRightIcon className="h-6 w-6" />
-			</button>
+			{`Student : ${listOfStudents.student.first_name} ${listOfStudents.student.last_name}`}
+			<Popover className="relative">
+				<button>
+					<Popover.Button>
+						<ArrowCircleRightIcon className="h-6 w-6" />
+					</Popover.Button>
+					<Popover.Panel className="absolute z-10 bg-blue-100 rounded-lg p-5 transition-all duration-100">
+						{`Time of entry: ${listOfStudents.date} ${listOfStudents.time}`}
+					</Popover.Panel>
+				</button>
+			</Popover>
 		</div>
 	))
 
