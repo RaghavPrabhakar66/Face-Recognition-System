@@ -3,19 +3,23 @@ from datetime import datetime
 import cv2
 import requests
 
-def get_user_id(name):
+def get_user_id(name, creds):
     student_url = 'http://localhost:8000/api/students'
-    student_details = requests.get(student_url, data={'name': name}, auth=('a@a.com', 'admin'))
+    student_details = requests.get(student_url, data={'name': name}, auth=(creds[0], creds[1]))
     # get id from json data
     # print(student_details.json()[0]['id'])
     return student_details.json()[0]['id']
 
-def add_attendance(name):
-    student_id = get_user_id(name)
+def add_attendance(name, creds):
+    student_id = get_user_id(name, creds)
     attendance_url = 'http://localhost:8000/api/attendances'
-    attendance_details = requests.post(attendance_url, data={'student_id': student_id}, auth=('a@a.com', 'admin'), headers={"Authorization": "Token 7b49e4ab9c734b0db015fe9eb3411652ffb9f8ce"})
+    attendance_details = requests.post(attendance_url, data={'student_id': student_id}, auth=(creds[0], creds[1]), headers={"Authorization": "Token " + creds[2]})
     # print(attendance_details)
 
+def login(creds):
+    res = requests.post("http://localhost:8000/auth/token/login", data={'password': creds[1], 'email': creds[0]})
+    creds.append(res.json()['auth_token'])
+    return creds
 
 def facial_extraction(image, bbox, padding, size=(256, 256)):
     x, y, _, _ = bbox
@@ -44,7 +48,7 @@ def facial_extraction(image, bbox, padding, size=(256, 256)):
 
     return face, (size[0], ratio * size[0])
 
-def record(name):
+def record(name, creds):
     filepath = 'data/records/' + str(datetime.now().strftime('%d-%B-%Y'))
     try:    
         f = open(filepath + '/records.csv', 'x')
@@ -60,7 +64,7 @@ def record(name):
             time = now.strftime('%I:%M:%S:%p')
             date = now.strftime('%d-%B-%Y')
             f.writelines(f'{name},{time},{date}\n')
-            add_attendance(name)
+            add_attendance(name, creds)
 
 def load_database(path):
     names = os.listdir(path)
