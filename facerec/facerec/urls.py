@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from users.views import StudentList, AttendanceList, StudentPhotoList
 
 admin.site.site_header = "Hostel Facial Recognition"
@@ -27,5 +27,5 @@ urlpatterns = [
     path('api/attendances', AttendanceList.as_view(), name='attendance'),
     path('api/images', StudentPhotoList.as_view(), name='images'),
     path('auth/', include('users.urls')),
-    path('site/', include('frontend.urls')),
+    re_path(r'^(?:.*)/?$', include('frontend.urls')),
 ]
