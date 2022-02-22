@@ -2,25 +2,33 @@ import Navbar from "./Navbar";
 import { UserAddIcon, ArrowCircleRightIcon } from "@heroicons/react/solid";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import { useState } from "react";
 
 
 
 
 const Dashboard = () => {
-	const listOfStudents = [1, 2, 3, 4, 5]
+	const [listOfStudents, setListOfStudents] = useState([])
+
+	axios
+	.get("http://127.0.0.1:8080/api/attendances")
+	.then((res) => {
+		setListOfStudents(res.data)
+		console.log(typeof(res.data));
+		console.log(res.data);
+	})
+	.catch((err) => console.error(err));
+
 	const listItem = listOfStudents.reverse().map((listOfStudents) => (
 		<div className="flex justify-between">
-			{`Student ${listOfStudents}`}
+			{`Student ${listOfStudents.id}`}
 			<button>
 				<ArrowCircleRightIcon className="h-6 w-6" />
 			</button>
 		</div>
 	))
 
-	axios
-		.get("http://127.0.0.1:8080/api/attendances")
-		.then((res) => console.log(res))
-		.catch((err) => console.error(err));
+	
 
 	return (
 		<div className="flex flex-col h-screen">
