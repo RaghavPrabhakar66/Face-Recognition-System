@@ -1,14 +1,15 @@
 import Navbar from "./Navbar";
 import { UserAddIcon } from "@heroicons/react/solid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Listbox } from "@headlessui/react";
 import UploadImages from "./UploadImages";
+import axios from "axios";
 
 const people = [
     { id: 1, name: "Hostel A", unavailable: false },
     { id: 2, name: "Hostel B", unavailable: false },
     { id: 3, name: "Hostel C", unavailable: false },
-    { id: 4, name: "Hostel D", unavailable: true },
+    { id: 4, name: "Hostel D", unavailable: false },
     { id: 5, name: "Hostel H", unavailable: false },
     { id: 6, name: "Hostel I", unavailable: false },
     { id: 7, name: "Hostel J", unavailable: false },
@@ -18,14 +19,33 @@ const people = [
 ];
 
 const AddStudent = () => {
+    axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    axios.defaults.xsrfCookieName = "csrftoken";
+
     const [selectedPerson, setSelectedPerson] = useState(people[0]);
     const [rollNumber, setRollNumber] = useState(null);
     const [first_name, setFirstName] = useState("");
     const [last_name, setLastName] = useState("");
     const [phone, setPhone] = useState(null);
     const [email, setEmail] = useState("");
-    const [hostel, setHostel] = useState("");
+    const [hostel, setHostel] = useState("Hostel A");
 
+    async function addStudent() {
+        let item = { rollNumber, first_name, last_name, phone, email, hostel }
+        console.log(item);
+
+        await axios({
+            method: "post",
+            url: "http://127.0.0.1:8080/api/students",
+            data: item,
+        })
+            .then((res) => console.log(res))
+            .catch((err) => console.error(err))
+    }
+
+    useEffect(() => {
+        setHostel(selectedPerson.name);
+    }, [selectedPerson])
 
     return (
         <div className="flex flex-col h-screen">
@@ -40,6 +60,7 @@ const AddStudent = () => {
                             type="text"
                             placeholder="Roll Number"
                             className="p-3 outline-none rounded-lg text-sm"
+                            onChange={(e) => setRollNumber(e.target.value)}
                         />
                         <label className="label">
                             <span className="label-text">First Name</span>
@@ -48,6 +69,7 @@ const AddStudent = () => {
                             type="text"
                             placeholder="First Name"
                             className="p-3 outline-none rounded-lg text-sm"
+                            onChange={(e) => setFirstName(e.target.value)}
                         />
                         <label className="label">
                             <span className="label-text">Last Name</span>
@@ -56,6 +78,7 @@ const AddStudent = () => {
                             type="text"
                             placeholder="Last Name"
                             className="p-3 outline-none rounded-lg text-sm"
+                            onChange={(e) => setLastName(e.target.value)}
                         />
                         <label className="label">
                             <span className="label-text">Phone Number</span>
@@ -64,6 +87,7 @@ const AddStudent = () => {
                             type="text"
                             placeholder="Phone Number"
                             className="p-3 outline-none rounded-lg text-sm"
+                            onChange={(e) => setPhone(e.target.value)}
                         />
                         <label className="label">
                             <span className="label-text">Email Id</span>
@@ -72,6 +96,7 @@ const AddStudent = () => {
                             type="text"
                             placeholder="Email Id"
                             className="p-3 outline-none rounded-lg text-sm"
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                         <label className="label">
                             <span className="label-text">Hostel</span>
@@ -98,7 +123,7 @@ const AddStudent = () => {
                         </Listbox>
                     </div>
                     <div className="flex w-full justify-between ">
-                        <button className="btn w-1/3 bg-blue-400 hover:bg-blue-500 border-none ">
+                        <button onClick={addStudent} className="btn w-1/3 bg-blue-400 hover:bg-blue-500 border-none ">
                             Submit
                         </button>
                     </div>
