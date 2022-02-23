@@ -20,7 +20,7 @@ const Dashboard = () => {
 
 	const listItem = listOfStudents.reverse().map((listOfStudents) => (
 		<div className="flex justify-between">
-			{`Student : ${listOfStudents.student.first_name} ${listOfStudents.student.last_name}`}
+			{`${listOfStudents.student.first_name} ${listOfStudents.student.last_name}`}
 			<Popover className="relative">
 				<button>
 					<Popover.Button>
