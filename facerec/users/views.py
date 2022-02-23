@@ -1,23 +1,25 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics
 from rest_framework import status
 
-# Create your views here.
 from . import models
 from . import serializers
-from rest_framework import generics
 
 class StudentList(generics.ListCreateAPIView):
-    queryset = models.Student.objects.all()
+    # queryset = models.Student.objects.all()
     serializer_class = serializers.StudentSerializer
 
+    def get_queryset(self):
+        first_name = self.request.data.get('first_name', None)
+        if first_name is not None:
+            return models.Student.objects.filter(first_name=first_name)
+        return super().get_queryset()
 
 class AttendanceList(generics.ListCreateAPIView):
     queryset = models.Attendance.objects.all()
     serializer_class = serializers.AttendanceSerializer
-
 
 class StudentPhotoList(generics.ListCreateAPIView):
     queryset = models.StudentPhoto.objects.all()
