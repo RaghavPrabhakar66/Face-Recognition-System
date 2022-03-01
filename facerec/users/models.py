@@ -10,7 +10,7 @@ from django.contrib.auth.models import AbstractUser
 def photo_upload_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return 'photos/{0}/{1}'.format(instance.student.name, filename)
+    return 'photos/{0}{1}/{2}'.format(instance.student.first_name, instance.student.last_name, filename)
     
 class Student(models.Model):
 
@@ -42,6 +42,13 @@ class Student(models.Model):
     def __str__(self):
         return self.first_name + ' ' + self.last_name
 
+    def isOutside(self):
+        a = Attendance.objects.filter(student=self).order_by('-id')[0]
+        if a.status == 'exit':
+            return True
+        
+        return False
+
     
 class StudentPhoto(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
@@ -52,10 +59,16 @@ class StudentPhoto(models.Model):
 
 
 class Attendance(models.Model):
+
+    choices = (
+        ('entry', 'Entry'),
+        ('exit', 'Exit'),
+    )
+
     student = models.ForeignKey(Student, related_name='student', on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)
     time = models.TimeField(auto_now_add=True)
-    status = models.CharField(max_length=200, default='Present')
+    status = models.CharField(max_length=200, choices=choices)
 
     def __str__(self):
         return f"{self.student.first_name} : {self.date} : {self.time}"
