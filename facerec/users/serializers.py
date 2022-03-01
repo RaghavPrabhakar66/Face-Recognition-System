@@ -7,10 +7,6 @@ class StudentSerializer(serializers.ModelSerializer):
         model = models.Student
         fields = ('id', 'first_name', 'last_name', 'email', 'phone', 'rollno', 'hostel')
 
-    # def validate(self, attrs):
-    #     print(attrs)
-    #     return super().validate(attrs)
-
 
 class AttendanceSerializer(serializers.ModelSerializer):
     student_id = serializers.IntegerField(source='student.id')
