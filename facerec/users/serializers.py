@@ -1,12 +1,11 @@
 from . import models
 from rest_framework import serializers
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import UserCreateSerializer
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Student
         fields = ('id', 'first_name', 'last_name', 'email', 'phone', 'rollno', 'hostel')
-
 
 class AttendanceSerializer(serializers.ModelSerializer):
     student_id = serializers.IntegerField(source='student.id')
