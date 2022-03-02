@@ -4,22 +4,18 @@ import cv2
 import requests
 
 def get_user_id(name, creds):
-    student_url = 'http://localhost:8080/api/students'
-    student_details = requests.get(student_url, data={'first_name': name}, auth=(creds[0], creds[1]))
-    # get id from json data
-    # print(student_details.json())
-    for i in student_details.json():
-        if i['first_name'] == name:
-            print(i)
-            return i['id']
-    #return student_details.json()[0]['id']
+    student_url = 'http://127.0.0.1:8080/api/students'
+    student_details = requests.get(student_url, data={'first_name': name}, auth=(creds[0], creds[1])).json()
+    if student_details:
+        return student_details[0]['id']
+    return None
 
 def add_attendance(name, creds):
     student_id = get_user_id(name, creds)
-    attendance_url = 'http://localhost:8080/api/attendances'
-    attendance_details = requests.post(attendance_url, data={'student_id': student_id}, auth=(creds[0], creds[1]), headers={"Authorization": "Token " + creds[2]})
-    # print(attendance_details)
-
+    if student_id is not None:
+        attendance_url = 'http://127.0.0.1:8080/api/attendances'
+        attendance_details = requests.post(attendance_url, data={'student_id': student_id}, auth=(creds[0], creds[1]), headers={"Authorization": "Token " + creds[2]})
+        
 def login(creds):
     res = requests.post("http://localhost:8080/auth/token/login", data={'password': creds[1], 'email': creds[0]})
     creds.append(res.json()['auth_token'])
