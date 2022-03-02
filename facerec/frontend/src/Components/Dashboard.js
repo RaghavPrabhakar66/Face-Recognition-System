@@ -6,8 +6,6 @@ import { useState } from "react";
 import { Popover } from '@headlessui/react'
 
 
-
-
 const Dashboard = () => {
 	const [listOfStudents, setListOfStudents] = useState([])
 
@@ -32,8 +30,7 @@ const Dashboard = () => {
 				</button>
 			</Popover>
 		</div>
-	))
-
+	));
 
 
 	return (

@@ -4,6 +4,8 @@ import SignUp from "./Components/SignUp";
 import Dashboard from "./Components/Dashboard";
 import AddStudent from "./Components/AddStudent";
 import Test from "./Components/test";
+import ModifyStudent from "./Components/ModifyStudent";
+import DeleteStudent from "./Components/DeleteStudent";
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -27,6 +29,8 @@ function App() {
 						<Route path="signup" element={<SignUp />} />
 						<Route path="dashboard" element={<Dashboard />} />
 						<Route path="add-student" element={<AddStudent />} />
+						<Route path="modify-student" element={<ModifyStudent />}/>
+						<Route path="delete-student" element={<DeleteStudent />}/>
 						<Route path="test" element={<Test />} />
 					</Route>
 				</Routes>
