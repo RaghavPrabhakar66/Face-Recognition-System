@@ -1,4 +1,4 @@
-import { MenuIcon, HomeIcon, UserAddIcon, LogoutIcon } from "@heroicons/react/solid";
+import { MenuIcon, HomeIcon, UserAddIcon, LogoutIcon, TrashIcon, DocumentIcon } from "@heroicons/react/solid";
 import { Menu } from '@headlessui/react'
 import { Link } from "react-router-dom";
 
@@ -21,47 +21,76 @@ const Navbar = () => {
 						</button>
 					</Menu.Button>
 
-					<Menu.Items className="flex flex-col space-y-2 mt-4 bg-slate-200 rounded-lg p-2 divide-y w-44">
-						<Link to="/site/dashboard">
-							<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
-								{({ active }) => (
+					<Menu.Items className="flex flex-col space-y-2 mt-4 bg-slate-200 rounded-lg p-2 divide-y divide-slate-300 w-44">
+						<div>
+							<Link to="/site/dashboard">
+								<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
+									{({ active }) => (
+										<div
+											className={`${active && 'bg-blue-500 flex flex-col'}`}
+										>
+											<HomeIcon className="h-5 w-5 mr-1" />
+											Home
+										</div>
 
-									<div
-										className={`${active && 'bg-blue-500 flex flex-col'}`}
-									>
-										<HomeIcon className="h-5 w-5 mr-1" />
-										Home
-									</div>
+									)}
+								</Menu.Item>
+							</Link>
+						</div>
+						<div className="flex flex-col space-y-1">
+							<Link to="/site/add-student">
+								<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
+									{({ active }) => (
+										<div
+											className={`${active && 'bg-blue-500'}`}
+										>
+											<UserAddIcon className="h-5 w-5 mr-1" />
+											Add Student
+										</div>
+									)}
+								</Menu.Item>
+							</Link>
+							<Link to="/site/modify-student">
+								<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
+									{({ active }) => (
+										<div
+											className={`${active && 'bg-blue-500'}`}
+										>
+											<DocumentIcon className="h-5 w-5 mr-1" />
+											Modify Student
+										</div>
+									)}
+								</Menu.Item>
+							</Link>
+							<Link to="/site/delete-student">
+								<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
+									{({ active }) => (
+										<div
+											className={`${active && 'bg-blue-500'}`}
+										>
+											<TrashIcon className="h-5 w-5 mr-1" />
+											Delete Student
+										</div>
+									)}
+								</Menu.Item>
+							</Link>
+						</div>
+						<div>
+							<Link to="/site/login">
+								<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
+									{({ active }) => (
 
-								)}
-							</Menu.Item>
-						</Link>
-						<Link to="/site/add-student">
-							<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
-								{({ active }) => (
-									<div
-										className={`${active && 'bg-blue-500'}`}
-									>
-										<UserAddIcon className="h-5 w-5 mr-1" />
-										Add Student
-									</div>
-								)}
-							</Menu.Item>
-						</Link>
-						<Link to="/site/login">
-							<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
-								{({ active }) => (
+										<div
+											className={`${active && 'hover'}`}
 
-									<div
-										className={`${active && 'hover'}`}
-
-									>
-										<LogoutIcon className="h-5 w-5 mr-1" />
-										Log out
-									</div>
-								)}
-							</Menu.Item>
-						</Link>
+										>
+											<LogoutIcon className="h-5 w-5 mx-1" />
+											Log out
+										</div>
+									)}
+								</Menu.Item>
+							</Link>
+						</div>
 					</Menu.Items>
 
 				</Menu>

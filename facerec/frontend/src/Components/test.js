@@ -1,66 +1,81 @@
-import Navbar from "./Navbar";
-import { UserAddIcon, ArrowCircleRightIcon } from "@heroicons/react/solid";
+import { MenuIcon, HomeIcon, UserAddIcon, LogoutIcon } from "@heroicons/react/solid";
+import { Menu } from '@headlessui/react'
 import { Link } from "react-router-dom";
-import axios from 'axios';
-import { useState } from "react";
-import { Popover } from '@headlessui/react'
 
-const Buttons = () => {
+
+const Navbar = () => {
 	return (
-		<div className="w-1/2 place-self-center rounded-lg my-2 p-2 flex justify-between">
-			<button className="bg-green-100 rounded-lg flex p-1">Add Student</button>
-			<button className="bg-blue-100 rounded-lg flex p-1">Modify Student</button>
-			<button className="bg-red-100 rounded-lg flex p-1">Delete Student</button>
-		</div>
-	)
-}
-
-
-const Dashboard = () => {
-	const [listOfStudents, setListOfStudents] = useState([])
-
-	axios
-		.get("http://127.0.0.1:8080/api/attendances")
-		.then((res) => {
-			setListOfStudents(res.data)
-		})
-		.catch((err) => console.error(err));
-
-	const listItem = listOfStudents.reverse().map((listOfStudents) => (
-		<div className="flex justify-between">
-			{`${listOfStudents.student.first_name} ${listOfStudents.student.last_name}`}
-			<Popover className="relative">
-				<button>
-					<Popover.Button>
-						<ArrowCircleRightIcon className="h-6 w-6" />
-					</Popover.Button>
-					<Popover.Panel className="absolute z-10 bg-blue-100 rounded-lg p-5 transition-all duration-100">
-						{`Time of entry: ${listOfStudents.date} ${listOfStudents.time}`}
-					</Popover.Panel>
-				</button>
-			</Popover>
-		</div>
-	));
-
-
-	return (
-		<div className="flex flex-col h-screen">
-			<Navbar />
-			<Buttons />
-			<div className="bg-slate-200 w-1/2 place-self-center rounded-lg p-2 space-y-5 ">
-				<div className="flex flex-col space-y-5">
-					{listItem}
+		<div>
+			<div className="navbar mb-2 shadow-lg bg-blue-500 text-neutral-content ">
+				<div className="flex-1 px-2 mx-2">
+					<span className="text-lg font-bold">
+						Thapar Attendence System
+					</span>
 				</div>
 			</div>
-			<footer className="absolute bottom-5 right-5 z-10">
-				<Link to="/site/add-student">
-					<button className="flex h-20 w-20 bg-blue-200 rounded-full transition-all active:w-[4.9rem] active:h-[4.9rem] active:bg-blue-100">
-						<UserAddIcon className="h-10 w-10 m-auto" />
-					</button>
-				</Link>
-			</footer>
-		</div>
+			<div className="absolute right-0 top-0 p-2 z-20">
+				<Menu>
+					<Menu.Button className="ml-32">
+						<button className="btn btn-square btn-ghost">
+							<MenuIcon className="h-8 w-8" />
+						</button>
+					</Menu.Button>
+
+					<Menu.Items className="flex flex-col space-y-2 mt-4 bg-slate-200 rounded-lg p-2 divide-y w-44">
+						<Link to="/site/dashboard">
+							<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
+								{({ active }) => (
+
+									<div
+										className={`${active && 'bg-blue-500 flex flex-col'}`}
+									>
+										<HomeIcon className="h-5 w-5 mr-1" />
+										Home
+									</div>
+
+								)}
+							</Menu.Item>
+						</Link>
+						<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
+							{({ active }) => (
+								<div
+									className={`${active && 'bg-blue-500'}`}
+								>
+									<Menu.Button>
+										<UserAddIcon className="h-5 w-5 mr-1" />
+										Student
+									</Menu.Button>
+									<Menu.Items>
+										<Menu.Item>
+											{({ active }) => (
+												<div className={`${active && 'bg-blue-500'}`}>helo</div>
+											)}
+										</Menu.Item>
+									</Menu.Items>
+								</div>
+							)}
+						</Menu.Item>
+
+						<Link to="/site/login">
+							<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
+								{({ active }) => (
+
+									<div
+										className={`${active && 'hover'}`}
+
+									>
+										<LogoutIcon className="h-5 w-5 mr-1" />
+										Log out
+									</div>
+								)}
+							</Menu.Item>
+						</Link>
+					</Menu.Items>
+
+				</Menu>
+			</div>
+		</div >
 	);
 };
 
-export default Dashboard;
+export default Navbar;
