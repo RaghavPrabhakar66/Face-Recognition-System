@@ -5,6 +5,16 @@ import axios from 'axios';
 import { useState } from "react";
 import { Popover } from '@headlessui/react'
 
+const Buttons = () => {
+	return (
+		<div className="w-1/2 place-self-center rounded-lg my-2 p-2 flex justify-between">
+			<button className="bg-green-100 rounded-lg flex p-2">Add Student</button>
+			<button className="bg-blue-100 rounded-lg flex p-2">Modify Student</button>
+			<button className="bg-red-100 rounded-lg flex p-2">Delete Student</button>
+		</div>
+	)
+}
+
 
 const Dashboard = () => {
 	const [listOfStudents, setListOfStudents] = useState([])
@@ -36,6 +46,7 @@ const Dashboard = () => {
 	return (
 		<div className="flex flex-col h-screen">
 			<Navbar />
+			<Buttons />
 			<div className="bg-slate-200 w-1/2 place-self-center rounded-lg p-2 space-y-5 ">
 				<div className="flex flex-col space-y-5">
 					{listItem}
