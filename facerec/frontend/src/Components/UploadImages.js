@@ -50,7 +50,7 @@ const UploadImages = () => {
 						e.preventDefault();
 						fileInputRef.current.click();
 					}}
-					className="btn bg-blue-400 hover:bg-blue-500 border-none"
+					className="btn bg-red-400 hover:bg-red-500 border-none"
 				>
 					Upload Images
 				</button>

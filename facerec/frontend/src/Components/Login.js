@@ -25,7 +25,7 @@ const Login = () => {
 
 	return (
 		<div className="flex flex-col">
-			<div className="flex place-content-center text-5xl my-5 text-blue-400">
+			<div className="flex place-content-center text-5xl my-5 text-red-400">
 				Thapar Attendence System
 			</div>
 			<div className="p-10 card bg-base-200 w-1/3 space-y-5 place-self-center">
@@ -51,7 +51,7 @@ const Login = () => {
 				</div>
 				<div className="flex justify-between">
 					<Link to="/site/dashboard">
-						<button onClick={login} class="btn bg-blue-400 hover:bg-blue-500 border-none">
+						<button onClick={login} class="btn bg-red-400 hover:bg-red-500 border-none">
 							Log in
 						</button></Link>
 					<Link to="/site/signup">
