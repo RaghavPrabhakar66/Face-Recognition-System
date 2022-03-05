@@ -123,8 +123,8 @@ const AddStudent = () => {
                         </Listbox>
                     </div>
                     <div className="flex w-full justify-between ">
-                        <button onClick={addStudent} className="btn w-1/3 bg-blue-400 hover:bg-blue-500 border-none ">
-                            Submit
+                        <button onClick={addStudent} className="btn w-1/3 bg-red-400 hover:bg-red-500 border-none ">
+                            Add Student
                         </button>
                     </div>
                 </div>

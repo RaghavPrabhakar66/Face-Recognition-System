@@ -1,15 +1,16 @@
 import { MenuIcon, HomeIcon, UserAddIcon, LogoutIcon, TrashIcon, DocumentIcon } from "@heroicons/react/solid";
 import { Menu } from '@headlessui/react'
 import { Link } from "react-router-dom";
-
+import logo from '../Images/thapar.png';
 
 const Navbar = () => {
 	return (
 		<div>
-			<div className="navbar mb-2 shadow-lg bg-blue-500 text-neutral-content ">
+			<div className="navbar mb-2 shadow-lg text-neutral-content max-h-10">
 				<div className="flex-1 px-2 mx-2">
-					<span className="text-lg font-bold">
-						Thapar Attendence System
+					<img src={logo} alt="TAS" className="h-14 w-14 mr-2"></img>
+					<span className="text-lg font-bold text-black">
+						TAS
 					</span>
 				</div>
 			</div>
@@ -39,7 +40,7 @@ const Navbar = () => {
 						</div>
 						<div className="flex flex-col space-y-1">
 							<Link to="/site/add-student">
-								<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
+								<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg mt-1">
 									{({ active }) => (
 										<div
 											className={`${active && 'bg-blue-500'}`}
@@ -77,7 +78,7 @@ const Navbar = () => {
 						</div>
 						<div>
 							<Link to="/site/login">
-								<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 rounded-lg">
+								<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 mt-1 rounded-lg">
 									{({ active }) => (
 
 										<div
