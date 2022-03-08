@@ -14,7 +14,7 @@ const Content = () => {
 
 
 
-const people = [
+const hostels = [
     { id: 1, name: "Hostel A", unavailable: false },
     { id: 2, name: "Hostel B", unavailable: false },
     { id: 3, name: "Hostel C", unavailable: false },
@@ -31,7 +31,7 @@ const AddStudent = () => {
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
 
-    const [selectedPerson, setSelectedPerson] = useState(people[0]);
+    const [selectedPerson, setSelectedPerson] = useState(hostels[0]);
     const [rollNumber, setRollNumber] = useState(null);
     const [first_name, setFirstName] = useState("");
     const [last_name, setLastName] = useState("");
@@ -121,7 +121,7 @@ const AddStudent = () => {
                                 {selectedPerson.name}
                             </Listbox.Button>
                             <Listbox.Options className="max-h-24 overflow-y-auto space-y-2 hover:cursor-pointer">
-                                {people.map((person) => (
+                                {hostels.map((person) => (
                                     <Listbox.Option
                                         key={person.id}
                                         value={person}

@@ -6,6 +6,7 @@ import AddStudent from "./Components/AddStudent";
 import Test from "./Components/test";
 import ModifyStudent from "./Components/ModifyStudent";
 import DeleteStudent from "./Components/DeleteStudent";
+import ViewStudentList from "./Components/ViewStudentList"
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -31,6 +32,7 @@ function App() {
 						<Route path="add-student" element={<AddStudent />} />
 						<Route path="modify-student" element={<ModifyStudent />}/>
 						<Route path="delete-student" element={<DeleteStudent />}/>
+						<Route path="view-student" element={<ViewStudentList />}/>
 						<Route path="test" element={<Test />} />
 					</Route>
 				</Routes>

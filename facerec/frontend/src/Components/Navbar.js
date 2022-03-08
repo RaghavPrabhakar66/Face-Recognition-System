@@ -8,9 +8,13 @@ const Navbar = () => {
 		<div>
 			<div className="navbar mb-2 shadow-lg text-neutral-content max-h-10">
 				<div className="flex-1 px-2 mx-2">
-					<img src={logo} alt="TAS" className="h-14 w-14 mr-2"></img>
+						<Link to='/site/dashboard'>
+							<img src={logo} alt="TAS" className="h-14 w-14 mr-2"></img>
+						</Link>
 					<span className="text-lg font-bold text-black">
-						TAS
+						<Link to='/site/dashboard'>
+							TAS
+						</Link>
 					</span>
 				</div>
 			</div>
