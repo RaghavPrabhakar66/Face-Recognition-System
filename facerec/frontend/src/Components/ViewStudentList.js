@@ -27,16 +27,6 @@ const ViewStudentList = () => {
     const listItem = listOfStudents.reverse().map((listOfStudents) => (
         <div className="flex justify-between">
             {`${listOfStudents.first_name} ${listOfStudents.last_name}`}
-            {/* <Popover className="relative">
-                <button>
-                    <Popover.Button>
-                        <ArrowCircleRightIcon className="h-6 w-6" />
-                    </Popover.Button>
-                    <Popover.Panel className="absolute z-10 bg-red-100 rounded-lg p-5 transition-all duration-100">
-                        {`Time of entry: ${listOfStudents.date} ${listOfStudents.time}`}
-                    </Popover.Panel>
-                </button>
-            </Popover> */}
         </div>
     ));
 
