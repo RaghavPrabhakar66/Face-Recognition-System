@@ -8,7 +8,7 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = ('id', 'first_name', 'last_name', 'email', 'phone', 'rollno', 'hostel')
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    student_id = serializers.IntegerField(source='student.id')
+    student_id = serializers.IntegerField(source='student.id', write_only=True)
     student = StudentSerializer(read_only=True)
     class Meta:
         model = models.Attendance
