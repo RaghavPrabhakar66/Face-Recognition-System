@@ -47,6 +47,9 @@ const AddStudent = () => {
             method: "post",
             url: "http://127.0.0.1:8080/api/students",
             data: item,
+            headers: {
+				Authorization : 'Token ' + localStorage.getItem("Token")
+			}
         })
             .then((res) => console.log(res))
             .catch((err) => console.error(err))

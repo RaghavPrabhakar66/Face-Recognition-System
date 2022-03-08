@@ -2,7 +2,7 @@ import Navbar from "./Navbar";
 import { UserAddIcon, ArrowCircleRightIcon } from "@heroicons/react/solid";
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Popover } from '@headlessui/react'
 import { Tab } from '@headlessui/react'
 
@@ -15,9 +15,14 @@ const Dashboard = () => {
 	const [listOfStudents, setListOfStudents] = useState([])
 
 	axios
-		.get("http://127.0.0.1:8080/api/attendances")
+		.get("http://127.0.0.1:8080/api/attendances", {
+			headers: {
+				Authorization : 'Token ' + localStorage.getItem("Token")
+			}
+		})
 		.then((res) => {
 			setListOfStudents(res.data)
+
 		})
 		.catch((err) => console.error(err));
 
