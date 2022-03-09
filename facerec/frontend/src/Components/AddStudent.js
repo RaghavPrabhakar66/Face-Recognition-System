@@ -23,7 +23,7 @@ const AddStudent = () => {
     axios.defaults.xsrfCookieName = "csrftoken";
 
     const [selectedPerson, setSelectedPerson] = useState(hostels[0]);
-    const [rollno, setRollNumber] = useState(null);
+    const [rollno, setRollno] = useState(null);
     const [first_name, setFirstName] = useState("");
     const [last_name, setLastName] = useState("");
     const [phone, setPhone] = useState(null);
@@ -71,7 +71,7 @@ const AddStudent = () => {
                             type="text"
                             placeholder="Roll Number"
                             className="p-3 outline-none rounded-lg text-sm"
-                            onChange={(e) => setRollNumber(e.target.value)}
+                            onChange={(e) => setRollno(e.target.value)}
                         />
                         <label className="label">
                             <span className="label-text">First Name</span>

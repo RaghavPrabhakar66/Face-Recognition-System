@@ -14,7 +14,7 @@ def add_attendance(name, creds):
     student_id = get_user_id(name, creds)
     if student_id is not None:
         attendance_url = 'http://127.0.0.1:8080/api/attendances'
-        attendance_details = requests.post(attendance_url, data={'student_id': student_id, 'status': 'entry'}, auth=(creds[0], creds[1]), headers={"Authorization": "Token " + creds[2]})
+        requests.post(attendance_url, data={'student_id': student_id, 'status': 'entry'}, auth=(creds[0], creds[1]), headers={"Authorization": "Token " + creds[2]})
         
 def login(creds):
     print("Attempting login")

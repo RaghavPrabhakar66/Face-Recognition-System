@@ -23,7 +23,7 @@ const AddStudent = () => {
     axios.defaults.xsrfCookieName = "csrftoken";
 
     const [selectedPerson, setSelectedPerson] = useState(hostels[0]);
-    const [rollNumber, setRollNumber] = useState(null);
+    const [rollno, setRollno] = useState(null);
     const [first_name, setFirstName] = useState("");
     const [last_name, setLastName] = useState("");
     const [phone, setPhone] = useState(null);
@@ -31,12 +31,12 @@ const AddStudent = () => {
     const [hostel, setHostel] = useState("Hostel A");
 
     async function addStudent() {
-        let item = { rollNumber, first_name, last_name, phone, email, hostel }
+        let item = { rollno, first_name, last_name, phone, email, hostel }
         console.log(item);
 
         await axios({
-            method: "post",
-            url: "http://127.0.0.1:8080/api/students",
+            method: "put",
+            url: "http://127.0.0.1:8080/api/student-actions",
             data: item,
             headers: {
 				Authorization : 'Token ' + localStorage.getItem("Token")
@@ -63,7 +63,7 @@ const AddStudent = () => {
                             type="text"
                             placeholder="Roll Number"
                             className="p-3 outline-none rounded-lg text-sm"
-                            onChange={(e) => setRollNumber(e.target.value)}
+                            onChange={(e) => setRollno(e.target.value)}
                         />
                         <label className="label">
                             <span className="label-text">First Name</span>

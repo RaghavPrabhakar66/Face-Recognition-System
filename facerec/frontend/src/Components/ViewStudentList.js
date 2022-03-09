@@ -26,7 +26,7 @@ const ViewStudentList = () => {
 
     const listItem = listOfStudents.reverse().map((listOfStudents) => (
         <div className="flex justify-between">
-            {`${listOfStudents.first_name} ${listOfStudents.last_name} ${listOfStudents.rollno}`}
+            {`${listOfStudents.id} ${listOfStudents.first_name} ${listOfStudents.last_name} ${listOfStudents.rollno}`}
         </div>
     ));
 

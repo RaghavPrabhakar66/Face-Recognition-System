@@ -17,6 +17,10 @@ class StudentList(generics.ListCreateAPIView):
 
     serializer_class = serializers.StudentSerializer
 
+class StudentActions(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.Student.objects.all()
+    serializer_class = serializers.StudentSerializer
+
 
 class AttendanceList(generics.ListCreateAPIView):
     queryset = models.Attendance.objects.all()
