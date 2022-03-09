@@ -31,8 +31,8 @@ const AddStudent = () => {
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
 
-    const [selectedPerson, setSelectedPerson] = useState(hostels[0]);
-    const [rollNumber, setRollNumber] = useState(null);
+    const [selectedHostel, setSelectedHostel] = useState(hostels[0]);
+    const [rollno, setRollno] = useState(null);
     const [first_name, setFirstName] = useState("");
     const [last_name, setLastName] = useState("");
     const [phone, setPhone] = useState(null);
@@ -40,7 +40,7 @@ const AddStudent = () => {
     const [hostel, setHostel] = useState("Hostel A");
 
     async function addStudent() {
-        let item = { rollNumber, first_name, last_name, phone, email, hostel }
+        let item = { rollno, first_name, last_name, phone, email, hostel }
         console.log(item);
 
         await axios({
@@ -56,8 +56,8 @@ const AddStudent = () => {
     }
 
     useEffect(() => {
-        setHostel(selectedPerson.name);
-    }, [selectedPerson])
+        setHostel(selectedHostel.name);
+    }, [selectedHostel])
 
     return (
         <div className="flex flex-col h-screen">
@@ -72,7 +72,7 @@ const AddStudent = () => {
                             type="text"
                             placeholder="Roll Number"
                             className="p-3 outline-none rounded-lg text-sm"
-                            onChange={(e) => setRollNumber(e.target.value)}
+                            onChange={(e) => setRollno(e.target.value)}
                         />
                         <label className="label">
                             <span className="label-text">First Name</span>
@@ -114,21 +114,21 @@ const AddStudent = () => {
                             <span className="label-text">Hostel</span>
                         </label>
                         <Listbox
-                            value={selectedPerson}
-                            onChange={setSelectedPerson}
+                            value={selectedHostel}
+                            onChange={setSelectedHostel}
                         >
                             <Listbox.Button className="text-sm bg-white mb-2 p-3 rounded-lg">
-                                {selectedPerson.name}
+                                {selectedHostel.name}
                             </Listbox.Button>
                             <Listbox.Options className="max-h-24 overflow-y-auto space-y-2 hover:cursor-pointer">
-                                {hostels.map((person) => (
+                                {hostels.map((hostel) => (
                                     <Listbox.Option
-                                        key={person.id}
-                                        value={person}
-                                        disabled={person.unavailable}
+                                        key={hostel.id}
+                                        value={hostel}
+                                        disabled={hostel.unavailable}
                                         className="hover:bg-slate-200 rounded-lg transition-all duration-100 p-1 "
                                     >
-                                        {person.name}
+                                        {hostel.name}
                                     </Listbox.Option>
                                 ))}
                             </Listbox.Options>
