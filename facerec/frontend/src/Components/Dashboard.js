@@ -69,14 +69,27 @@ const Dashboard = () => {
 					</Tab.List>
 					<Tab.Panels>
 						<Tab.Panel className="flex flex-col justify-between space-y-2">
-							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2  ">Add Student</button>
-							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2 ">Modify Student</button>
-							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2 ">Delete Student</button>
-							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2 ">View Student List</button>
+							<Link to="/site/add-student"><button className="bg-slate-200 rounded-lg w-30 h-20 p-2 w-full">Add Student</button></Link>
+							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2"><Link to="/site/modify-student">Modify Student</Link></button>
+							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2 "><Link to="/site/delete-student">Delete Student</Link></button>
+							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2 "><Link to="/site/signup">View Student List</Link></button>
 						</Tab.Panel>
 						<Tab.Panel>
 							<div className="flex flex-col space-y-5">
 								{listItem}
+								<div className="flex justify-between">
+									Kabir Seth
+									<Popover className="relative">
+										<button>
+											<Popover.Button>
+												<ArrowCircleRightIcon className="h-6 w-6" />
+											</Popover.Button>
+											<Popover.Panel className="absolute z-10 bg-red-100 rounded-lg p-5 transition-all duration-100">
+												{`Time of entry: 12:05:22 pm`}
+											</Popover.Panel>
+										</button>
+									</Popover>
+								</div>
 							</div>
 						</Tab.Panel>
 					</Tab.Panels>

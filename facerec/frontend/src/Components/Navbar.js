@@ -10,7 +10,7 @@ const Navbar = () => {
 				<div className="flex-1 px-2 mx-2">
 					<img src={logo} alt="TAS" className="h-14 w-14 mr-2"></img>
 					<span className="text-lg font-bold text-black">
-						TAS
+						Thapar Attendance System
 					</span>
 				</div>
 			</div>
