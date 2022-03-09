@@ -13,7 +13,7 @@ const Navbar = () => {
 						</Link>
 					<span className="text-lg font-bold text-black">
 						<Link to='/site/dashboard'>
-							TAS
+							Thapar Attendance System
 						</Link>
 					</span>
 				</div>
