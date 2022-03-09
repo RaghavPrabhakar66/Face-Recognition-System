@@ -1,9 +1,9 @@
 import Navbar from "./Navbar";
-import { UserAddIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 import { Listbox } from "@headlessui/react";
 import UploadImages from "./UploadImages";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const hostels = [
     { id: 1, name: "Hostel A", unavailable: false },
@@ -29,6 +29,7 @@ const AddStudent = () => {
     const [phone, setPhone] = useState(null);
     const [email, setEmail] = useState("");
     const [hostel, setHostel] = useState("Hostel A");
+    const navigate = useNavigate();
 
     async function addStudent() {
         let item = { rollNumber, first_name, last_name, phone, email, hostel }
@@ -42,7 +43,14 @@ const AddStudent = () => {
 				Authorization : 'Token ' + localStorage.getItem("Token")
 			}
         })
-            .then((res) => console.log(res))
+            .then((res) => {
+                console.log(res.data);
+                if(res.data) {
+                    navigate("/site/dashboard");
+                } else {
+                    alert("Invalid request")
+                }
+            })
             .catch((err) => console.error(err))
     }
 
