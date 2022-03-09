@@ -1,9 +1,9 @@
 import Navbar from "./Navbar";
-import { UserAddIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 import { Listbox } from "@headlessui/react";
 import UploadImages from "./UploadImages";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const hostels = [
     { id: 1, name: "Hostel A", unavailable: false },
@@ -18,136 +18,206 @@ const hostels = [
     { id: 10, name: "Hostel M", unavailable: false },
 ];
 
-const AddStudent = () => {
+const ModifyStudent = () => {
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
 
-    const [selectedPerson, setSelectedPerson] = useState(hostels[0]);
+    const [selectedHostel, setSelectedHostel] = useState(hostels[0]);
     const [rollno, setRollno] = useState(null);
     const [first_name, setFirstName] = useState("");
     const [last_name, setLastName] = useState("");
     const [phone, setPhone] = useState(null);
     const [email, setEmail] = useState("");
     const [hostel, setHostel] = useState("Hostel A");
+    const [id, setId] = useState("")
+    const [loaded, setLoaded] = useState(false)
+    const navigate = useNavigate();
 
-    async function addStudent() {
+    async function modifyStudent() {
         let item = { rollno, first_name, last_name, phone, email, hostel }
         console.log(item);
 
         await axios({
             method: "put",
-            url: "http://127.0.0.1:8080/api/student-actions",
+            url: "http://127.0.0.1:8080/api/student-actions/" + id,
             data: item,
             headers: {
 				Authorization : 'Token ' + localStorage.getItem("Token")
 			}
         })
-            .then((res) => console.log(res))
+            .then((res) => {
+                console.log(res);
+                if(res.data) {
+                    navigate("/site/dashboard");
+                } else {
+                    alert("Invalid request")
+                }
+            })
             .catch((err) => console.error(err))
     }
 
     useEffect(() => {
-        setHostel(selectedPerson.name);
-    }, [selectedPerson])
+        setHostel(selectedHostel.name);
+    }, [selectedHostel])
 
-    return (
-        <div className="flex flex-col h-screen">
-            <Navbar />
-            <div className="flex flex-row w-full h-full">
-                <div className="grid flex-grow p-10 card bg-base-200 space-y-5 h-full">
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Roll Number</span>
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Roll Number"
-                            className="p-3 outline-none rounded-lg text-sm"
-                            onChange={(e) => setRollno(e.target.value)}
-                        />
-                        <label className="label">
-                            <span className="label-text">First Name</span>
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="First Name"
-                            className="p-3 outline-none rounded-lg text-sm"
-                            onChange={(e) => setFirstName(e.target.value)}
-                        />
-                        <label className="label">
-                            <span className="label-text">Last Name</span>
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Last Name"
-                            className="p-3 outline-none rounded-lg text-sm"
-                            onChange={(e) => setLastName(e.target.value)}
-                        />
-                        <label className="label">
-                            <span className="label-text">Phone Number</span>
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Phone Number"
-                            className="p-3 outline-none rounded-lg text-sm"
-                            onChange={(e) => setPhone(e.target.value)}
-                        />
-                        <label className="label">
-                            <span className="label-text">Email Id</span>
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Email Id"
-                            className="p-3 outline-none rounded-lg text-sm"
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <label className="label">
-                            <span className="label-text">Hostel</span>
-                        </label>
-                        <Listbox
-                            value={selectedPerson}
-                            onChange={setSelectedPerson}
-                        >
-                            <Listbox.Button className="text-sm bg-white mb-2 p-3 rounded-lg">
-                                {selectedPerson.name}
-                            </Listbox.Button>
-                            <Listbox.Options className="max-h-24 overflow-y-auto space-y-2 hover:cursor-pointer">
-                                {hostels.map((person) => (
-                                    <Listbox.Option
-                                        key={person.id}
-                                        value={person}
-                                        disabled={person.unavailable}
-                                        className="hover:bg-slate-200 rounded-lg transition-all duration-100 p-1 "
-                                    >
-                                        {person.name}
-                                    </Listbox.Option>
-                                ))}
-                            </Listbox.Options>
-                        </Listbox>
+    async function getStudent() {
+        await axios({
+            method: "get",
+            url: "http://127.0.0.1:8080/api/student-actions/" + id,
+            headers: {
+                Authorization : 'Token ' + localStorage.getItem("Token")
+            }
+        })
+            .then((res) => {
+                console.log(res);
+                if(res.data){
+                    setSelectedHostel(res.data.hostel);
+                    setRollno(res.data.rollno);
+                    setFirstName(res.data.first_name);
+                    setLastName(res.data.last_name);
+                    setPhone(res.data.phone);
+                    setEmail(res.data.email);
+                    setHostel(res.data.hostel)
+                    setLoaded(true)
+                }
+            })
+            .catch((err) => console.error(err))
+    }
+    
+
+    if(loaded === false)
+    {
+        return (
+            <div className="flex flex-col h-screen">
+                <Navbar />
+                <div className="flex flex-row w-full h-full">
+                    <div className="grid flex-grow p-10 card bg-base-200 space-y-5 h-full">
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Student ID</span>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Student ID"
+                                className="p-3 outline-none rounded-lg text-sm"
+                                onChange={(e) => setId(e.target.value)}
+                            />
+                        </div>
+                        <div className="flex w-full justify-between ">
+                            <button onClick={getStudent} className="btn w-full bg-red-400 hover:bg-red-500 border-none ">
+                                Load Student
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex w-full justify-between ">
-                        <button onClick={addStudent} className="btn w-1/3 bg-red-400 hover:bg-red-500 border-none ">
-                            Modify Changes
-                        </button>
-                    </div>
-                </div>
-                <div className="divider divider-vertical"></div>
-                <div className="flex flex-col space-y-2 w-1/2">
-                    <div className="grid flex-grow card bg-base-200 rounded-box place-items-center">
-                        content
-                    </div>
-                    <UploadImages />
-                    {/* <div className="grid flex-grow card bg-base-200 rounded-box place-items-center">
-						Upload Image
-						<UploadImages />
-					</div> */}
                 </div>
             </div>
-            {/* <div className="flex w-full bg-base-200 my-5 rounded-box h-full">
-				Upload Images
-			</div> */}
-        </div>
-    );
+        );
+    } else {
+        return (
+            <div className="flex flex-col h-screen">
+                <Navbar />
+                <div className="flex flex-row w-full h-full">
+                    <div className="grid flex-grow p-10 card bg-base-200 space-y-5 h-full">
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Roll Number</span>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Roll Number"
+                                className="p-3 outline-none rounded-lg text-sm"
+                                onChange={(e) => setRollno(e.target.value)}
+                                defaultValue={rollno}
+                            />
+                            <label className="label">
+                                <span className="label-text">First Name</span>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="First Name"
+                                className="p-3 outline-none rounded-lg text-sm"
+                                onChange={(e) => setFirstName(e.target.value)}
+                                defaultValue={first_name}
+                            />
+                            <label className="label">
+                                <span className="label-text">Last Name</span>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Last Name"
+                                className="p-3 outline-none rounded-lg text-sm"
+                                onChange={(e) => setLastName(e.target.value)}
+                                defaultValue={last_name}
+                            />
+                            <label className="label">
+                                <span className="label-text">Phone Number</span>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Phone Number"
+                                className="p-3 outline-none rounded-lg text-sm"
+                                onChange={(e) => setPhone(e.target.value)}
+                                defaultValue={phone}
+                            />
+                            <label className="label">
+                                <span className="label-text">Email Id</span>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Email Id"
+                                className="p-3 outline-none rounded-lg text-sm"
+                                onChange={(e) => setEmail(e.target.value)}
+                                defaultValue={email}
+                            />
+                            <label className="label">
+                                <span className="label-text">Hostel</span>
+                            </label>
+                            <Listbox
+                                value={selectedHostel}
+                                onChange={setSelectedHostel}
+                            >
+                                <Listbox.Button className="text-sm bg-white mb-2 p-3 rounded-lg">
+                                    {selectedHostel.name}
+                                </Listbox.Button>
+                                <Listbox.Options className="max-h-24 overflow-y-auto space-y-2 hover:cursor-pointer">
+                                    {hostels.map((hostel) => (
+                                        <Listbox.Option
+                                            key={hostel.id}
+                                            value={hostel}
+                                            disabled={hostel.unavailable}
+                                            className="hover:bg-slate-200 rounded-lg transition-all duration-100 p-1 "
+                                            
+                                        >
+                                            {hostel.name}
+                                        </Listbox.Option>
+                                    ))}
+                                </Listbox.Options>
+                            </Listbox>
+                        </div>
+                        <div className="flex w-full justify-between ">
+                            <button onClick={modifyStudent} className="btn w-1/3 bg-red-400 hover:bg-red-500 border-none ">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                    <div className="divider divider-vertical"></div>
+                    <div className="flex flex-col space-y-2 w-1/2">
+                        <div className="grid flex-grow card bg-base-200 rounded-box place-items-center">
+                            content
+                        </div>
+                        <UploadImages />
+                        {/* <div className="grid flex-grow card bg-base-200 rounded-box place-items-center">
+                            Upload Image
+                            <UploadImages />
+                        </div> */}
+                    </div>
+                </div>
+                {/* <div className="flex w-full bg-base-200 my-5 rounded-box h-full">
+                    Upload Images
+                </div> */}
+            </div>
+        );
+    }
 };
 
-export default AddStudent;
+export default ModifyStudent;

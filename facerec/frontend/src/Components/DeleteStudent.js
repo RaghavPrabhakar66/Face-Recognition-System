@@ -1,12 +1,14 @@
 import Navbar from "./Navbar";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const DeleteStudent = () => {
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
 
     const [id, setId] = useState(null);
+    const navigate = useNavigate();
 
     async function deleteStudent() {
         let item = { id }
@@ -19,7 +21,14 @@ const DeleteStudent = () => {
 				Authorization : 'Token ' + localStorage.getItem("Token")
 			}
         })
-            .then((res) => console.log(res))
+            .then((res) => {
+                console.log(res);
+                if(res.data) {
+                    navigate("/site/dashboard");
+                } else {
+                    alert("Invalid request")
+                }
+            })
             .catch((err) => console.error(err))
     }
 
