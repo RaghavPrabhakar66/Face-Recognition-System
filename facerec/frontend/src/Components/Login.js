@@ -12,14 +12,13 @@ const Login = () => {
 
 	async function login() {
 		let item = { email, password };
-		console.log(item);
 
 		await axios({
 			method: "post",
 			url: "http://127.0.0.1:8080/auth/token/login",
 			data: item,
 		})
-			.then((res) => console.log(res))
+			.then((res) => localStorage.setItem("Token", res.data.auth_token))
 			.catch((err) => console.error(err))
 	}
 

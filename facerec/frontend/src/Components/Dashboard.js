@@ -2,7 +2,7 @@ import Navbar from "./Navbar";
 import { UserAddIcon, ArrowCircleRightIcon } from "@heroicons/react/solid";
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Popover } from '@headlessui/react'
 import { Tab } from '@headlessui/react'
 
@@ -12,25 +12,29 @@ function classNames(...classes) {
 }
 
 const Dashboard = () => {
-	const [listOfStudents, setListOfStudents] = useState([])
+	const [listOfAttendances, setListOfAttendances] = useState([])
 
 	axios
-		.get("http://127.0.0.1:8080/api/attendances")
+		.get("http://127.0.0.1:8080/api/attendances", {
+			headers: {
+				Authorization : 'Token ' + localStorage.getItem("Token")
+			}
+		})
 		.then((res) => {
-			setListOfStudents(res.data)
+			setListOfAttendances(res.data)
 		})
 		.catch((err) => console.error(err));
 
-	const listItem = listOfStudents.reverse().map((listOfStudents) => (
+	const listItem = listOfAttendances.reverse().map((listOfAttendances) => (
 		<div className="flex justify-between">
-			{`${listOfStudents.student.first_name} ${listOfStudents.student.last_name}`}
+			{`${listOfAttendances.student.first_name} ${listOfAttendances.student.last_name}`}
 			<Popover className="relative">
 				<button>
 					<Popover.Button>
 						<ArrowCircleRightIcon className="h-6 w-6" />
 					</Popover.Button>
 					<Popover.Panel className="absolute z-10 bg-red-100 rounded-lg p-5 transition-all duration-100">
-						{`Time of entry: ${listOfStudents.date} ${listOfStudents.time}`}
+						{`Time of entry: ${listOfAttendances.date} ${listOfAttendances.time}`}
 					</Popover.Panel>
 				</button>
 			</Popover>
@@ -69,10 +73,18 @@ const Dashboard = () => {
 					</Tab.List>
 					<Tab.Panels>
 						<Tab.Panel className="flex flex-col justify-between space-y-2">
-							<Link to="/site/add-student"><button className="bg-slate-200 rounded-lg w-30 h-20 p-2 w-full">Add Student</button></Link>
-							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2"><Link to="/site/modify-student">Modify Student</Link></button>
-							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2 "><Link to="/site/delete-student">Delete Student</Link></button>
-							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2 "><Link to="/site/signup">View Student List</Link></button>
+							<Link to="/site/add-student">
+							<button className="bg-slate-200 rounded-lg w-full h-20 p-2  ">Add Student</button>
+							</Link>
+							<Link to="/site/modify-student">
+							<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">Modify Student</button>
+							</Link>
+							<Link to="/site/delete-student">
+							<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">Delete Student</button>
+							</Link>
+							<Link to="/site/view-student">
+							<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">View Student List</button>
+							</Link>
 						</Tab.Panel>
 						<Tab.Panel>
 							<div className="flex flex-col space-y-5">

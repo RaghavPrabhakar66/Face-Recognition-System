@@ -5,7 +5,7 @@ import requests
 
 def get_user_id(name, creds):
     student_url = 'http://127.0.0.1:8080/api/students'
-    student_details = requests.get(student_url, data={'first_name': name}, auth=(creds[0], creds[1])).json()
+    student_details = requests.get(student_url, data={'first_name': name}, auth=(creds[0], creds[1]), params={'first_name': name}).json()
     if student_details:
         return student_details[0]['id']
     return None

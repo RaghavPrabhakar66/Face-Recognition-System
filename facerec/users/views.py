@@ -8,14 +8,15 @@ from . import models
 from . import serializers
 
 class StudentList(generics.ListCreateAPIView):
-    # queryset = models.Student.objects.all()
-    serializer_class = serializers.StudentSerializer
-
     def get_queryset(self):
+        queryset = models.Student.objects.all()
         first_name = self.request.data.get('first_name', None)
         if first_name is not None:
-            return models.Student.objects.filter(first_name=first_name)
-        return super().get_queryset()
+            queryset = queryset.filter(first_name=first_name)
+        return queryset
+
+    serializer_class = serializers.StudentSerializer
+
 
 class AttendanceList(generics.ListCreateAPIView):
     queryset = models.Attendance.objects.all()
