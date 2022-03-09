@@ -73,18 +73,18 @@ const Dashboard = () => {
 					</Tab.List>
 					<Tab.Panels>
 						<Tab.Panel className="flex flex-col justify-between space-y-2">
-							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2  ">Add Student</button>
-							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2 ">Modify Student</button>
-							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2 ">Delete Student</button>
-							<button className="bg-slate-200 rounded-lg w-30 h-20 p-2 ">View Student List</button>
-							{/* <Link to="/site/add-student">
+							<Link to="/site/add-student">
+							<button className="bg-slate-200 rounded-lg w-full h-20 p-2  ">Add Student</button>
 							</Link>
 							<Link to="/site/modify-student">
+							<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">Modify Student</button>
 							</Link>
 							<Link to="/site/delete-student">
+							<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">Delete Student</button>
 							</Link>
 							<Link to="/site/view-student">
-							</Link> */}
+							<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">View Student List</button>
+							</Link>
 						</Tab.Panel>
 						<Tab.Panel>
 							<div className="flex flex-col space-y-5">
