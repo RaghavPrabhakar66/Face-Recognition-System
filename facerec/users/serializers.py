@@ -3,9 +3,10 @@ from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer
 
 class StudentSerializer(serializers.ModelSerializer):
+    photos = serializers.PrimaryKeyRelatedField(many=True, queryset=models.StudentPhoto.objects.all())
     class Meta:
         model = models.Student
-        fields = ('id', 'first_name', 'last_name', 'email', 'phone', 'rollno', 'hostel')
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone', 'rollno', 'hostel', 'photos')
 
 class AttendanceSerializer(serializers.ModelSerializer):
     student_id = serializers.IntegerField(source='student.id', write_only=True)
@@ -21,7 +22,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         return attendance
 
 class StudentPhotoSerializer(serializers.ModelSerializer):
-    student = StudentSerializer(read_only=True)
+    # student = StudentSerializer(read_only=True)
     class Meta:
         model = models.StudentPhoto
         fields = ('id', 'student', 'photo')
