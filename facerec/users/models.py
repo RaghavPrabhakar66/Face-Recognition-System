@@ -1,19 +1,14 @@
-import datetime
-from django.utils import timezone
-import email
 from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-# Create your models here.
-
 def photo_upload_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return 'photos/{0}{1}/{2}'.format(instance.student.first_name, instance.student.last_name, filename)
-    
+    return f'database/{instance.student.first_name}_{str(instance.id)}.jpg'
+
 class Student(models.Model):
 
     HOSTEL = (
@@ -54,13 +49,14 @@ class Student(models.Model):
         self.isOutside = False
         return
 
-    
+
 class StudentPhoto(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    student = models.ForeignKey(Student, related_name='photos',  on_delete=models.CASCADE)
     photo = models.ImageField(upload_to=photo_upload_path)
 
     def __str__(self):
-        return self.student.first_name
+        return self.student.first_name + str(self.id)
 
 
 class Attendance(models.Model):

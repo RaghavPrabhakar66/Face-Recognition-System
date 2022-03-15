@@ -1,3 +1,4 @@
+from json import load
 import os
 from datetime import datetime
 import cv2
@@ -74,11 +75,8 @@ def load_database(path):
     
     for name in names:
         img = cv2.imread(f'{path}/{name}')
-        database.append((os.path.splitext(name)[0], img))
+        database.append((name.split('_')[0], img))
     return database
 
-# if __name__ == '__main__':
-#     creds = login(["a@a.com", "admin"])
-#     add_attendance("Kabir", creds)
-#     add_attendance("Sanchit", creds)
-#     add_attendance("Shivang", creds)
+if __name__ == '__main__':
+    print(load_database("D:\Python\Projects\Face-Recognition-System\data\database"))
