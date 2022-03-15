@@ -37,4 +37,5 @@ def _register(model, admin_class):
 
 
 _register(models.Student, StudentAdmin)
+_register(models.User, admin.ModelAdmin)
 _register(models.Attendance, AttendanceAdmin)

@@ -1,19 +1,19 @@
 from . import models
 from rest_framework import serializers
-from djoser.serializers import UserCreateSerializer
+from djoser.serializers import UserCreateSerializer as UserCreate
 
 class StudentSerializer(serializers.ModelSerializer):
-    photos = serializers.PrimaryKeyRelatedField(many=True, queryset=models.StudentPhoto.objects.all())
+    photos = serializers.PrimaryKeyRelatedField(many=True, queryset=models.StudentPhoto.objects.all(), required=False)
     class Meta:
         model = models.Student
-        fields = ('id', 'first_name', 'last_name', 'email', 'phone', 'rollno', 'hostel', 'photos')
+        fields = '__all__'
 
 class AttendanceSerializer(serializers.ModelSerializer):
     student_id = serializers.IntegerField(source='student.id', write_only=True)
     student = StudentSerializer(read_only=True)
     class Meta:
         model = models.Attendance
-        fields = ('id', 'student_id', 'student', 'date', 'time', 'status')
+        fields = '__all__'
 
     def create(self, validated_data):
         student_data = validated_data.pop('student')
@@ -25,9 +25,9 @@ class StudentPhotoSerializer(serializers.ModelSerializer):
     # student = StudentSerializer(read_only=True)
     class Meta:
         model = models.StudentPhoto
-        fields = ('id', 'student', 'photo')
+        fields = '__all__'
 
-class UserCreateSerializer(UserCreateSerializer):
-    class Meta(UserCreateSerializer.Meta):
+class UserCreateSerializer(UserCreate):
+    class Meta(UserCreate.Meta):
         model = models.User
         fields = ('id', 'email', 'password', 'hostel', 'first_name', 'last_name')
