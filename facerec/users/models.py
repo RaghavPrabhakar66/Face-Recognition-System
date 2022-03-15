@@ -1,6 +1,8 @@
 from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 def photo_upload_path(instance, filename):
     ext = filename.split('.')[-1]
@@ -31,6 +33,7 @@ class Student(models.Model):
     last_name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200)
     phone = models.IntegerField(default=0)
+    is_outside = models.BooleanField(default=False)
     rollno = models.IntegerField(default=0)
     hostel = models.CharField(max_length=200, choices=HOSTEL)
 
@@ -40,9 +43,11 @@ class Student(models.Model):
     def isOutside(self):
         a = Attendance.objects.filter(student=self).order_by('-id')[0]
         if a.status == 'exit':
-            return True
+            self.isOutside = True
+            return
         
-        return False
+        self.isOutside = False
+        return
 
 
 class StudentPhoto(models.Model):
@@ -68,6 +73,17 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.student.first_name} : {self.date} : {self.time}"
+
+@receiver(post_save, sender=Attendance, dispatch_uid="my_unique_identifier")
+def update_outside_field(sender, instance, **kwargs):
+    status = instance.status
+    if status == 'exit':
+        instance.student.is_outside = True
+    else:
+        instance.student.is_outside = False
+    
+    instance.student.save()
+    
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
