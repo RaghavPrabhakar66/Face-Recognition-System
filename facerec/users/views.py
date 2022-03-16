@@ -13,7 +13,7 @@ import datetime
 
 class StudentList(generics.ListCreateAPIView):
     def get_queryset(self):
-        queryset = models.Student.objects.all()
+        queryset = models.Student.objects.filter(hostel=self.request.user.hostel)
         first_name = self.request.data.get('first_name', None)
         if first_name is not None:
             queryset = queryset.filter(first_name=first_name)
