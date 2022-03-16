@@ -15,25 +15,43 @@ const ViewStudentList = () => {
             method: "get",
             url: "http://127.0.0.1:8080/api/students",
             headers: {
-				Authorization : 'Token ' + localStorage.getItem("Token")
-			}
+                Authorization: 'Token ' + localStorage.getItem("Token")
+            }
         })
             .then((res) => setListOfStudents(res.data))
             .catch((err) => console.error(err))
-        
-        
+
+
     }, [])
 
     const listItem = listOfStudents.reverse().map((listOfStudents) => (
-        <div className="flex justify-between">
-            {`${listOfStudents.id} ${listOfStudents.first_name} ${listOfStudents.last_name} ${listOfStudents.rollno}`}
-        </div>
+        <tr>
+            <td>{`${listOfStudents.id}`}</td>
+            <td>{`${listOfStudents.first_name}`}</td>
+            <td>{`${listOfStudents.last_name}`}</td>
+            <td>{`${listOfStudents.rollno}`}</td>
+        </tr>
     ));
 
+    const orderItem = listItem.sort((a,b) => (
+        a.rollno > b.rollno ? 1 : -1
+    ))
     return (
         <div className="flex flex-col h-screen">
             <Navbar />
-            {listItem}
+            <table className='table-auto w-1/2 bg-white/[0.12] mx-auto'>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Roll Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {listItem}
+                </tbody>
+            </table>
         </div>
     );
 };
