@@ -33,9 +33,6 @@ const ViewStudentList = () => {
         </tr>
     ));
 
-    const orderItem = listItem.sort((a,b) => (
-        a.rollno > b.rollno ? 1 : -1
-    ))
     return (
         <div className="flex flex-col h-screen">
             <Navbar />

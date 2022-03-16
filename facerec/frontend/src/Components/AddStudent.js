@@ -29,23 +29,36 @@ const AddStudent = () => {
     const [phone, setPhone] = useState(null);
     const [email, setEmail] = useState("");
     const [hostel, setHostel] = useState("Hostel A");
+    const [postImage, setPostImage] = useState(null);
     const navigate = useNavigate();
 
     async function addStudent() {
-        let item = { rollno, first_name, last_name, phone, email, hostel }
-        console.log(item);
+        let formData = new FormData();
+        formData.append('rollno', rollno);
+        formData.append('first_name', first_name);
+        formData.append('last_name', last_name);
+        formData.append('phone', phone);
+        formData.append('email', email);
+        formData.append('hostel', hostel);
+        formData.append('is_outside', false);
+        formData.append('photo', postImage);
+
+        // let item = { rollno, first_name, last_name, phone, email, hostel }
+        // console.log(item);
+        console.log(formData);
 
         await axios({
             method: "post",
             url: "http://127.0.0.1:8080/api/students",
-            data: item,
+            data: formData,
             headers: {
-				Authorization : 'Token ' + localStorage.getItem("Token")
-			}
+                Authorization: 'Token ' + localStorage.getItem("Token"),
+                'content-type': 'multipart/form-data'
+            }
         })
             .then((res) => {
                 console.log(res.data);
-                if(res.data) {
+                if (res.data) {
                     navigate("/site/dashboard");
                 } else {
                     alert("Invalid request")
@@ -144,7 +157,14 @@ const AddStudent = () => {
                     <div className="grid flex-grow card bg-base-200 rounded-box place-items-center">
                         content
                     </div>
-                    <UploadImages />
+                    <input
+                        accept="image/*"
+                        className="rounded-lg"
+                        name="photo"
+                        type="file"
+                        onChange={(e) => setPostImage(URL.createObjectURL(e.target.files[0]))}
+                    />
+                    {/* <UploadImages /> */}
                     {/* <div className="grid flex-grow card bg-base-200 rounded-box place-items-center">
 						Upload Image
 						<UploadImages />
