@@ -13,6 +13,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+users/migrations/*
 media/
 build/
 develop-eggs/
