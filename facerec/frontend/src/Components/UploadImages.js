@@ -33,6 +33,7 @@ const UploadImages = () => {
 			<form className="flex absolute bottom-5 right-5">
 				<input
 					type="file"
+					name="image"
 					ref={fileInputRef}
 					accept="image/*"
 					className="hidden"
