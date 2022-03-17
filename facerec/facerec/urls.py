@@ -28,6 +28,6 @@ urlpatterns = [
     path('api/attendances', AttendanceList.as_view(), name='attendance'),
     path('api/images', StudentPhotoList.as_view(), name='images'),
     path('auth/', include('users.urls')),
-    path('api/export/csv/', missing_students_csv, name='missing_students_csv'),
+    path('api/export/csv', missing_students_csv, name='missing_students_csv'),
     re_path(r'^(?:.*)/?$', include('frontend.urls')),
 ]
