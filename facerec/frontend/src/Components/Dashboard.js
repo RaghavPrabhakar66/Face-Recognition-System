@@ -34,7 +34,7 @@ const Dashboard = () => {
 						<ArrowCircleRightIcon className="h-6 w-6" />
 					</Popover.Button>
 					<Popover.Panel className="absolute z-10 bg-red-100 rounded-lg p-5 transition-all duration-100">
-						{`Time of entry: ${listOfAttendances.date} ${listOfAttendances.time}`}
+						{`Time of ${listOfAttendances.status}: ${listOfAttendances.date} ${listOfAttendances.time}`}
 					</Popover.Panel>
 				</button>
 			</Popover>
