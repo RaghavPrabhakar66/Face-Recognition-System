@@ -1,9 +1,18 @@
 import Navbar from "./Navbar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Listbox } from "@headlessui/react";
-import UploadImages from "./UploadImages";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Webcam from "react-webcam";
+import { XIcon, CameraIcon, VideoCameraIcon, TrashIcon } from '@heroicons/react/solid'
+
+const videoConstraints = {
+    width: 720,
+    height: 360,
+    facingMode: "user"
+};
+
+
 
 const hostels = [
     { id: 1, name: "Hostel A", unavailable: false },
@@ -19,9 +28,24 @@ const hostels = [
 ];
 
 const AddStudent = () => {
+    //webcam stuff
+    const [isCaptureEnable, setCaptureEnable] = useState(false);
+    const webcamRef = useRef(null);
+    const [url, setUrl] = useState(null);
+    const capture = useCallback(() => {
+        const imageSrc = webcamRef.current?.getScreenshot();
+        if (imageSrc) {
+            setUrl(imageSrc);
+        }
+    }, [webcamRef]);
+
+    //file input stuff
+    const fileInputRef = useRef(null); //used to handle change events of button and link to the input field
+    //csrf tokens
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
 
+    //student data
     const [selectedHostel, setSelectedHostel] = useState(hostels[0]);
     const [rollno, setRollno] = useState(null);
     const [first_name, setFirstName] = useState("");
@@ -32,6 +56,7 @@ const AddStudent = () => {
     const [postImage, setPostImage] = useState(null);
     const navigate = useNavigate();
 
+    //axios request
     async function addStudent() {
         let formData = new FormData();
         formData.append('rollno', rollno);
@@ -41,11 +66,12 @@ const AddStudent = () => {
         formData.append('email', email);
         formData.append('hostel', hostel);
         formData.append('is_outside', false);
-        formData.append('photo', postImage);
+        formData.append('photos', postImage.photo[0]);
 
+        console.log(postImage.photo[0]);
         // let item = { rollno, first_name, last_name, phone, email, hostel }
         // console.log(item);
-        console.log(formData);
+        // console.log(formData);
 
         await axios({
             method: "post",
@@ -153,22 +179,70 @@ const AddStudent = () => {
                     </div>
                 </div>
                 <div className="divider divider-vertical"></div>
-                <div className="flex flex-col space-y-2 w-1/2">
-                    <div className="grid flex-grow card bg-base-200 rounded-box place-items-center">
-                        content
+                <div className="flex flex-col space-y-2 w-1/2 ">
+                    {/* !!!!!!!!!!!video camera!!!!!!!!!! */}
+                    <div className="grid flex-grow bg-base-200 rounded-box place-items-center">
+                        {isCaptureEnable && (
+                            <>
+                                <div>
+                                    <button className="btn bg-red-400 hover:bg-red-500 border-none" onClick={() => setCaptureEnable(false)}>Close <XIcon className="ml-1 h-4 w-4" /></button>
+                                </div>
+                                <div>
+                                    <Webcam
+                                        audio={false}
+                                        width={540}
+                                        height={360}
+                                        ref={webcamRef}
+                                        screenshotFormat="image/jpeg"
+                                        videoConstraints={videoConstraints}
+                                    />
+                                </div>
+                                <button className="btn bg-red-400 hover:bg-red-500 border-none" onClick={capture}>Capture <CameraIcon className="ml-1 h-4 w-4" /></button>
+                            </>
+                        )}
+                        {url && (
+                            <>
+                                <div>
+                                    <img src={url} alt="Screenshot" />
+                                </div>
+                                <div>
+                                    <button
+                                        className="btn bg-red-400 hover:bg-red-500 border-none mt-2"
+                                        onClick={() => {
+                                            setUrl(null);
+                                        }}
+                                    >
+                                        delete <TrashIcon className="ml-1 h-4 w-4" />
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                        {/* {postImage && (
+                            <>
+                                <img src={URL.createObjectURL(postImage)} alt="from device" />
+                            </>
+                        )} */}
                     </div>
                     <input
                         accept="image/*"
-                        className="rounded-lg"
+                        className="hidden"
+                        ref={fileInputRef}
                         name="photo"
                         type="file"
-                        onChange={(e) => setPostImage(URL.createObjectURL(e.target.files[0]))}
+                        onChange={(e) => setPostImage({ photo: e.target.files })}
                     />
-                    {/* <UploadImages /> */}
-                    {/* <div className="grid flex-grow card bg-base-200 rounded-box place-items-center">
-						Upload Image
-						<UploadImages />
-					</div> */}
+                    <div className="flex bg-blue-100 space-x-2">
+
+                        <button className="flex-1 btn bg-red-400 hover:bg-red-500 border-none" onClick={() => setCaptureEnable(true)}>Upload from webcam <VideoCameraIcon className="ml-1 h-4 w-4" /></button>
+
+                        <button onClick={(e) => {
+                            e.preventDefault();
+                            fileInputRef.current.click();
+                        }}
+                            className="flex-1 btn bg-red-400 hover:bg-red-500 border-none">
+                            Upload Images <CameraIcon className="ml-1 h-4 w-4" />
+                        </button>
+                    </div>
                 </div>
             </div>
             {/* <div className="flex w-full bg-base-200 my-5 rounded-box h-full">

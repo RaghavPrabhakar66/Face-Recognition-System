@@ -1,57 +1,67 @@
-import Navbar from "./Navbar";
-import { ArrowCircleRightIcon } from "@heroicons/react/solid";
-import axios from 'axios';
-import { useEffect, useState } from "react";
-import { Popover } from '@headlessui/react'
+import Webcam from "react-webcam";
+import { useEffect, useState, useRef, useCallback } from "react";
 
-const ViewStudentList = () => {
-    axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-    axios.defaults.xsrfCookieName = "csrftoken";
+const videoConstraints = {
+    width: 720,
+    height: 360,
+    facingMode: "user"
+};
 
-    const [listOfStudents, setListOfStudents] = useState([])
-
-    useEffect(() => {
-        axios({
-            method: "get",
-            url: "http://127.0.0.1:8080/api/students",
-            headers: {
-                Authorization: 'Token ' + localStorage.getItem("Token")
-            }
-        })
-            .then((res) => setListOfStudents(res.data))
-            .catch((err) => console.error(err))
-
-
-    }, [])
-
-
-    const listItem = listOfStudents.reverse().map((listOfStudents) => (
-        <tr>
-            <td>{`${listOfStudents.id}`}</td>
-            <td>{`${listOfStudents.first_name}`}</td>
-            <td>{`${listOfStudents.last_name}`}</td>
-            <td>{`${listOfStudents.rollno}`}</td>
-        </tr>
-    ));
+const Test = () => {
+    const [isCaptureEnable, setCaptureEnable] = useState(false);
+    const webcamRef = useRef(null);
+    const [url, setUrl] = useState(null);
+    const capture = useCallback(() => {
+        const imageSrc = webcamRef.current?.getScreenshot();
+        if (imageSrc) {
+            setUrl(imageSrc);
+        }
+    }, [webcamRef]);
 
     return (
-        <div className="flex flex-col h-screen">
-            <Navbar />
-            <table className='table-auto w-1/2 bg-white/[0.12] mx-auto'>
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Roll Number</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {listItem}
-                </tbody>
-            </table>
+        <div>
+            <header>
+                <h1>camera app</h1>
+            </header>
+            {isCaptureEnable || (
+                <button onClick={() => setCaptureEnable(true)}>Start</button>
+            )}
+            {isCaptureEnable && (
+                <>
+                    <div>
+                        <button onClick={() => setCaptureEnable(false)}>End</button>
+                    </div>
+                    <div>
+                        <Webcam
+                            audio={false}
+                            width={540}
+                            height={360}
+                            ref={webcamRef}
+                            screenshotFormat="image/jpeg"
+                            videoConstraints={videoConstraints}
+                        />
+                    </div>
+                    <button onClick={capture}>capture</button>
+                </>
+            )}
+            {url && (
+                <>
+                    <div>
+                        <button
+                            onClick={() => {
+                                setUrl(null);
+                            }}
+                        >
+                            delete
+                        </button>
+                    </div>
+                    <div>
+                        <img src={url} alt="Screenshot" />
+                    </div>
+                </>
+            )}
         </div>
     );
 };
 
-export default ViewStudentList;
+export default Test;
