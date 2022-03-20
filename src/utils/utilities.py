@@ -11,11 +11,11 @@ def get_user_id(name, creds):
         return student_details[0]['id']
     return None
 
-def add_attendance(name, creds):
+def add_attendance(name, status, creds):
     student_id = get_user_id(name, creds)
     if student_id is not None:
         attendance_url = 'http://127.0.0.1:8080/api/attendances'
-        requests.post(attendance_url, data={'student_id': student_id, 'status': 'entry'}, auth=(creds[0], creds[1]), headers={"Authorization": "Token " + creds[2]})
+        requests.post(attendance_url, data={'student_id': student_id, 'status': status}, auth=(creds[0], creds[1]), headers={"Authorization": "Token " + creds[2]})
         
 def login(creds):
     print("Attempting login")
@@ -51,23 +51,40 @@ def facial_extraction(image, bbox, padding, size=(256, 256)):
 
     return face, (size[0], ratio * size[0])
 
-def record(name, creds):
+def record(name, creds, status):
     filepath = 'data/records/' + str(datetime.now().strftime('%d-%B-%Y'))
     try:    
         f = open(filepath + '/records.csv', 'x')
         f.close()
     except:
         pass
+
     os.makedirs(filepath, exist_ok=True)
     with open(filepath + '/records.csv', 'r+') as f:
         lines = f.readlines()
-        records = [line.split(',')[0] for line in lines]
-        if name not in records:
+        records = [line.strip().split(',') for line in lines]
+        index = None
+
+        for i in range(len(records)):
+            if records[i][0] == name:
+                index = i
+        if index is None or records[index][3] != status:
             now = datetime.now()
             time = now.strftime('%I:%M:%S:%p')
             date = now.strftime('%d-%B-%Y')
-            f.writelines(f'{name},{time},{date}\n')
-            add_attendance(name, creds)
+            f.writelines(f'{name},{time},{date},{status}\n')
+            add_attendance(name, status, creds)
+
+
+        # records = [line.split(',')[0] + line.split(',')[3].strip() for line in lines]
+        # if name + status not in records:
+        #     now = datetime.now()
+        #     time = now.strftime('%I:%M:%S:%p')
+        #     date = now.strftime('%d-%B-%Y')
+        #     print(name+status)
+        #     f.writelines(f'{name},{time},{date},{status}\n')
+        #     add_attendance(name, creds)
+
 
 def load_database(path):
     names = os.listdir(path)

@@ -1,5 +1,5 @@
 import Navbar from "./Navbar";
-import { UserAddIcon, ArrowCircleRightIcon } from "@heroicons/react/solid";
+import { DownloadIcon, ArrowCircleRightIcon } from "@heroicons/react/solid";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import { useState, useEffect } from "react";
@@ -34,7 +34,7 @@ const Dashboard = () => {
 						<ArrowCircleRightIcon className="h-6 w-6" />
 					</Popover.Button>
 					<Popover.Panel className="absolute z-10 bg-red-100 rounded-lg p-5 transition-all duration-100">
-						{`Time of entry: ${listOfAttendances.date} ${listOfAttendances.time}`}
+						{`Time of ${listOfAttendances.status}: ${listOfAttendances.date} ${listOfAttendances.time}`}
 					</Popover.Panel>
 				</button>
 			</Popover>
@@ -95,9 +95,9 @@ const Dashboard = () => {
 				</Tab.Group>
 			</div>
 			<footer className="absolute bottom-5 right-5 z-10">
-				<Link to="/site/add-student">
+				<Link to="/api/export/csv">
 					<button className="flex h-20 w-20 bg-red-200 rounded-full transition-all active:w-[4.9rem] active:h-[4.9rem] active:bg-red-100">
-						<UserAddIcon className="h-10 w-10 m-auto" />
+						<DownloadIcon className="h-10 w-10 m-auto" />
 					</button>
 				</Link>
 			</footer>

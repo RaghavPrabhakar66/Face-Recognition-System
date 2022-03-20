@@ -47,6 +47,12 @@ if __name__ == "__main__":
         default=False,
         help="recognize faces in the video",
     )
+    parser.add_argument(
+        "-s",
+        "--status",
+        default="entry",
+        help="attendance status",
+    )
 
     args = parser.parse_args()
     videos = os.listdir("data/test-videos/")
@@ -64,5 +70,6 @@ if __name__ == "__main__":
         track_face=args.track_face,
         recognize_face=args.recognize_face,
         padding=0,
+        status=args.status,
     )
 

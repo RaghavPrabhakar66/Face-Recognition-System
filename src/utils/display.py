@@ -29,6 +29,7 @@ def stream(
     track_face=False,
     recognize_face=False,
     padding=0,
+    status='entry'
 ):
 
     model_spec = {
@@ -159,7 +160,7 @@ def stream(
                         cv2.imwrite(path['records'] + '/' + str(known_tracks[track.id]) + '.jpg', face)
                         # cv2.rectangle(display_frame, (int(track.box[0]), int(track.box[1])), (int(track.box[0] + w), int(track.box[1] - 10)), track_color, -1)
                         cv2.putText(display_frame, known_tracks[track.id], (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
-                        record(name, creds)
+                        record(name, creds, status)
                     else:
                         # known_tracks[track.id] = 'unknown-' + str(track.id)
                         os.makedirs(path['records'], exist_ok=True)
