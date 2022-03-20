@@ -2,8 +2,15 @@ from . import models
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer as UserCreate
 
+class StudentPhotoSerializer(serializers.ModelSerializer):
+    # student = StudentSerializer(read_only=True)
+    class Meta:
+        model = models.StudentPhoto
+        fields = '__all__'
+
 class StudentSerializer(serializers.ModelSerializer):
-    photos = serializers.PrimaryKeyRelatedField(many=True, queryset=models.StudentPhoto.objects.all(), required=False)
+    # photos = serializers.PrimaryKeyRelatedField(many=True, queryset=models.StudentPhoto.objects.all(), required=False)
+    photos = StudentPhotoSerializer(many=True)
     class Meta:
         model = models.Student
         fields = '__all__'
@@ -21,11 +28,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
         attendance = models.Attendance.objects.create(student=student, **validated_data)
         return attendance
 
-class StudentPhotoSerializer(serializers.ModelSerializer):
-    # student = StudentSerializer(read_only=True)
-    class Meta:
-        model = models.StudentPhoto
-        fields = '__all__'
 
 class UserCreateSerializer(UserCreate):
     class Meta(UserCreate.Meta):
