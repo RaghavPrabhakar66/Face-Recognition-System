@@ -17,7 +17,7 @@ const Dashboard = () => {
 	axios
 		.get("http://127.0.0.1:8080/api/attendances", {
 			headers: {
-				Authorization : 'Token ' + localStorage.getItem("Token")
+				Authorization: 'Token ' + localStorage.getItem("Token")
 			}
 		})
 		.then((res) => {
@@ -74,16 +74,16 @@ const Dashboard = () => {
 					<Tab.Panels>
 						<Tab.Panel className="flex flex-col justify-between space-y-2">
 							<Link to="/site/add-student">
-							<button className="bg-slate-200 rounded-lg w-full h-20 p-2  ">Add Student</button>
+								<button className="bg-slate-200 rounded-lg w-full h-20 p-2  ">Add Student</button>
 							</Link>
 							<Link to="/site/modify-student">
-							<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">Modify Student</button>
+								<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">Modify Student</button>
 							</Link>
 							<Link to="/site/delete-student">
-							<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">Delete Student</button>
+								<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">Delete Student</button>
 							</Link>
 							<Link to="/site/view-student">
-							<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">View Student List</button>
+								<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">View Student List</button>
 							</Link>
 						</Tab.Panel>
 						<Tab.Panel>
@@ -95,7 +95,7 @@ const Dashboard = () => {
 				</Tab.Group>
 			</div>
 			<footer className="absolute bottom-5 right-5 z-10">
-				<Link to="/api/export/csv">
+				<Link to="/api/export/csv" target="_blank" download>
 					<button className="flex h-20 w-20 bg-red-200 rounded-full transition-all active:w-[4.9rem] active:h-[4.9rem] active:bg-red-100">
 						<DownloadIcon className="h-10 w-10 m-auto" />
 					</button>
