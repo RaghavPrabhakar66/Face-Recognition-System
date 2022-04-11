@@ -47,10 +47,26 @@ def missing_students_csv(request):
     response['Content-Disposition'] = f'attachment; filename={filename}'
 
     writer = csv.writer(response)
-    writer.writerow(['First name', 'Last name', 'Roll no.', 'Phone no.', 'Email Address'])
+    writer.writerow(['Status', 'First name', 'Last name', 'Roll no.', 'Phone no.', 'Email Address'])
 
-    students = models.Student.objects.filter(is_outside=True).values_list('first_name', 'last_name', 'rollno', 'phone', 'email')
-    for student in students:
-        writer.writerow(student)
+    try:
+        students = models.Student.objects.filter(is_late=True).values_list('first_name', 'last_name', 'rollno', 'phone', 'email')
+        print(students)
+        for student in students:
+            student = list(student)
+            student.insert(0, 'Late')
+            writer.writerow(student)
+    except:
+        print("No students late")
+
+
+    try:
+        students = models.Student.objects.filter(is_outside=True).values_list('first_name', 'last_name', 'rollno', 'phone', 'email')
+        for student in students:
+            student = list(student)
+            student.insert(0, 'Missing')
+            writer.writerow(student)
+    except:
+        print("No students missing")
 
     return response
