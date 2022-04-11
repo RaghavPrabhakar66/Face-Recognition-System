@@ -34,6 +34,7 @@ class Student(models.Model):
     email = models.EmailField(max_length=200)
     phone = models.IntegerField(default=0)
     is_outside = models.BooleanField(default=False)
+    is_late = models.BooleanField(default=False)
     rollno = models.IntegerField(default=0)
     hostel = models.CharField(max_length=200, choices=HOSTEL)
 
