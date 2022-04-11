@@ -186,7 +186,6 @@ const ModifyStudent = () => {
                                             value={hostel}
                                             disabled={hostel.unavailable}
                                             className="hover:bg-slate-200 rounded-lg transition-all duration-100 p-1 "
-                                            
                                         >
                                             {hostel.name}
                                         </Listbox.Option>

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
 import { XIcon, CameraIcon, VideoCameraIcon, TrashIcon } from '@heroicons/react/solid'
+import Test from "./test";
 
 const videoConstraints = {
     width: 720,
@@ -38,6 +39,7 @@ const AddStudent = () => {
             setUrl(imageSrc);
         }
     }, [webcamRef]);
+    
 
     //file input stuff
     const fileInputRef = useRef(null); //used to handle change events of button and link to the input field
@@ -54,8 +56,13 @@ const AddStudent = () => {
     const [email, setEmail] = useState("");
     const [hostel, setHostel] = useState("Hostel A");
     const [postImage, setPostImage] = useState(null);
+    const [videoRec, setVideoRec ] = useState(null);
     const navigate = useNavigate();
 
+
+    const childToParent = (childdata) => {
+        setVideoRec(childdata);
+    }
     //axios request
     async function addStudent() {
         let formData = new FormData();
@@ -92,6 +99,12 @@ const AddStudent = () => {
             })
             .catch((err) => console.error(err))
     }
+
+    useEffect(()=> {
+        if(videoRec){
+            console.log(videoRec);
+        }
+    }, [videoRec])
 
     useEffect(() => {
         setHostel(selectedHostel.name);
@@ -183,6 +196,19 @@ const AddStudent = () => {
                     {/* !!!!!!!!!!!video camera!!!!!!!!!! */}
                     <div className="grid flex-grow bg-base-200 rounded-box place-items-center">
                         {isCaptureEnable && (
+                            <div>
+                                <Test childToParent={childToParent} />
+                                <button className="btn bg-red-400 hover:bg-red-500 border-none" onClick={() => setCaptureEnable(false)}>Close</button>
+                            </div>
+                        )}
+                        {/* {postImage && (
+                            <>
+                                <img src={URL.createObjectURL(postImage)} alt="from device" />
+                            </>
+                        )} */}
+                    </div>
+                    {/* <div className="grid flex-grow bg-base-200 rounded-box place-items-center">
+                        {isCaptureEnable && (
                             <>
                                 <div>
                                     <button className="btn bg-red-400 hover:bg-red-500 border-none" onClick={() => setCaptureEnable(false)}>Close <XIcon className="ml-1 h-4 w-4" /></button>
@@ -217,12 +243,12 @@ const AddStudent = () => {
                                 </div>
                             </>
                         )}
-                        {/* {postImage && (
+                         {postImage && (
                             <>
                                 <img src={URL.createObjectURL(postImage)} alt="from device" />
                             </>
-                        )} */}
-                    </div>
+                        )} 
+                </div> */}
                     <input
                         accept="image/*"
                         className="hidden"
@@ -232,8 +258,10 @@ const AddStudent = () => {
                         onChange={(e) => setPostImage({ photo: e.target.files })}
                     />
                     <div className="flex bg-blue-100 space-x-2">
-
-                        <button className="flex-1 btn bg-red-400 hover:bg-red-500 border-none" onClick={() => setCaptureEnable(true)}>Upload from webcam <VideoCameraIcon className="ml-1 h-4 w-4" /></button>
+                        <button
+                            className="flex-1 btn bg-red-400 hover:bg-red-500 border-none"
+                            onClick={() => setCaptureEnable(true)}>Upload from webcam <VideoCameraIcon className="ml-1 h-4 w-4" />
+                        </button>
 
                         <button onClick={(e) => {
                             e.preventDefault();
@@ -248,7 +276,7 @@ const AddStudent = () => {
             {/* <div className="flex w-full bg-base-200 my-5 rounded-box h-full">
 				Upload Images
 			</div> */}
-        </div>
+        </div >
     );
 };
 
