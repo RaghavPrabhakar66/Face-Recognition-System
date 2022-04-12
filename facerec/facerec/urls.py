@@ -26,7 +26,7 @@ urlpatterns = [
     path('api/students', StudentList.as_view(), name='student'),
     path('api/student-actions/<int:pk>', StudentActions.as_view(), name='student-actions'),
     path('api/attendances', AttendanceList.as_view(), name='attendance'),
-    path('api/images', StudentPhotoList.as_view(), name='images'),
+    path('api/images', StudentPhotoList.as_view(), name='images'), # remove
     path('auth/', include('users.urls')),
     path('api/export/csv', missing_students_csv, name='missing_students_csv'),
     re_path(r'^(?:.*)/?$', include('frontend.urls')),
