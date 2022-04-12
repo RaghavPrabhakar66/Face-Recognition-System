@@ -179,6 +179,7 @@ const ModifyStudent = () => {
                                 <Listbox.Button className="text-sm bg-white mb-2 p-3 rounded-lg">
                                     {selectedHostel.name}
                                 </Listbox.Button>
+                                {/* !!! hostel name default value setup !!! */}
                                 <Listbox.Options className="max-h-24 overflow-y-auto space-y-2 hover:cursor-pointer">
                                     {hostels.map((hostel) => (
                                         <Listbox.Option

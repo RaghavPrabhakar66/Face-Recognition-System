@@ -56,7 +56,7 @@ const AddStudent = () => {
     const [email, setEmail] = useState("");
     const [hostel, setHostel] = useState("Hostel A");
     const [postImage, setPostImage] = useState(null);
-    const [videoRec, setVideoRec ] = useState(null);
+    const [videoRec, setVideoRec ] = useState(null); //set video parameters
     const navigate = useNavigate();
 
 
@@ -258,11 +258,12 @@ const AddStudent = () => {
                         onChange={(e) => setPostImage({ photo: e.target.files })}
                     />
                     <div className="flex bg-blue-100 space-x-2">
+                        {/* webcam upload option */}
                         <button
                             className="flex-1 btn bg-red-400 hover:bg-red-500 border-none"
                             onClick={() => setCaptureEnable(true)}>Upload from webcam <VideoCameraIcon className="ml-1 h-4 w-4" />
                         </button>
-
+                        {/* ref for when the file is uploaded !! */}
                         <button onClick={(e) => {
                             e.preventDefault();
                             fileInputRef.current.click();
