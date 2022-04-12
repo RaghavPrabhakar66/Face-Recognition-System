@@ -73,6 +73,7 @@ const AddStudent = () => {
         formData.append('email', email);
         formData.append('hostel', hostel);
         formData.append('is_outside', false);
+        console.log(videoRec);
         formData.append('video', videoRec);
 
         // console.log(postImage.photo[0]);

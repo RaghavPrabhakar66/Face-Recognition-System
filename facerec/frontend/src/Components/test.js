@@ -45,8 +45,9 @@ const Test = ({childToParent}) => {
             const blob = new Blob(recordedChunks, {
                 type: "video/webm"
             });
-            const url = URL.createObjectURL(blob);
-            childToParent(url);
+            var fileOfBlob = new File([blob], 'aFileName.json');
+            // const url = URL.createObjectURL(blob);
+            childToParent(fileOfBlob);
             // const a = document.createElement("a");
             // document.body.appendChild(a);
             // a.style = "display: none";
@@ -68,7 +69,7 @@ const Test = ({childToParent}) => {
                 <button className="flex-1 btn bg-red-400 hover:bg-red-500 border-none" onClick={handleStartCaptureClick}>Start Capture</button>
             )}
             {recordedChunks.length > 0 && (
-                <button className="flex-1 btn bg-red-400 hover:bg-red-500 border-none" onClick={handleDownload}>Download</button>
+                <button className="flex-1 btn bg-red-400 hover:bg-red-500 border-none" onClick={handleDownload}>Upload Video</button>
             )}
         </>
     );

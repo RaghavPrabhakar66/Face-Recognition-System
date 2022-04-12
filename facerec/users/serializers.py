@@ -8,7 +8,7 @@ class StudentVideoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class StudentSerializer(serializers.ModelSerializer):
-    video = StudentVideoSerializer(required=True)
+    video = StudentVideoSerializer(many=True)
     class Meta:
         model = models.Student
         fields = '__all__'
