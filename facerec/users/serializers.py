@@ -2,14 +2,13 @@ from . import models
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer as UserCreate
 
-# remove
-class StudentPhotoSerializer(serializers.ModelSerializer):
+class StudentVideoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.StudentPhoto
+        model = models.StudentVideo
         fields = '__all__'
 
 class StudentSerializer(serializers.ModelSerializer):
-    photos = StudentPhotoSerializer(many=True)
+    video = StudentVideoSerializer(required=True)
     class Meta:
         model = models.Student
         fields = '__all__'
@@ -26,7 +25,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
         student = models.Student.objects.get(id=student_data['id'])
         attendance = models.Attendance.objects.create(student=student, **validated_data)
         return attendance
-
 
 class UserCreateSerializer(UserCreate):
     class Meta(UserCreate.Meta):
