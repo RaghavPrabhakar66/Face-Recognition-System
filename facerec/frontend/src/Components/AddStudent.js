@@ -74,6 +74,7 @@ const AddStudent = () => {
         formData.append('hostel', hostel);
         formData.append('is_outside', false);
         formData.append('photos', postImage.photo[0]);
+        formData.append('video',videoRec);
 
         console.log(postImage.photo[0]);
         // let item = { rollno, first_name, last_name, phone, email, hostel }
