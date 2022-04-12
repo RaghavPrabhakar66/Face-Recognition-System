@@ -7,60 +7,70 @@ const videoConstraints = {
     facingMode: "user"
 };
 
-const Test = () => {
-    const [isCaptureEnable, setCaptureEnable] = useState(false);
+const Test = ({childToParent}) => {
     const webcamRef = useRef(null);
-    const [url, setUrl] = useState(null);
-    const capture = useCallback(() => {
-        const imageSrc = webcamRef.current?.getScreenshot();
-        if (imageSrc) {
-            setUrl(imageSrc);
+    const mediaRecorderRef = useRef(null);
+    const [capturing, setCapturing] = useState(false);
+    const [recordedChunks, setRecordedChunks] = useState([]);
+    
+
+    const handleStartCaptureClick = useCallback(() => {
+        setCapturing(true);
+        mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
+            mimeType: "video/webm"
+        });
+        mediaRecorderRef.current.addEventListener(
+            "dataavailable",
+            handleDataAvailable
+        );
+        mediaRecorderRef.current.start();
+    }, [webcamRef, setCapturing, mediaRecorderRef]);
+
+    const handleDataAvailable = useCallback(
+        ({ data }) => {
+            if (data.size > 0) {
+                setRecordedChunks((prev) => prev.concat(data));
+            }
+        },
+        [setRecordedChunks]
+    );
+
+    const handleStopCaptureClick = useCallback(() => {
+        mediaRecorderRef.current.stop();
+        setCapturing(false);
+    }, [mediaRecorderRef, webcamRef, setCapturing]);
+
+    const handleDownload = useCallback(() => {
+        if (recordedChunks.length) {
+            const blob = new Blob(recordedChunks, {
+                type: "video/webm"
+            });
+            const url = URL.createObjectURL(blob);
+            childToParent(url);
+            // const a = document.createElement("a");
+            // document.body.appendChild(a);
+            // a.style = "display: none";
+            // a.href = url;
+            // a.download = "react-webcam-stream-capture.webm";
+            // a.click();
+            // window.URL.revokeObjectURL(url);
+            setRecordedChunks([]);
         }
-    }, [webcamRef]);
+    }, [recordedChunks]);
+
 
     return (
-        <div>
-            <header>
-                <h1>camera app</h1>
-            </header>
-            {isCaptureEnable || (
-                <button onClick={() => setCaptureEnable(true)}>Start</button>
+        <>
+            <Webcam audio={false} ref={webcamRef} />
+            {capturing ? (
+                <button className="flex-1 btn bg-red-400 hover:bg-red-500 border-none" onClick={handleStopCaptureClick}>Stop Capture</button>
+            ) : (
+                <button className="flex-1 btn bg-red-400 hover:bg-red-500 border-none" onClick={handleStartCaptureClick}>Start Capture</button>
             )}
-            {isCaptureEnable && (
-                <>
-                    <div>
-                        <button onClick={() => setCaptureEnable(false)}>End</button>
-                    </div>
-                    <div>
-                        <Webcam
-                            audio={false}
-                            width={540}
-                            height={360}
-                            ref={webcamRef}
-                            screenshotFormat="image/jpeg"
-                            videoConstraints={videoConstraints}
-                        />
-                    </div>
-                    <button onClick={capture}>capture</button>
-                </>
+            {recordedChunks.length > 0 && (
+                <button className="flex-1 btn bg-red-400 hover:bg-red-500 border-none" onClick={handleDownload}>Download</button>
             )}
-            {url && (
-                <>
-                    <div>
-                        <button
-                            onClick={() => {
-                                setUrl(null);
-                            }}
-                        >
-                            delete
-                        </button>
-                    </div>
-                    <div>
-                        <img src={url} alt="Screenshot" />
-                    </div>
-                </>
-            )}
-        </div>
+        </>
     );
 };
 
