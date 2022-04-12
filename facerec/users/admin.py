@@ -5,8 +5,8 @@ from django.contrib import admin
 
 from . import models
 
-class StudentPhotoInline(admin.TabularInline):
-    model = models.StudentPhoto
+class StudentVideoInline(admin.TabularInline):
+    model = models.StudentVideo
     extra = 3
 
 
@@ -15,7 +15,7 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = ('id', 'first_name', 'last_name', 'email', 'rollno', 'hostel')
     list_filter = ('id', 'first_name', 'last_name', 'email', 'rollno', 'hostel')
     search_fields = ('name',)
-    inlines = [StudentPhotoInline,]
+    inlines = [StudentVideoInline,]
 
 
 class AttendanceAdmin(admin.ModelAdmin):

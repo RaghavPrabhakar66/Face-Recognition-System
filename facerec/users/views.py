@@ -19,10 +19,12 @@ class StudentList(generics.ListCreateAPIView):
             queryset = queryset.filter(first_name=first_name)
         return queryset
 
+    parser_classes = [MultiPartParser, FormParser]
     serializer_class = serializers.StudentSerializer
 
 class StudentActions(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Student.objects.all()
+    parser_classes = [MultiPartParser, FormParser]
     serializer_class = serializers.StudentSerializer
 
 
@@ -30,16 +32,17 @@ class AttendanceList(generics.ListCreateAPIView):
     queryset = models.Attendance.objects.all()
     serializer_class = serializers.AttendanceSerializer
 
-class StudentPhotoList(generics.ListCreateAPIView):
-    parser_classes = [MultiPartParser, FormParser]
-    queryset = models.StudentPhoto.objects.all()
-    serializer_class = serializers.StudentPhotoSerializer
+# class StudentPhotoList(generics.ListCreateAPIView):
+#     parser_classes = [MultiPartParser, FormParser]
+#     queryset = models.StudentPhoto.objects.all()
+#     serializer_class = serializers.StudentPhotoSerializer
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def restrcited(request, *args, **kwargs):
     return Response(data="You are authorized to access this page", status=status.HTTP_200_OK)
 
+# debug
 @api_view(['GET'])
 def missing_students_csv(request):
     response = HttpResponse(content_type='text/csv')
