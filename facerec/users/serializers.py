@@ -2,14 +2,13 @@ from . import models
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer as UserCreate
 
+# remove
 class StudentPhotoSerializer(serializers.ModelSerializer):
-    # student = StudentSerializer(read_only=True)
     class Meta:
         model = models.StudentPhoto
         fields = '__all__'
 
 class StudentSerializer(serializers.ModelSerializer):
-    # photos = serializers.PrimaryKeyRelatedField(many=True, queryset=models.StudentPhoto.objects.all(), required=False)
     photos = StudentPhotoSerializer(many=True)
     class Meta:
         model = models.Student

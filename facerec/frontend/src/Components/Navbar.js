@@ -4,6 +4,11 @@ import { Link } from "react-router-dom";
 import logo from '../Images/thapar.png';
 
 const Navbar = () => {
+
+	async function logout() {
+		localStorage.removeItem('Token');
+	}
+
 	return (
 		<div>
 			<div className="navbar mb-2 shadow-lg text-neutral-content max-h-10">
@@ -81,7 +86,7 @@ const Navbar = () => {
 							</Link>
 						</div>
 						<div>
-							<Link to="/site/login">
+							<Link onClick={logout} to="/site/login">
 								<Menu.Item className="flex justify-start hover:bg-blue-200 p-1 mt-1 rounded-lg">
 									{({ active }) => (
 
