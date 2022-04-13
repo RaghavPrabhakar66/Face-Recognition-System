@@ -2,13 +2,8 @@ from . import models
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer as UserCreate
 
-class StudentVideoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.StudentVideo
-        fields = '__all__'
 
 class StudentSerializer(serializers.ModelSerializer):
-    video = StudentVideoSerializer(many=True)
     class Meta:
         model = models.Student
         fields = '__all__'

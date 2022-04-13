@@ -4,10 +4,9 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-def photo_upload_path(instance, filename):
+def upload_path(instance, filename):
     ext = filename.split('.')[-1]
-    filename = "%s.%s" % (uuid.uuid4(), ext)
-    return f'database/{instance.student.first_name}_{str(instance.id)}.jpg'
+    return f'database/{instance.first_name}_{str(instance.id)}.{ext}'
 
 class Student(models.Model):
 
@@ -28,7 +27,7 @@ class Student(models.Model):
         ('Hostel N', 'Hostel N'),
         ('Hostel O', 'Hostel O'),
     )
-
+    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200)
@@ -37,6 +36,7 @@ class Student(models.Model):
     is_late = models.BooleanField(default=False)
     rollno = models.IntegerField(default=0)
     hostel = models.CharField(max_length=200, choices=HOSTEL)
+    video = models.FileField(upload_to=upload_path)
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
@@ -49,16 +49,6 @@ class Student(models.Model):
         
         self.isOutside = False
         return
-
-
-class StudentVideo(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    student = models.ForeignKey(Student, related_name='video',  on_delete=models.CASCADE)
-    # replace with file field, merge with student (same model or one to one field), clear database, fresh migration
-    video = models.FileField(upload_to=photo_upload_path)
-
-    def __str__(self):
-        return self.student.first_name + str(self.id)
 
 
 class Attendance(models.Model):
