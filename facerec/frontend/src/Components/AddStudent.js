@@ -4,7 +4,7 @@ import { Listbox } from "@headlessui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
-import { CameraIcon, VideoCameraIcon } from '@heroicons/react/solid'
+import { XIcon, CameraIcon, VideoCameraIcon, TrashIcon } from '@heroicons/react/solid'
 import Test from "./test";
 
 const videoConstraints = {
@@ -43,7 +43,6 @@ const AddStudent = () => {
 
     //file input stuff
     const fileInputRef = useRef(null); //used to handle change events of button and link to the input field
-    
     //csrf tokens
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
@@ -56,13 +55,14 @@ const AddStudent = () => {
     const [phone, setPhone] = useState(null);
     const [email, setEmail] = useState("");
     const [hostel, setHostel] = useState("Hostel A");
+    const [postImage, setPostImage] = useState(null);
     const [videoRec, setVideoRec ] = useState(null); //set video parameters
     const navigate = useNavigate();
+
 
     const childToParent = (childdata) => {
         setVideoRec(childdata);
     }
-
     //axios request
     async function addStudent() {
         let formData = new FormData();
@@ -75,6 +75,11 @@ const AddStudent = () => {
         formData.append('is_outside', false);
         console.log(videoRec);
         formData.append('video', videoRec);
+
+        // console.log(postImage.photo[0]);
+        // let item = { rollno, first_name, last_name, phone, email, hostel }
+        // console.log(item);
+        // console.log(formData);
 
         await axios({
             method: "post",
@@ -197,7 +202,62 @@ const AddStudent = () => {
                                 <button className="btn bg-red-400 hover:bg-red-500 border-none" onClick={() => setCaptureEnable(false)}>Close</button>
                             </div>
                         )}
+                        {/* {postImage && (
+                            <>
+                                <img src={URL.createObjectURL(postImage)} alt="from device" />
+                            </>
+                        )} */}
                     </div>
+                    {/* <div className="grid flex-grow bg-base-200 rounded-box place-items-center">
+                        {isCaptureEnable && (
+                            <>
+                                <div>
+                                    <button className="btn bg-red-400 hover:bg-red-500 border-none" onClick={() => setCaptureEnable(false)}>Close <XIcon className="ml-1 h-4 w-4" /></button>
+                                </div>
+                                <div>
+                                    <Webcam
+                                        audio={false}
+                                        width={540}
+                                        height={360}
+                                        ref={webcamRef}
+                                        screenshotFormat="image/jpeg"
+                                        videoConstraints={videoConstraints}
+                                    />
+                                </div>
+                                <button className="btn bg-red-400 hover:bg-red-500 border-none" onClick={capture}>Capture <CameraIcon className="ml-1 h-4 w-4" /></button>
+                            </>
+                        )}
+                        {url && (
+                            <>
+                                <div>
+                                    <img src={url} alt="Screenshot" />
+                                </div>
+                                <div>
+                                    <button
+                                        className="btn bg-red-400 hover:bg-red-500 border-none mt-2"
+                                        onClick={() => {
+                                            setUrl(null);
+                                        }}
+                                    >
+                                        delete <TrashIcon className="ml-1 h-4 w-4" />
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                         {postImage && (
+                            <>
+                                <img src={URL.createObjectURL(postImage)} alt="from device" />
+                            </>
+                        )} 
+                </div> */}
+                    <input
+                        accept="image/*"
+                        className="hidden"
+                        ref={fileInputRef}
+                        name="photo"
+                        type="file"
+                        onChange={(e) => setPostImage({ photo: e.target.files })}
+                    />
                     <div className="flex bg-blue-100 space-x-2">
                         {/* webcam upload option */}
                         <button
@@ -215,6 +275,9 @@ const AddStudent = () => {
                     </div>
                 </div>
             </div>
+            {/* <div className="flex w-full bg-base-200 my-5 rounded-box h-full">
+				Upload Images
+			</div> */}
         </div >
     );
 };
