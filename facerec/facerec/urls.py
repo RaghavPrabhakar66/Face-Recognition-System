@@ -24,7 +24,7 @@ admin.site.site_title = "Capstone Project"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/students', StudentList.as_view(), name='student'),
-    path('api/student-actions/<int:pk>', StudentActions.as_view(), name='student-actions'),
+    path('api/student-actions/<uuid:pk>', StudentActions.as_view(), name='student-actions'),
     path('api/attendances', AttendanceList.as_view(), name='attendance'),
     path('auth/', include('users.urls')),
     path('api/export/csv', missing_students_csv, name='missing_students_csv'),

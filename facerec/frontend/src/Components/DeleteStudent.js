@@ -23,11 +23,15 @@ const DeleteStudent = () => {
         })
             .then((res) => {
                 console.log(res);
-                if(res.data) {
+                if(res.status === 204)
+                {
                     navigate("/site/dashboard");
-                } else {
-                    alert("Invalid request")
                 }
+                else
+                {
+                    alert("Invalid ID\nPlease try again.");
+                }
+                
             })
             .catch((err) => console.error(err))
     }

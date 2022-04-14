@@ -1,9 +1,11 @@
 import Navbar from "./Navbar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Listbox } from "@headlessui/react";
-import UploadImages from "./UploadImages";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { CameraIcon, VideoCameraIcon } from '@heroicons/react/solid'
+import Test from "./test";
+
 
 const hostels = [
     { id: 1, name: "Hostel A", unavailable: false },
@@ -19,6 +21,22 @@ const hostels = [
 ];
 
 const ModifyStudent = () => {
+    //webcam stuff
+    const [isCaptureEnable, setCaptureEnable] = useState(false);
+    const webcamRef = useRef(null);
+    const [url, setUrl] = useState(null);
+    const capture = useCallback(() => {
+        const imageSrc = webcamRef.current?.getScreenshot();
+        if (imageSrc) {
+            setUrl(imageSrc);
+        }
+    }, [webcamRef]);
+    
+
+    //file input stuff
+    const fileInputRef = useRef(null); //used to handle change events of button and link to the input field
+    
+    //csrf tokens
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
 
@@ -29,20 +47,33 @@ const ModifyStudent = () => {
     const [phone, setPhone] = useState(null);
     const [email, setEmail] = useState("");
     const [hostel, setHostel] = useState("Hostel A");
+    const [videoRec, setVideoRec ] = useState(null); //set video parameters
     const [id, setId] = useState("")
     const [loaded, setLoaded] = useState(false)
     const navigate = useNavigate();
 
+    const childToParent = (childdata) => {
+        setVideoRec(childdata);
+    }
+
     async function modifyStudent() {
-        let item = { rollno, first_name, last_name, phone, email, hostel }
-        console.log(item);
+        let formData = new FormData();
+        formData.append('rollno', rollno);
+        formData.append('first_name', first_name);
+        formData.append('last_name', last_name);
+        formData.append('phone', phone);
+        formData.append('email', email);
+        formData.append('hostel', hostel);
+        formData.append('is_outside', false);
+        formData.append('video', videoRec);
 
         await axios({
             method: "put",
             url: "http://127.0.0.1:8080/api/student-actions/" + id,
-            data: item,
+            data: formData,
             headers: {
-				Authorization : 'Token ' + localStorage.getItem("Token")
+				Authorization : 'Token ' + localStorage.getItem("Token"),
+                'content-type': 'multipart/form-data'
 			}
         })
             .then((res) => {
@@ -55,6 +86,12 @@ const ModifyStudent = () => {
             })
             .catch((err) => console.error(err))
     }
+
+    useEffect(()=> {
+        if(videoRec){
+            console.log(videoRec);
+        }
+    }, [videoRec])
 
     useEffect(() => {
         setHostel(selectedHostel.name);
@@ -78,6 +115,7 @@ const ModifyStudent = () => {
                     setPhone(res.data.phone);
                     setEmail(res.data.email);
                     setHostel(res.data.hostel)
+                    setVideoRec(res.data.video)
                     setLoaded(true)
                 }
             })
@@ -203,18 +241,30 @@ const ModifyStudent = () => {
                     <div className="divider divider-vertical"></div>
                     <div className="flex flex-col space-y-2 w-1/2">
                         <div className="grid flex-grow card bg-base-200 rounded-box place-items-center">
-                            content
+                            {isCaptureEnable && (
+                                <div>
+                                    <Test childToParent={childToParent} />
+                                    <button className="btn bg-red-400 hover:bg-red-500 border-none" onClick={() => setCaptureEnable(false)}>Close</button>
+                                </div>
+                            )}
                         </div>
-                        <UploadImages />
-                        {/* <div className="grid flex-grow card bg-base-200 rounded-box place-items-center">
-                            Upload Image
-                            <UploadImages />
-                        </div> */}
+                        <div className="flex bg-blue-100 space-x-2">
+                            {/* webcam upload option */}
+                            <button
+                                className="flex-1 btn bg-red-400 hover:bg-red-500 border-none"
+                                onClick={() => setCaptureEnable(true)}>Upload from webcam <VideoCameraIcon className="ml-1 h-4 w-4" />
+                            </button>
+                            {/* ref for when the file is uploaded !! */}
+                            <button onClick={(e) => {
+                                e.preventDefault();
+                                fileInputRef.current.click();
+                            }}
+                                className="flex-1 btn bg-red-400 hover:bg-red-500 border-none">
+                                Upload Images <CameraIcon className="ml-1 h-4 w-4" />
+                            </button>
+                        </div>
                     </div>
                 </div>
-                {/* <div className="flex w-full bg-base-200 my-5 rounded-box h-full">
-                    Upload Images
-                </div> */}
             </div>
         );
     }
