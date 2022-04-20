@@ -11,6 +11,21 @@ function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
 }
 
+const handleDownload = () => {
+	axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+	axios.defaults.xsrfCookieName = "csrftoken";
+	console.log("Accessing the handleDownload method");
+	axios({
+		method: "get",
+		url: "http://127.0.0.1:8080/api/export/csv",
+		headers: {
+			Authorization: 'Token ' + localStorage.getItem("Token")
+		}
+	})
+		.then((res) => console.log(res))
+		.catch((err) => console.error(err))
+}
+
 const Dashboard = () => {
 	const [listOfAttendances, setListOfAttendances] = useState([])
 
@@ -95,8 +110,8 @@ const Dashboard = () => {
 				</Tab.Group>
 			</div>
 			<footer className="absolute bottom-5 right-5 z-10">
-				<Link to="/api/export/csv" target="_blank" download>
-					<button className="flex h-20 w-20 bg-red-200 rounded-full transition-all active:w-[4.9rem] active:h-[4.9rem] active:bg-red-100">
+				<Link to="/api/export/csv" target="_blank">
+					<button onClick={handleDownload} className="flex h-20 w-20 bg-red-200 rounded-full transition-all active:w-[4.9rem] active:h-[4.9rem] active:bg-red-100">
 						<DownloadIcon className="h-10 w-10 m-auto" />
 					</button>
 				</Link>
