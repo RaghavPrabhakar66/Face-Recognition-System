@@ -27,13 +27,12 @@ const DeleteStudent = () => {
                 {
                     navigate("/site/dashboard");
                 }
-                else
-                {
-                    alert("Invalid ID\nPlease try again.");
-                }
                 
             })
-            .catch((err) => console.error(err))
+            .catch((err) => {
+                console.error(err);
+                alert("Invalid ID\nPlease try again.");
+            })
     }
 
     return (

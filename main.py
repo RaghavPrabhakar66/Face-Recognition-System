@@ -4,13 +4,14 @@ from pprint import pprint
 
 from src.utils.display import stream
 from src.utils.generation import generate
+from src.utils.final_stream import stream2
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-d",
         "--detector",
-        default="RetinaFace",
+        default="Mediapipe",
         help="model used for face detection",
     )
     parser.add_argument(
@@ -64,22 +65,42 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     videos = os.listdir("data/test-videos/")
-    pprint(args)
+    #pprint(args)
     if args.align_face is True and args.extract_face is False:
         print("You need to extract faces first. Alignment disabled for now.")
-
-    videopath = None if args.webcam else "data/test-videos/" + videos[8]
+    videopath = None if args.webcam else "data/test-videos/" + videos[2]
+    
+    # stream(
+    #     filepath=videopath,
+    #     model=args.detector,
+    #     extract_face=args.extract_face,
+    #     align_face=args.align_face,
+    #     track_face=args.track_face,
+    #     recognize_face=args.recognize_face,
+    #     padding=0,
+    #     status=args.status,
+    # )
 
     if args.generate == False:
-        stream(
+        stream2(
             filepath=videopath,
             model=args.detector,
             extract_face=args.extract_face,
             align_face=args.align_face,
-            track_face=args.track_face,
             recognize_face=args.recognize_face,
             padding=0,
             status=args.status,
         )
     else:
-        print(generate())
+        generate()
+
+        # stream(
+        #     filepath=videopath,
+        #     model=args.detector,
+        #     extract_face=args.extract_face,
+        #     align_face=args.align_face,
+        #     track_face=args.track_face,
+        #     recognize_face=args.recognize_face,
+        #     padding=0,
+        #     status=args.status,
+        # )
