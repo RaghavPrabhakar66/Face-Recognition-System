@@ -52,5 +52,6 @@ class Detection:
 
 
 def detector_wrapper(model: str):
+    print(model)
     a = models[model]
     return a()
