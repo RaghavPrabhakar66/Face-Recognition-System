@@ -16,7 +16,7 @@ from src.utils.draw import (
     LINETYPE,
     draw_bounding_box,
 )
-from src.utils.utilities import facial_extraction, load_database, record, login
+from src.utils.utilities import facial_extraction, record, login
 
 
 def stream(
@@ -59,8 +59,6 @@ def stream(
     # Login Backend
     #creds = login(['a@a.com', 'admin'])
     print("Logged into backend")
-    # Load database
-    database = load_database(path['database'])
 
     # Models
     detector = detector_wrapper(model)
@@ -153,7 +151,7 @@ def stream(
 
             if recognize_face:
                 if known_tracks.get(track.id, None) is None:
-                    name, _ = recognizer.recognize(face)
+                    name = recognizer.recognize(face)
                     known_tracks[track.id] = name
                     
                     if name:
@@ -191,7 +189,7 @@ def stream(
                     faces.append(face)
                 
                 if recognize_face:
-                    name, _ = recognizer.recognize(face)
+                    name = recognizer.recognize(face)
                     if name:
                         cv2.putText(display_frame, name, (det.box[0] + 6, det.box[1] - 5), FONT, FSCALE, FONT_COLOR, LTYPE)
 

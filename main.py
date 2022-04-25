@@ -3,6 +3,7 @@ import os
 from pprint import pprint
 
 from src.utils.display import stream
+from src.utils.generation import generate
 from src.utils.final_stream import stream2
 
 if __name__ == "__main__":
@@ -54,6 +55,13 @@ if __name__ == "__main__":
         default="entry",
         help="attendance status",
     )
+    parser.add_argument(
+        "-g",
+        "--generate",
+        action='store_true',
+        default=False,
+        help="embedding generation",
+    )
 
     args = parser.parse_args()
     videos = os.listdir("data/test-videos/")
@@ -73,6 +81,9 @@ if __name__ == "__main__":
     #     status=args.status,
     # )
 
+    if args.generate == True:
+        generate()
+        
     stream2(
         filepath=videopath,
         model=args.detector,
@@ -83,3 +94,13 @@ if __name__ == "__main__":
         status=args.status,
     )
 
+        # stream(
+        #     filepath=videopath,
+        #     model=args.detector,
+        #     extract_face=args.extract_face,
+        #     align_face=args.align_face,
+        #     track_face=args.track_face,
+        #     recognize_face=args.recognize_face,
+        #     padding=0,
+        #     status=args.status,
+        # )

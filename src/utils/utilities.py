@@ -86,14 +86,14 @@ def record(name, creds, status):
         #     add_attendance(name, creds)
 
 
-def load_database(path):
-    names = os.listdir(path)
-    database = []
+# def load_database(path):
+#     students = requests.post
+#     database = []
     
-    for name in names:
-        img = cv2.imread(f'{path}/{name}')
-        database.append((name.split('_')[0], img))
-    return database
+#     for name in names:
+#         img = cv2.imread(f'{path}/{name}')
+#         database.append((name.split('_')[0], img))
+#     return database
 
-if __name__ == '__main__':
-    print(load_database("D:\Python\Projects\Face-Recognition-System\data\database"))
+# if __name__ == '__main__':
+#     print(load_database("D:\Python\Projects\Face-Recognition-System\data\database"))

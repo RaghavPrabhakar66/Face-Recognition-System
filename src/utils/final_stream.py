@@ -17,7 +17,7 @@ from src.utils.draw import (
     LINETYPE,
     draw_bounding_box,
 )
-from src.utils.utilities import facial_extraction, load_database, record, login
+from src.utils.utilities import facial_extraction, record, login
 
 
 def stream2(
@@ -57,15 +57,13 @@ def stream2(
     step = 5
 
     # Login Backend
-    #creds = login(['a@a.com', 'admin'])
+    creds = login(['a@a.com', 'admin'])
     print("Logged into backend")
-    # Load database
-    database = load_database(path['database'])
 
     # Models
     detector = detector_wrapper(model)
     if recognize_face:
-        recognizer = recognizer_wrapper('face_recognition', database)
+        recognizer = recognizer_wrapper('face_recognition')
 
     # Video and webcam capture modes
     cap = (
@@ -131,65 +129,60 @@ def stream2(
                         )
                     )
 
-        faces = []
+            faces = []
 
-        for track in detections:
-            track_color = [255, 255, 255]
-            face, (w, h)= facial_extraction(frame, track.box, padding=padding)
-            if extract_face:
-                # if align_face:
-                #     face = align(frame, landmarks[i], w, h)
-                faces.append(face)
+            for track in detections:
+                track_color = [255, 255, 255]
+                face, (w, h)= facial_extraction(frame, track.box, padding=padding)
+                if extract_face:
+                    # if align_face:
+                    #     face = align(frame, landmarks[i], w, h)
+                    faces.append(face)
 
-            if recognize_face:
-                if known_tracks.get(track.id, None) is None:
-                    name, _ = recognizer.recognize(face)
-                    known_tracks[track.id] = name
+                if recognize_face:
+                    name = recognizer.recognize(face)
                     
                     if name:
                         os.makedirs(path['records'], exist_ok=True)
-                        cv2.imwrite(path['records'] + '/' + str(known_tracks[track.id]) + '.jpg', face)
+                        cv2.imwrite(path['records'] + '/' + name + '.jpg', face)
                         # cv2.rectangle(display_frame, (int(track.box[0]), int(track.box[1])), (int(track.box[0] + w), int(track.box[1] - 10)), track_color, -1)
-                        cv2.putText(display_frame, known_tracks[track.id], (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
+                        cv2.putText(display_frame, name, (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
                         record(name, creds, status)
                     else:
                         # known_tracks[track.id] = 'unknown-' + str(track.id)
                         os.makedirs(path['records'], exist_ok=True)
                         cv2.imwrite(path['records'] + '/unknown-' + str(track.id) + '.jpg', face)
                         cv2.putText(display_frame, 'unknown', (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
-                else:
-                    cv2.imwrite(path['records'] + '/' + str(known_tracks[track.id]) + '.jpg', face)
-                    # cv2.rectangle(display_frame, (int(track.box[0]), int(track.box[1])), (int(track.box[0] + w), int(track.box[1] - 10)), track_color, -1)
-                    cv2.putText(display_frame, known_tracks[track.id], (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
                     
-            display_frame = draw_bounding_box(
+                        
+                display_frame = draw_bounding_box(
+                    display_frame,
+                    track.box,
+                    track_color,
+                    int(2 * scale),
+                    track.id,
+                )
+
+            resultImage = cv2.hconcat(faces) if faces else display_frame
+
+            # Display frame rate
+            display_frame = cv2.resize(display_frame, resize_shape)
+            cv2.putText(
                 display_frame,
-                track.box,
-                track_color,
-                int(2 * scale),
-                track.id,
+                f"FPS: {str(fps//frameCounter)}",
+                (resize_shape[0] - 90, 30),
+                FONT,
+                FONT_SCALE,
+                FONT_COLOR,
+                LINETYPE,
             )
 
-        resultImage = cv2.hconcat(faces) if faces else display_frame
-
-        # Display frame rate
-        display_frame = cv2.resize(display_frame, resize_shape)
-        cv2.putText(
-            display_frame,
-            f"FPS: {str(fps//frameCounter)}",
-            (resize_shape[0] - 90, 30),
-            FONT,
-            FONT_SCALE,
-            FONT_COLOR,
-            LINETYPE,
-        )
-
-        # Display video and extracted faces
-        cv2.imshow("base-image", display_frame)
-        if extract_face:
-            cv2.imshow("result-image", resultImage)
-        if cv2.waitKey(25) & 0xFF == ord("q"):
-            break
+            # Display video and extracted faces
+            cv2.imshow("base-image", display_frame)
+            if extract_face:
+                cv2.imshow("result-image", resultImage)
+            if cv2.waitKey(25) & 0xFF == ord("q"):
+                break
 
     cap.release()
     cv2.destroyAllWindows()
