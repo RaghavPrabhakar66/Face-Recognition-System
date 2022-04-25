@@ -31,7 +31,6 @@ models = {
     'RetinaFace': RetinafaceDetector,
 }
 
-
 class Detection:
     def __init__(
         self,

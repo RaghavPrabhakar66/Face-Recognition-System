@@ -7,10 +7,12 @@ import requests
 # get different angles, store array
 def generate(embedding_model=face_encodings, detection_model=detector_wrapper('Mediapipe'), frame_count=5, skip=24):
     embedding_map = []
+    name_map = []
     videos = get_videos()
     
     for name, video in videos:
         embeddings = []
+        names = []
         cap = cv2.VideoCapture(video)
         
         f = frame_count
@@ -26,15 +28,18 @@ def generate(embedding_model=face_encodings, detection_model=detector_wrapper('M
                 face = frame[bbox[0]:bbox[2], bbox[1]:bbox[3], :]
                 emb = embedding_model(frame)
                 if len(emb) != 0:
-                    embeddings.append((name, emb[0]))
+                    embeddings.append(emb[0])
+                    names.append(name)
                 f -= 1
             i += 1
 
         embedding_map.extend(embeddings)
+        name_map.extend(names)
         cap.release()  
         cv2.destroyAllWindows()
-        np.save("D:\Python\Projects\Face-Recognition-System\data\embeddings\embeddings.npy", embedding_map)
-    return embedding_map
+        np.save("D:\Python\Projects\Face-Recognition-System\data\embeddings\embeddings.npy", embedding_map, allow_pickle=True)
+        np.save("D:\Python\Projects\Face-Recognition-System\data\embeddings\\names.npy", name_map, allow_pickle=True)
+    return embedding_map, name_map
 
 
 def get_videos():

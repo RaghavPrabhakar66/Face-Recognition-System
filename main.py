@@ -81,18 +81,18 @@ if __name__ == "__main__":
     #     status=args.status,
     # )
 
-    if args.generate == False:
-        stream2(
-            filepath=videopath,
-            model=args.detector,
-            extract_face=args.extract_face,
-            align_face=args.align_face,
-            recognize_face=args.recognize_face,
-            padding=0,
-            status=args.status,
-        )
-    else:
+    if args.generate == True:
         generate()
+        
+    stream2(
+        filepath=videopath,
+        model=args.detector,
+        extract_face=args.extract_face,
+        align_face=args.align_face,
+        recognize_face=args.recognize_face,
+        padding=0,
+        status=args.status,
+    )
 
         # stream(
         #     filepath=videopath,
