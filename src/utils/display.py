@@ -16,14 +16,14 @@ from src.utils.draw import (
     LINETYPE,
     draw_bounding_box,
 )
-from src.utils.utilities import facial_extraction, load_database, record, login
+from src.utils.utilities import facial_extraction, record, login
 
 
 def stream(
     filepath=None,
     # resize_shape=None,
     # scale=None,
-    model="RetinaFace",
+    model="Mediapipe",
     extract_face=False,
     align_face=False,
     track_face=False,
@@ -50,17 +50,15 @@ def stream(
     known_tracks = {}
 
     # Frame rate
-    dt = 1 / 15
+    dt = 1 / 20
     prev_frame_time = 0
     fps = 0
     frameCounter = 0
-    step = 4
+    step = 5
 
     # Login Backend
-    creds = login(['a@a.com', 'admin'])
+    #creds = login(['a@a.com', 'admin'])
     print("Logged into backend")
-    # Load database
-    database = load_database(path['database'])
 
     # Models
     detector = detector_wrapper(model)
@@ -100,7 +98,7 @@ def stream(
         # Calculate frame rate
         height, width, _ = frame.shape
         curr_frame_time = time.time()
-        fps += round(1 / (curr_frame_time - prev_frame_time))
+        fps = round(1 / (curr_frame_time - prev_frame_time))
         prev_frame_time = curr_frame_time
 
         # Reshape frame
@@ -116,6 +114,7 @@ def stream(
         detections = []
         if frameCounter % step == 0:
             bboxes = detector.detect(frame)
+            print(bboxes)
             for bbox in bboxes:
                 if len(bbox) == 4:
                     detections.append(
@@ -152,7 +151,7 @@ def stream(
 
             if recognize_face:
                 if known_tracks.get(track.id, None) is None:
-                    name, _ = recognizer.recognize(face)
+                    name = recognizer.recognize(face)
                     known_tracks[track.id] = name
                     
                     if name:
@@ -160,7 +159,7 @@ def stream(
                         cv2.imwrite(path['records'] + '/' + str(known_tracks[track.id]) + '.jpg', face)
                         # cv2.rectangle(display_frame, (int(track.box[0]), int(track.box[1])), (int(track.box[0] + w), int(track.box[1] - 10)), track_color, -1)
                         cv2.putText(display_frame, known_tracks[track.id], (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
-                        record(name, creds, status)
+                        #record(name, creds, status)
                     else:
                         # known_tracks[track.id] = 'unknown-' + str(track.id)
                         os.makedirs(path['records'], exist_ok=True)
@@ -179,27 +178,27 @@ def stream(
                 track.id,
             )
         
-        # else:
-        #     for i, det in enumerate(detections):
-        #         face, (w, h)= facial_extraction(frame, det.box, padding=padding)
+        else:
+            for i, det in enumerate(detections):
+                face, (w, h)= facial_extraction(frame, det.box, padding=padding)
 
-        #         if extract_face:
-        #             cv2.imwrite(path['records'] + '/' + str(i) + '.png', face)
-        #             # if align_face:
-        #             #     face = align(frame, landmarks[i], w, h)
-        #             faces.append(face)
+                if extract_face:
+                    cv2.imwrite(path['records'] + '/' + str(i) + '.png', face)
+                    # if align_face:
+                    #     face = align(frame, landmarks[i], w, h)
+                    faces.append(face)
                 
-        #         if recognize_face:
-        #             name, _ = recognizer.recognize(face)
-        #             if name:
-        #                 cv2.putText(display_frame, name, (det.box[0] + 6, det.box[1] - 5), FONT, FSCALE, FONT_COLOR, LTYPE)
+                if recognize_face:
+                    name = recognizer.recognize(face)
+                    if name:
+                        cv2.putText(display_frame, name, (det.box[0] + 6, det.box[1] - 5), FONT, FSCALE, FONT_COLOR, LTYPE)
 
-        #         display_frame = draw_bounding_box(
-        #             display_frame,
-        #             det.box,
-        #             (0, 255, 0),
-        #             2,
-        #         )
+                display_frame = draw_bounding_box(
+                    display_frame,
+                    det.box,
+                    (0, 255, 0),
+                    2,
+                )
 
         resultImage = cv2.hconcat(faces) if faces else display_frame
 
@@ -207,7 +206,7 @@ def stream(
         display_frame = cv2.resize(display_frame, resize_shape)
         cv2.putText(
             display_frame,
-            f"FPS: {str(fps//frameCounter)}",
+            f"FPS: {str(fps)}",
             (resize_shape[0] - 90, 30),
             FONT,
             FONT_SCALE,

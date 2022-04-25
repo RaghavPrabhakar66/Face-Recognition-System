@@ -31,7 +31,6 @@ models = {
     'RetinaFace': RetinafaceDetector,
 }
 
-
 class Detection:
     def __init__(
         self,
@@ -52,5 +51,6 @@ class Detection:
 
 
 def detector_wrapper(model: str):
+    print(model)
     a = models[model]
     return a()
