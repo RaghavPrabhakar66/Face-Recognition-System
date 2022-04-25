@@ -140,24 +140,20 @@ def stream2(
                     faces.append(face)
 
                 if recognize_face:
-                    if True:
-                        name = recognizer.recognize(face)
-                        
-                        if name:
-                            os.makedirs(path['records'], exist_ok=True)
-                            cv2.imwrite(path['records'] + '/' + name + '.jpg', face)
-                            # cv2.rectangle(display_frame, (int(track.box[0]), int(track.box[1])), (int(track.box[0] + w), int(track.box[1] - 10)), track_color, -1)
-                            cv2.putText(display_frame, name, (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
-                            record(name, creds, status)
-                        else:
-                            # known_tracks[track.id] = 'unknown-' + str(track.id)
-                            os.makedirs(path['records'], exist_ok=True)
-                            cv2.imwrite(path['records'] + '/unknown-' + str(track.id) + '.jpg', face)
-                            cv2.putText(display_frame, 'unknown', (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
-                    else:
-                        cv2.imwrite(path['records'] + '/' + str(known_tracks[track.id]) + '.jpg', face)
+                    name = recognizer.recognize(face)
+                    
+                    if name:
+                        os.makedirs(path['records'], exist_ok=True)
+                        cv2.imwrite(path['records'] + '/' + name + '.jpg', face)
                         # cv2.rectangle(display_frame, (int(track.box[0]), int(track.box[1])), (int(track.box[0] + w), int(track.box[1] - 10)), track_color, -1)
-                        cv2.putText(display_frame, known_tracks[track.id], (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
+                        cv2.putText(display_frame, name, (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
+                        record(name, creds, status)
+                    else:
+                        # known_tracks[track.id] = 'unknown-' + str(track.id)
+                        os.makedirs(path['records'], exist_ok=True)
+                        cv2.imwrite(path['records'] + '/unknown-' + str(track.id) + '.jpg', face)
+                        cv2.putText(display_frame, 'unknown', (int(track.box[0] + 6), int(track.box[1] - 5)), FONT, FSCALE, [255, 255, 255], LTYPE)
+                    
                         
                 display_frame = draw_bounding_box(
                     display_frame,
