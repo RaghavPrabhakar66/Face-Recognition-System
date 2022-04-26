@@ -39,7 +39,7 @@ const AddStudent = () => {
             setUrl(imageSrc);
         }
     }, [webcamRef]);
-    
+
 
     //file input stuff
     const fileInputRef = useRef(null); //used to handle change events of button and link to the input field
@@ -55,8 +55,8 @@ const AddStudent = () => {
     const [phone, setPhone] = useState(null);
     const [email, setEmail] = useState("");
     const [hostel, setHostel] = useState("Hostel A");
-    const [postImage, setPostImage] = useState(null);
-    const [videoRec, setVideoRec ] = useState(null); //set video parameters
+    //const [postVideoFile, setPostVideoFile] = useState(null);
+    const [videoRec, setVideoRec] = useState(null); //set video parameters
     const navigate = useNavigate();
 
 
@@ -73,10 +73,7 @@ const AddStudent = () => {
         formData.append('email', email);
         formData.append('hostel', hostel);
         formData.append('is_outside', false);
-        console.log(videoRec);
         formData.append('video', videoRec);
-
-        // console.log(postImage.photo[0]);
         // let item = { rollno, first_name, last_name, phone, email, hostel }
         // console.log(item);
         // console.log(formData);
@@ -101,8 +98,8 @@ const AddStudent = () => {
             .catch((err) => console.error(err))
     }
 
-    useEffect(()=> {
-        if(videoRec){
+    useEffect(() => {
+        if (videoRec) {
             console.log(videoRec);
         }
     }, [videoRec])
@@ -202,9 +199,9 @@ const AddStudent = () => {
                                 <button className="btn bg-red-400 hover:bg-red-500 border-none" onClick={() => setCaptureEnable(false)}>Close</button>
                             </div>
                         )}
-                        {/* {postImage && (
+                        {/* {postVideoFile && (
                             <>
-                                <img src={URL.createObjectURL(postImage)} alt="from device" />
+                                <img src={URL.createObjectURL(postVideoFile)} alt="from device" />
                             </>
                         )} */}
                     </div>
@@ -244,19 +241,19 @@ const AddStudent = () => {
                                 </div>
                             </>
                         )}
-                         {postImage && (
+                         {postVideoFile && (
                             <>
-                                <img src={URL.createObjectURL(postImage)} alt="from device" />
+                                <img src={URL.createObjectURL(postVideoFile)} alt="from device" />
                             </>
                         )} 
                 </div> */}
                     <input
-                        accept="image/*"
+                        accept="video/*"
                         className="hidden"
                         ref={fileInputRef}
-                        name="photo"
+                        name="video"
                         type="file"
-                        onChange={(e) => setPostImage({ photo: e.target.files })}
+                        onChange={(e) => setVideoRec(e.target.files[0])}
                     />
                     <div className="flex bg-blue-100 space-x-2">
                         {/* webcam upload option */}
@@ -270,14 +267,11 @@ const AddStudent = () => {
                             fileInputRef.current.click();
                         }}
                             className="flex-1 btn bg-red-400 hover:bg-red-500 border-none">
-                            Upload Images <CameraIcon className="ml-1 h-4 w-4" />
+                            Upload Video via file<CameraIcon className="ml-1 h-4 w-4" />
                         </button>
                     </div>
                 </div>
             </div>
-            {/* <div className="flex w-full bg-base-200 my-5 rounded-box h-full">
-				Upload Images
-			</div> */}
         </div >
     );
 };
