@@ -224,6 +224,14 @@ const ModifyStudent = () => {
                                     </div>
                                 )}
                             </div>
+                            <input
+                                accept="video/*"
+                                className="hidden"
+                                ref={fileInputRef}
+                                name="video"
+                                type="file"
+                                onChange={(e) => setVideoRec(e.target.files[0])}
+                            />
                             <div className="flex bg-blue-100 space-x-2">
                                 {/* webcam upload option */}
                                 <button
@@ -236,7 +244,7 @@ const ModifyStudent = () => {
                                     fileInputRef.current.click();
                                 }}
                                     className="flex-1 btn bg-red-400 hover:bg-red-500 border-none">
-                                    Upload Images <CameraIcon className="ml-1 h-4 w-4" />
+                                    Upload Video via file<CameraIcon className="ml-1 h-4 w-4" />
                                 </button>
                             </div>
                         </div>
