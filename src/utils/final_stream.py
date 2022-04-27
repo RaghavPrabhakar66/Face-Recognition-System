@@ -52,7 +52,7 @@ def stream2(
     prev_frame_time = 0
     fps = 0
     frameCounter = 0
-    step = 24
+    step = 1
 
     # Login Backend
     creds = login(['a@a.com', 'admin'])
