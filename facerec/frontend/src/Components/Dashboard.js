@@ -73,7 +73,7 @@ const Dashboard = () => {
 										: 'text-red-100 hover:bg-white/[0.12] hover:text-white'
 								)
 							}
-						>Student</Tab>
+						>Attendance</Tab>
 						<Tab
 							className={({ selected }) =>
 								classNames(
@@ -84,9 +84,14 @@ const Dashboard = () => {
 										: 'text-red-100 hover:bg-white/[0.12] hover:text-white'
 								)
 							}
-						>Attendance</Tab>
+						>Student</Tab>
 					</Tab.List>
 					<Tab.Panels>
+						<Tab.Panel>
+							<div className="flex flex-col space-y-5">
+								{listItem}
+							</div>
+						</Tab.Panel>
 						<Tab.Panel className="flex flex-col justify-between space-y-2">
 							<Link to="/site/add-student">
 								<button className="bg-slate-200 rounded-lg w-full h-20 p-2  ">Add Student</button>
@@ -100,11 +105,6 @@ const Dashboard = () => {
 							<Link to="/site/view-student">
 								<button className="bg-slate-200 rounded-lg w-full h-20 p-2 ">View Student List</button>
 							</Link>
-						</Tab.Panel>
-						<Tab.Panel>
-							<div className="flex flex-col space-y-5">
-								{listItem}
-							</div>
 						</Tab.Panel>
 					</Tab.Panels>
 				</Tab.Group>
