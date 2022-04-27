@@ -47,14 +47,12 @@ def stream2(
         'database': 'data/database',
     }
 
-    known_tracks = {}
-
     # Frame rate
     dt = 1 / 20
     prev_frame_time = 0
     fps = 0
     frameCounter = 0
-    step = 5
+    step = 24
 
     # Login Backend
     creds = login(['a@a.com', 'admin'])
@@ -92,12 +90,12 @@ def stream2(
 
         frame = cv2.flip(frame, 1)
         display_frame = frame.copy()
-
-        # Calculate frame rate
         height, width, _ = frame.shape
-        curr_frame_time = time.time()
-        fps += round(1 / (curr_frame_time - prev_frame_time))
-        prev_frame_time = curr_frame_time
+
+        # # Calculate frame rate
+        # curr_frame_time = time.time()
+        # fps += round(1 / (curr_frame_time - prev_frame_time))
+        # prev_frame_time = curr_frame_time
 
         # Reshape frame
         if resize_shape is None:
@@ -165,17 +163,17 @@ def stream2(
 
             resultImage = cv2.hconcat(faces) if faces else display_frame
 
-            # Display frame rate
-            display_frame = cv2.resize(display_frame, resize_shape)
-            cv2.putText(
-                display_frame,
-                f"FPS: {str(fps//frameCounter)}",
-                (resize_shape[0] - 90, 30),
-                FONT,
-                FONT_SCALE,
-                FONT_COLOR,
-                LINETYPE,
-            )
+            # # Display frame rate
+            # display_frame = cv2.resize(display_frame, resize_shape)
+            # cv2.putText(
+            #     display_frame,
+            #     f"FPS: {str(fps//frameCounter)}",
+            #     (resize_shape[0] - 90, 30),
+            #     FONT,
+            #     FONT_SCALE,
+            #     FONT_COLOR,
+            #     LINETYPE,
+            # )
 
             # Display video and extracted faces
             cv2.imshow("base-image", display_frame)

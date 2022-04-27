@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractUser
@@ -73,6 +74,8 @@ def update_outside_field(sender, instance, **kwargs):
         instance.student.is_outside = True
     else:
         instance.student.is_outside = False
+        if instance.time > datetime.strptime("11:00:00", '%H:%M:%S').time():
+            instance.student.is_late = True
     
     instance.student.save()
     

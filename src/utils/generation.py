@@ -5,10 +5,11 @@ from src.detection.detector import detector_wrapper
 import requests
 
 # get different angles, store array
-def generate(embedding_model=face_encodings, detection_model=detector_wrapper('Mediapipe'), frame_count=5, skip=24):
+def generate(embedding_model=face_encodings, detection_model='RetinaFace', frame_count=10, skip=24):
     embedding_map = []
     name_map = []
     videos = get_videos()
+    detection_model = detector_wrapper(detection_model)
     
     for name, video in videos:
         embeddings = []
@@ -24,8 +25,6 @@ def generate(embedding_model=face_encodings, detection_model=detector_wrapper('M
             bboxes = detection_model.detect(frame)
 
             if i % skip == 0 and bboxes is not None:
-                bbox = bboxes[0]
-                face = frame[bbox[0]:bbox[2], bbox[1]:bbox[3], :]
                 emb = embedding_model(frame)
                 if len(emb) != 0:
                     embeddings.append(emb[0])
@@ -39,6 +38,7 @@ def generate(embedding_model=face_encodings, detection_model=detector_wrapper('M
         cv2.destroyAllWindows()
         np.save("D:\Python\Projects\Face-Recognition-System\data\embeddings\embeddings.npy", embedding_map, allow_pickle=True)
         np.save("D:\Python\Projects\Face-Recognition-System\data\embeddings\\names.npy", name_map, allow_pickle=True)
+    print("Embeddings generated")
     return embedding_map, name_map
 
 
