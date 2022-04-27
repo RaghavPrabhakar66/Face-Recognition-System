@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { useState } from "react";
 
@@ -9,6 +9,7 @@ const Login = () => {
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const navigate = useNavigate();
 
 	async function login() {
 		let item = { email, password };
@@ -18,7 +19,10 @@ const Login = () => {
 			url: "http://127.0.0.1:8080/auth/token/login",
 			data: item,
 		})
-			.then((res) => localStorage.setItem("Token", res.data.auth_token))
+			.then((res) => {
+				localStorage.setItem("Token", res.data.auth_token);
+				navigate('/site/dashboard');
+			})
 			.catch((err) => console.error(err))
 	}
 
@@ -49,10 +53,10 @@ const Login = () => {
 					/>
 				</div>
 				<div className="flex justify-between">
-					<Link to="/site/dashboard">
-						<button onClick={login} class="btn bg-red-400 hover:bg-red-500 border-none">
-							Log in
-						</button></Link>
+					{/* <Link to="/site/dashboard"> */}
+					<button onClick={login} class="btn bg-red-400 hover:bg-red-500 border-none">
+						Log in
+					</button>
 					<Link to="/site/signup">
 						<div className="mt-3">Register now</div>
 					</Link>
