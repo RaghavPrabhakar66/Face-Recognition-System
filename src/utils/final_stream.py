@@ -1,11 +1,10 @@
-import threading
-import time
 import os
 from datetime import datetime
 import cv2
 import numpy as np
-from motpy import Detection, MultiObjectTracker
+from motpy import Detection
 import uuid
+import PIL
 
 from src.alignment.aligment import align
 from src.recognition.recognition import recognizer_wrapper
@@ -90,6 +89,7 @@ def stream2(
 
         frame = cv2.flip(frame, 1)
         display_frame = frame.copy()
+        frame = np.asarray(PIL.ImageOps.autocontrast(PIL.Image.fromarray(display_frame), cutoff=2, ignore=2))
         height, width, _ = frame.shape
 
         # # Calculate frame rate

@@ -1,7 +1,7 @@
 import face_recognition
 import numpy as np
 from pickle import load
-# from annoy import AnnoyIndex
+import os
 
 class Recognizer():
     def __init__(self):
@@ -10,7 +10,7 @@ class Recognizer():
         self.dist = face_recognition.face_distance
         # self.database = np.load("D:\Python\Projects\Face-Recognition-System\data\embeddings\\names.npy", allow_pickle=True)
         # self.database_embeddings = np.load("D:\Python\Projects\Face-Recognition-System\data\embeddings\embeddings.npy", allow_pickle=True)
-        with open("D:\Python\Projects\Face-Recognition-System\data\embeddings\svm.pkl", 'rb') as f:
+        with open(os.path.abspath("data/embeddings/svm.pkl"), 'rb') as f:
             self.svm = load(f)
         print("Embeddings loaded")
 
@@ -26,6 +26,8 @@ class Recognizer():
         # index = np.argmin(dists)
 
         name = self.svm.predict(face_embeddings)
+        proba = self.svm.predict_proba(face_embeddings)
+        print(proba)
         return name[0]
         # if matches[index]:
         #     res = self.database[index]
