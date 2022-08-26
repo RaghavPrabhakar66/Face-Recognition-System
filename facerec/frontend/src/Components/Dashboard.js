@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useState, useEffect } from "react";
 import { Popover } from '@headlessui/react'
 import { Tab } from '@headlessui/react'
-
+const FileDownload = require('js-file-download');
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
@@ -22,7 +22,9 @@ const handleDownload = () => {
 			Authorization: 'Token ' + localStorage.getItem("Token")
 		}
 	})
-		.then((res) => console.log(res))
+		.then((res) => {
+			FileDownload(res.data, 'report.csv');
+		})
 		.catch((err) => console.error(err))
 }
 
@@ -110,11 +112,11 @@ const Dashboard = () => {
 				</Tab.Group>
 			</div>
 			<footer className="absolute bottom-5 right-5 z-10">
-				<Link to="/api/export/csv" target="_blank">
+				{/* <Link to="/api/export/csv" target="_blank"> */}
 					<button onClick={handleDownload} className="flex h-20 w-20 bg-red-200 rounded-full transition-all active:w-[4.9rem] active:h-[4.9rem] active:bg-red-100">
 						<DownloadIcon className="h-10 w-10 m-auto" />
 					</button>
-				</Link>
+				{/* </Link> */}
 			</footer>
 		</div>
 	);
